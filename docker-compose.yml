@@ -4,7 +4,7 @@ services:
 
   client:
     container_name: client
-    image: client:latest
+    image: teamcity-myproj-client:latest
     restart: unless-stopped
     ports:
       - "3000:3000"
