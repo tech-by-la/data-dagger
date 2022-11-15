@@ -1,8 +1,9 @@
-<h1>
-    Hello World
-</h1>
+<script>
+    const imgUrl = new URL('/images/data-dagger-logo.png', import.meta.url).href
+    </script>
+
+<h1>Data Dagger</h1>
+<p>We cut out the faulty data</p>
 <br/>
-<h1>
-    Lars is a poppy pants
-</h1>
-<img src="/images/data_dagger_logo.png" alt="goose-logo">
+
+<img src="{imgUrl}" alt="goose-logo">
