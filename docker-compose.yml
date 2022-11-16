@@ -2,9 +2,31 @@ version: '3'
 
 services:
 
+  gateway:
+    container_name: gateway
+    image: teamcity-dd-gateway:latest
+    restart: unless-stopped
+    networks:
+      dmz:
+        ipv4_address: ${GATEWAY_IP}
+    ports:
+      - ${EXT_PORT}:${INT_PORT}
+    environment:
+      - CLIENT=http://${CLIENT_IP}:${INT_PORT}
+
   client:
     container_name: client
     image: teamcity-dd-client:latest
     restart: unless-stopped
-    ports:
-      - "80:3000"
+    networks:
+      dmz:
+        ipv4_address: ${CLIENT_IP}
+    expose:
+      - ${INT_PORT}
+
+networks:
+  dmz:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET}
