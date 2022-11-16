@@ -1,7 +1,6 @@
 FROM node:16-alpine
 
-RUN mkdir -p /usr/src/service
-RUN mkdir -p /usr/src/service/src
+RUN mkdir -p /usr/src/
 
 WORKDIR /usr/src/
 
