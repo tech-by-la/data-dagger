@@ -32,7 +32,12 @@ case ${action} in
   ;;
   run)
     echo "Running Docker Compose..."
-    docker compose up -d
+    if (( ${#services[@]} == 0 ))
+    then
+      docker compose up -d
+    else
+      docker compose up -d ${services[@]}
+    fi
   ;;
   --help)
     echo " ./build-tools.sh build ...args  - build docker images"
