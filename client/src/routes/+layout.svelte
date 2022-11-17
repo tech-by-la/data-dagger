@@ -1,15 +1,35 @@
 <script>
     import "../app.css";
+    import Navbar from "$lib/Components/Navbar.svelte";
+    import Footer from "$lib/Components/Footer.svelte"
+    import "@fontsource/oswald";
+
+    let isPrompt = false
+
+    function openThePrompt() {
+        isPrompt = true;
+    }
+    function closeThePrompt() {
+        isPrompt = false;
+    }
 </script>
 
-<nav class="bg-gray-600">
-    <a href="/login" class="font-bold">Login</a>
-</nav>
+
 
 <main>
+    <Navbar/>
+    
     <slot/>
 </main>
 
-<footer class="bg-gray-600 h-16">
-    <p>Welcome to the Jungle</p>
-</footer>
+
+<style>
+    main {
+        background: #283871;
+        font-family: 'Oswald';
+        color: rgb(255, 255, 255);
+        height: 100%;
+        width: 100%;   
+    }
+    
+</style>

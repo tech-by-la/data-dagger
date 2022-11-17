@@ -13,31 +13,36 @@
 
 </script>
 
-<div class="background" transition:fade on:click={close}/>
+<div class="shader" transition:fade on:click={close}/>
 <div class="prompt-box" transition:fly={{y: -500}}>
     <slot></slot>
 </div>
 
 <style>
-    .background {
+    .shader {
         position: fixed;
         top: 0;
         left: 0;
         height: 100vh;
         width: 100vw;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.7);
         z-index: 2;
     }
     .prompt-box {
-        position: fixed;
-        margin: 20vh auto;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: auto;
+        left: 40%;
+        margin: auto auto;
         height: 200px;
-        width: 400px;
+        width: 30%;
         color: white;
         padding: 15px;
-        background-color: rgb(42,42,187);
+        background-color: #283871;
+        border-radius: 20px;
         border: solid 5px white;
-        z-index: 5;
+        z-index: 3;
     }
 
 </style>

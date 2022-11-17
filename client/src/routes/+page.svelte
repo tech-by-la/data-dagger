@@ -1,13 +1,85 @@
 <script>
-    import Button from "$lib/Components/Button.svelte";
+    
+   import FillerText from "$lib/Components/FillerText.svelte"
+   import Button from "$lib/Components/Button.svelte";
+   import Prompt from "$lib/Components/Prompt.svelte";
+    import InputForm from "$lib/Components/InputForm.svelte";
 
-    const imgUrl = new URL('../../static/images/data-dagger-logo.png', import.meta.url).href
+   let isPrompt = false
+
+function openThePrompt() {
+    isPrompt = true;
+}
+function closeThePrompt() {
+    isPrompt = false;
+}
+    
+        
 </script>
 
-<h1>Data Dagger</h1>
-<p>We cut out the faulty data</p>
-<br/>
+{#if isPrompt}
+    <Prompt on:closePrompt={closeThePrompt}>
+       <InputForm/>
+       <Button btnClick={closeThePrompt} btnTitle={"Close"}></Button>
+    </Prompt>
+{/if}
+    
+<div class="page-con">
+    <div class="main-con">
+        <div class="text-con-1">
+            <FillerText/>
+        </div>
+        <div class="text-con-2">
+            <FillerText/>
+        </div>
+        <div class="text-con-3">
+            <FillerText/>
+        </div>
+        <div class="text-con-4">
+            <FillerText/>
+        </div>   
+        <div class="text-con-5">
+            <FillerText/>
+        </div>
+    </div>
+    <div class="side-con">
+        <div class="text-con-6">
+            <FillerText/>
+        </div> 
+        <div class="button-con">
+            <Button btnClick ={openThePrompt} btnTitle="Get Started"></Button>
+        </div>
+        
+        
+    </div>    
+</div>
 
-<Button title="Hello" onClick={() => { console.log("Alex mor er lækker") }} color="bg-amber-400" />
 
-<img src="%sveltekit.assets%/images/data-dagger-logo.png" alt="goose-logo">
+    
+    
+
+<style>
+    .main-con div, .side-con div{
+        border: 1px black solid;
+        margin: 10px 10px 0px 10px;
+        padding: 10px;
+    }
+    .page-con {
+        border: 1px black solid;
+        display: flex;
+        flex-direction: row;
+    }
+    .main-con{
+        flex: 2
+    }
+    .side-con{
+        flex: 1
+    }
+    .button-con{
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+
+
