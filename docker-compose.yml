@@ -24,6 +24,18 @@ services:
     expose:
       - ${INT_PORT}
 
+  authentication:
+    container_name: authentication
+    image: teamcity-dd-authentication:latest
+    restart: unless-stopped
+    networks:
+      dmz:
+        ipv4_address: ${AUTHENTICATION_IP}
+    expose:
+      - ${INT_PORT}
+    depends_on:
+      - authentication_db
+
   # === Databases === #
   authentication_db:
     container_name: authentication_db
@@ -34,6 +46,8 @@ services:
         ipv4_address: ${AUTHENTICATION_DB_IP}
     expose:
       - ${MYSQL_PORT}
+    ports:
+      - "3307:3306"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
       MYSQL_DATABASE: auth
