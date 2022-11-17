@@ -24,6 +24,21 @@ services:
     expose:
       - ${INT_PORT}
 
+  # === Databases === #
+  authentication_db:
+    container_name: authentication_db
+    image: mysql:latest
+    restart: always
+    networks:
+      dmz:
+        ipv4_address: ${AUTHENTICATION_DB_IP}
+    expose:
+      - ${MYSQL_PORT}
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_DATABASE: auth
+      MYSQL_TCP_PORT: ${MYSQL_PORT}
+
 networks:
   dmz:
     ipam:
