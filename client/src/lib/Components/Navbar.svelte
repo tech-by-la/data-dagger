@@ -2,17 +2,16 @@
 import Prompt from "$lib/Components/Prompt.svelte";
 import InputForm from "./InputForm.svelte";
 import Button from "./Button.svelte";
+import { createEventDispatcher} from 'svelte';
+import PromptController from "./stores/PromptController";
+const dispatch = createEventDispatcher();
+
 
 
 const imgUrl = new URL('/static/images/data-dagger-logo.png', import.meta.url).href
 
-let isPrompt = false
-
-function openThePrompt() {
-    isPrompt = true;
-}
-function closeThePrompt() {
-    isPrompt = false;
+function toggleThePrompt() {
+    $PromptController ? $PromptController=false : $PromptController=true
 }
 
 </script>
@@ -34,17 +33,17 @@ function closeThePrompt() {
             <a href="Some Other Thing">Some Other Thing</a>
         </div>
 
-        <Button btnClick={openThePrompt} btnTitle={"Login"}></Button>
+        <Button btnClick={toggleThePrompt} btnTitle={"Login"}></Button>
 
     </div>
 
 
 </div>
 
-{#if isPrompt}
-    <Prompt on:closePrompt={closeThePrompt}>
+{#if $PromptController}
+    <Prompt >
        <InputForm/>
-       <Button btnClick={closeThePrompt} btnTitle={"Close"}></Button>
+       <Button btnClick={toggleThePrompt} btnTitle={"Close"}></Button>
     </Prompt>
 {/if}
 

@@ -1,25 +1,16 @@
 <script>
     import "../app.css";
     import Navbar from "$lib/Components/Navbar.svelte";
-    import Footer from "$lib/Components/Footer.svelte"
+    // import Footer from "$lib/Components/Footer.svelte"
     import "@fontsource/oswald";
 
-    let isPrompt = false
-
-    function openThePrompt() {
-        isPrompt = true;
-    }
-    function closeThePrompt() {
-        isPrompt = false;
-    }
 </script>
 
 
 
 <main>
     <Navbar/>
-    
-    <slot/>
+    <slot />
 </main>
 
 

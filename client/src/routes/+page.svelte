@@ -1,26 +1,20 @@
-<script>
-    
-   import FillerText from "$lib/Components/FillerText.svelte"
-   import Button from "$lib/Components/Button.svelte";
-   import Prompt from "$lib/Components/Prompt.svelte";
-    import InputForm from "$lib/Components/InputForm.svelte";
+<script> 
+import FillerText from "$lib/Components/FillerText.svelte"
+import Button from "$lib/Components/Button.svelte";
+import Prompt from "$lib/Components/Prompt.svelte";
+import InputForm from "$lib/Components/InputForm.svelte";
+import PromptController from "$lib/Components/stores/PromptController";
 
-   let isPrompt = false
-
-function openThePrompt() {
-    isPrompt = true;
-}
-function closeThePrompt() {
-    isPrompt = false;
-}
-    
+function toggleThePrompt() {
+    $PromptController ? $PromptController=false : $PromptController=true
+} 
         
 </script>
 
-{#if isPrompt}
-    <Prompt on:closePrompt={closeThePrompt}>
+{#if $PromptController}
+    <Prompt on:closePrompt={toggleThePrompt}>
        <InputForm/>
-       <Button btnClick={closeThePrompt} btnTitle={"Close"}></Button>
+       <Button btnClick={toggleThePrompt} btnTitle={"Close"}></Button>
     </Prompt>
 {/if}
     
@@ -47,7 +41,7 @@ function closeThePrompt() {
             <FillerText/>
         </div> 
         <div class="button-con">
-            <Button btnClick ={openThePrompt} btnTitle="Get Started"></Button>
+            <Button btnClick ={toggleThePrompt} btnTitle="Get Started"></Button>
         </div>
         
         

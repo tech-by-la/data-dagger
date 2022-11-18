@@ -1,21 +1,17 @@
 <script>
-    import { createEventDispatcher} from 'svelte';
-    import {fly, fade} from 'svelte/transition'
-    const dispatch = createEventDispatcher();
+import {fly, fade} from 'svelte/transition'
+import PromptController from './stores/PromptController';
 
-    function open() {
-        dispatch('openPrompt');
-    }
-    function close() {
-        dispatch('closePrompt');
-    }
-
-
+function close() {
+    $PromptController = false;
+}
 </script>
 
-<div class="shader" transition:fade on:click={close}/>
-<div class="prompt-box" transition:fly={{y: -500}}>
-    <slot></slot>
+<div class="prompt">
+    <div class="shader" transition:fade on:click={close} on:keypress={close}/>
+    <div class="prompt-box" transition:fly={{y: -500}}>
+        <slot></slot>
+    </div>
 </div>
 
 <style>
