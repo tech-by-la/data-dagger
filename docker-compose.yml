@@ -44,6 +44,10 @@ services:
     networks:
       dmz:
         ipv4_address: ${AUTHENTICATION_DB_IP}
+    volumes:
+      - "authentication_config:/etc/mysql/conf.d/config-file.cnf"
+      - "authentication_data:/var/lib/mysql:rw"
+
     expose:
       - ${MYSQL_PORT}
     ports:
@@ -52,6 +56,10 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
       MYSQL_DATABASE: auth
       MYSQL_TCP_PORT: ${MYSQL_PORT}
+
+volumes:
+  authentication_data:
+  authentication_config:
 
 networks:
   dmz:
