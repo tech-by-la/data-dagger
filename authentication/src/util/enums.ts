@@ -11,6 +11,7 @@ export enum StatusCode {
     BAD_REQUEST = 400,
     UNAUTHORIZED = 401,
     NOT_FOUND = 404,
+    CONFLICT = 409,
     ERROR = 500
 }
 
@@ -18,6 +19,10 @@ export enum HttpErrMsg {
     MISSING_CREDENTIALS = "Email or password was not provided.",
     BAD_CREDENTIALS = "Email or password is incorrect.",
     USER_DISABLED = "This account is disabled",
+    EMAIL_IN_USE = "Email address is already in use",
+    INVALID_EMAIL = "A valid email address was not provided",
+    PASSWORD_TOO_SHORT = "Password needs to be at least 6 characters long",
+    INTERNAL_ERROR = "An error occurred. Please try again later"
 }
 
 export enum ErrMsg {
