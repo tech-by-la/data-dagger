@@ -14,30 +14,8 @@ class Util {
                 process.exit(1);
             }
 
-            if (address.startsWith('http://')) {
-                address = address.slice(7)
-                console.log(address);
-            }
-
-            const split = address.split(':');
-            if (
-                split.length < 1 ||
-                split.length > 2 ||
-                !split[0].match(pattern)
-            ) {
-                console.error(`Error! ${target} target IP is not a valid IP address`);
-                process.exit(1);
-            }
-
-            if (
-                split.length === 2 &&
-                (
-                    split[1].length > 4 ||
-                    split[1].length < 2 ||
-                    isNaN(Number.parseInt(split[1]))
-                )
-            ) {
-                console.error(`Error! ${target} target port is not a valid port`);
+            if (!address.startsWith('http://')) {
+                console.error(`Error! Environment variable ${target} should start with 'http://`);
                 process.exit(1);
             }
         }

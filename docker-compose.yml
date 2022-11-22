@@ -7,20 +7,20 @@ services:
     image: teamcity-dd-gateway:latest
     restart: unless-stopped
     networks:
-      dmz:
-        ipv4_address: ${GATEWAY_IP}
+      - dd-net
     ports:
       - ${EXT_PORT}:${INT_PORT}
     environment:
-      - CLIENT=http://${CLIENT_IP}:${INT_PORT}
+      - PORT=${INT_PORT}
+      - CLIENT=http://client:${INT_PORT}
+      - AUTH=http://authentication:${INT_PORT}
 
   client:
     container_name: client
     image: teamcity-dd-client:latest
     restart: unless-stopped
     networks:
-      dmz:
-        ipv4_address: ${CLIENT_IP}
+      - dd-net
     expose:
       - ${INT_PORT}
 
@@ -29,12 +29,13 @@ services:
     image: teamcity-dd-authentication:latest
     restart: unless-stopped
     networks:
-      dmz:
-        ipv4_address: ${AUTHENTICATION_IP}
+      - dd-net
     expose:
       - ${INT_PORT}
     depends_on:
       - authentication_db
+    environment:
+      - PORT=${INT_PORT}
 
   # === Databases === #
   authentication_db:
@@ -42,12 +43,10 @@ services:
     image: mysql:latest
     restart: always
     networks:
-      dmz:
-        ipv4_address: ${AUTHENTICATION_DB_IP}
+      - dd-net
     volumes:
       - "authentication_config:/etc/mysql/conf.d/config-file.cnf"
       - "authentication_data:/var/lib/mysql:rw"
-
     expose:
       - ${MYSQL_PORT}
     ports:
@@ -62,8 +61,9 @@ volumes:
   authentication_config:
 
 networks:
-  dmz:
+  dd-net:
     ipam:
       driver: default
       config:
         - subnet: ${SUBNET}
+
