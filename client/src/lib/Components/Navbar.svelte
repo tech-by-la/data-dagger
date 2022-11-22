@@ -2,9 +2,10 @@
 import Prompt from "$lib/Components/Prompt.svelte";
 import InputForm from "./InputForm.svelte";
 import Button from "./Button.svelte";
-import { createEventDispatcher} from 'svelte';
 import PromptController from "./stores/PromptController";
-const dispatch = createEventDispatcher();
+import { PersonPicture } from 'fluent-svelte'
+import { Space } from '@svelteuidev/core';
+
 
 
 
@@ -19,7 +20,9 @@ function toggleThePrompt() {
 <div class="navbar-container">
 
     <div class="logo-name-container">
-        <img class="logo" src={imgUrl} alt="goose-logo" width="70px">
+        <PersonPicture src={imgUrl}/>
+        <!-- <img class="logo" src={imgUrl} alt="goose-logo" width="70px"> -->
+        <Space w="sm"/>
         <div class="title-name">Data Dagger</div>
     </div>
 
