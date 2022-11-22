@@ -20,9 +20,10 @@ JwtUtil.verifyEnv()
 const server = express();
 
 server.use(express.json());
-server.use(AuthRouter);
 
-const PORT = process.env.PORT || 3000;
+server.use('/api/auth', AuthRouter);
+
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
     console.log('Authentication Service came online on port', PORT);
 })
