@@ -62,8 +62,3 @@ volumes:
 
 networks:
   dd-net:
-    ipam:
-      driver: default
-      config:
-        - subnet: ${SUBNET}
-
