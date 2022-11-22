@@ -23,7 +23,7 @@ server.use(express.json());
 
 server.use('/api/auth', AuthRouter);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log('Authentication Service came online on port', PORT);
 })

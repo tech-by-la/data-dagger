@@ -1,10 +1,10 @@
 import {PrismaClient} from "@prisma/client";
 import bcrypt from 'bcrypt';
 
-import {RefreshTokenRepo} from "./RefreshTokenRepo.js";
+import RefreshTokenRepo from "./repos/RefreshTokenRepo.js";
 import {ErrMsg, UserRoles} from "../util/enums.js";
 import Snowflakes from "../util/snowflakes.js";
-import UserRepo from "./UserRepo.js";
+import UserRepo from "./repos/UserRepo.js";
 
 export interface IDatabaseGateway {
     userRepo: UserRepo;

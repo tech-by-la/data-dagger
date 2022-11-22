@@ -1,9 +1,9 @@
 import {PrismaClient} from "@prisma/client";
 import bcrypt from "bcrypt";
 
-import {UserWithRoles} from "../util/interfaces.js";
-import Snowflakes from "../util/snowflakes.js";
-import {UserRoles} from "../util/enums.js";
+import {UserWithRoles} from "../../util/interfaces.js";
+import Snowflakes from "../../util/snowflakes.js";
+import {UserRoles} from "../../util/enums.js";
 
 export interface IUserRepo {
     findUserById(id: string): Promise<UserWithRoles | null>;

@@ -9,7 +9,7 @@ interface IRefreshTokenRepo {
     deleteRefreshTokensByUserAndFamily(user_id: string, family: number): void;
 }
 
-export class RefreshTokenRepo implements IRefreshTokenRepo {
+export default class RefreshTokenRepo implements IRefreshTokenRepo {
     private readonly db: PrismaClient;
 
     constructor(db: PrismaClient) {
