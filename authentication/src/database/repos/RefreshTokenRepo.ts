@@ -1,8 +1,8 @@
 import {PrismaClient, RefreshToken} from "@prisma/client";
 
 interface IRefreshTokenRepo {
-    renewRefreshToken(token: RefreshToken): Promise<RefreshToken | null>;
-    startNewRefreshTokenFamily(user_id: string): Promise<RefreshToken | null>;
+    renewRefreshToken(old_token: RefreshToken, jwt: string): Promise<RefreshToken | null>;
+    startNewRefreshTokenFamily(user_id: string, jwt: string): Promise<RefreshToken | null>;
     findRefreshTokenByToken(token: string): Promise<RefreshToken | null>;
     findLatestRefreshTokenFamilyByUser(user_id: string): Promise<number | null>;
     deleteRefreshTokensByUser(user_id: string): void;
@@ -18,9 +18,9 @@ export default class RefreshTokenRepo implements IRefreshTokenRepo {
 
     /*
      * Creates a new Refresh Token in a new family
-     * @param: string
+     * @params user_id: string, jwt: string
      */
-    public async startNewRefreshTokenFamily(user_id: string) {
+    public async startNewRefreshTokenFamily(user_id: string, jwt: string) {
         const family = await this.findLatestRefreshTokenFamilyByUser(user_id);
         if (!family && family !== 0) return null;
 
@@ -30,26 +30,27 @@ export default class RefreshTokenRepo implements IRefreshTokenRepo {
             .create({
                 data: {
                     user_id,
+                    token: jwt,
                     family: family + 1,
                     iteration: 1,
                     valid: true,
                     expires,
                 },
             })
-            .catch(() => null);
+            .catch();
     }
 
     /*
      * Invalidates a given refresh token then creates next token in the family
-     * @param: RefreshToken
+     * @params: old_token: RefreshToken, jwt: string
      * @returns: The new token
      */
-    public async renewRefreshToken(token: RefreshToken) {
+    public async renewRefreshToken(old_token: RefreshToken, jwt: string) {
         const expires = Date.now() + 1000 * 60 * 60 * 24 * 365;
 
         return await this.db.refreshToken
             .update({
-                where: { id: token.id },
+                where: { id: old_token.id },
                 data: { valid: false },
             })
             .then(
@@ -57,6 +58,7 @@ export default class RefreshTokenRepo implements IRefreshTokenRepo {
                     await this.db.refreshToken.create({
                         data: {
                             user_id: result.user_id,
+                            token: jwt,
                             family: result.family,
                             iteration: result.iteration + 1,
                             valid: true,

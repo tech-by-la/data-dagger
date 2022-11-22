@@ -13,9 +13,9 @@ export const respondError = (res: Response, code: StatusCode, message: string) =
 }
 
 export const attachLoginCookies = async (res: Response, user: UserWithRoles): Promise<boolean> => {
-    const jwt = await Jwt.signJwt(user);
-    const refreshToken = "";
-    if (!jwt) {
+    const jwt = await Jwt.getLoginJwt(user);
+    const refreshToken = await Jwt.getNewRefreshTokenFamily(user.id);
+    if (!jwt || !refreshToken) {
         respondError(res, StatusCode.ERROR, HttpErrMsg.INTERNAL_ERROR);
         return false;
     }
@@ -25,7 +25,8 @@ export const attachLoginCookies = async (res: Response, user: UserWithRoles): Pr
         httpOnly: true,
         secure: false, // TODO: use secure cookie
     });
-    res.cookie("refresh_token", refreshToken, {
+
+    res.cookie("refresh_token", refreshToken.token, {
         maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
         httpOnly: true,
         secure: false, // TODO: use secure cookie

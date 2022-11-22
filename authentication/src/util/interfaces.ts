@@ -15,3 +15,7 @@ export interface JwtUserPayload {
     email: string;
     roles: UserRole["name"][];
 }
+
+export interface RefreshTokenPayload {
+    id: string;
+}

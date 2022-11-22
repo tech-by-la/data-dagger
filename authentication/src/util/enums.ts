@@ -31,6 +31,8 @@ export enum ErrMsg {
 }
 
 export enum Warnings {
-    MISSING_PRIVATE_KEY = "Warning: No keyfile found for private.pem",
-    MISSING_PUBLIC_KEY = "Warning: No keyfile found for public.pem",
+    MISSING_PRIVATE_JWT_KEY = "Warning: No keyfile found for private-jwt.pem",
+    MISSING_PUBLIC_JWT_KEY = "Warning: No keyfile found for public-jwt.pem",
+    MISSING_PRIVATE_REF_KEY = "Warning: No keyfile found for private-ref.pem",
+    MISSING_PUBLIC_REF_KEY = "Warning: No keyfile found for public-ref.pem",
 }

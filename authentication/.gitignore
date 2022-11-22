@@ -103,5 +103,8 @@ dist
 # TernJS port file
 .tern-port
 
-private.pem
-public.pem
+*.pem
+!example.private-jwt.pem
+!example.private-ref.pem
+!example.public-jwt.pem
+!example.public-ref.pem
