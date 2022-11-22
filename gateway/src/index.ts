@@ -9,12 +9,11 @@ const proxy =httpProxy.createProxyServer({});
 // Target IPs
 const targets = {
     CLIENT: process.env.CLIENT,
+    AUTH: process.env.AUTH,
 }
 
 // Verify IPs
 Util.verifyTargets(targets);
-
-server.use(express.json());
 
 server.use((req, res) => {
     proxy.on('error', (err) => {
@@ -27,6 +26,9 @@ server.use((req, res) => {
 
     if (path[1] === Path.API) {
         switch (path[2]) { // service
+            case Path.AUTH:
+                proxy.web(req, res, { target: targets.AUTH });
+                break;
             default:
                 res.status(404).send();
         }
