@@ -14,6 +14,7 @@ services:
       - PORT=${INT_PORT}
       - CLIENT=http://client:${INT_PORT}
       - AUTH=http://authentication:${INT_PORT}
+      - SWAGGER=http://swagger:${INT_PORT}
 
   client:
     container_name: client
@@ -34,6 +35,17 @@ services:
       - ${INT_PORT}
     depends_on:
       - authentication_db
+    environment:
+      - PORT=${INT_PORT}
+
+  swagger:
+    container_name: swagger
+    image: teamcity-dd-swagger:latest
+    restart: unless-stopped
+    networks:
+      - dd-net
+    expose:
+      - ${INT_PORT}
     environment:
       - PORT=${INT_PORT}
 

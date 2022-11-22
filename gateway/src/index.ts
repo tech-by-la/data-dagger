@@ -10,6 +10,7 @@ const proxy =httpProxy.createProxyServer({});
 const targets = {
     CLIENT: process.env.CLIENT,
     AUTH: process.env.AUTH,
+    SWAGGER: process.env.SWAGGER,
 }
 
 // Verify IPs
@@ -28,6 +29,9 @@ server.use((req, res) => {
         switch (path[2]) { // service
             case Path.AUTH:
                 proxy.web(req, res, { target: targets.AUTH });
+                break;
+            case Path.SWAGGER:
+                proxy.web(req, res, { target: targets.SWAGGER });
                 break;
             default:
                 res.status(404).send();
