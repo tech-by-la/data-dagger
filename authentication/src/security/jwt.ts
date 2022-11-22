@@ -32,7 +32,7 @@ class JwtUtil implements IJwtUtil {
     }
 
     private async fetchKeys() {
-        await fs.readFile("src/security/keystore/private.pem",(err, data) => {
+        await fs.readFile("dist/security/keystore/private.pem",(err, data) => {
             if (err) {
                 this.privateKey = Buffer.from([]);
                 console.warn(Warnings.MISSING_PRIVATE_KEY);
@@ -41,7 +41,7 @@ class JwtUtil implements IJwtUtil {
             }
         });
 
-        await fs.readFile("src/security/keystore/public.pem", (err, data) => {
+        await fs.readFile("dist/security/keystore/public.pem", (err, data) => {
             if (err) {
                 this.publicKey = Buffer.from([]);
                 console.warn(Warnings.MISSING_PRIVATE_KEY);
