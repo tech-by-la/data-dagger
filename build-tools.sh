@@ -2,6 +2,7 @@
 
 action=$1; shift
 services=($@)
+
 all=("authentication" "client" "gateway")
 
 echo ""
@@ -10,7 +11,7 @@ if [ "$action" == "build" ];
 then
   if (( ${#services[@]} == 0 ))
   then
-    services=$all
+    services=${all[@]}
   fi
   for service in ${services[@]}
     do
