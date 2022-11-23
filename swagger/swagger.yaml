@@ -6,16 +6,37 @@ info:
   version: 0.1.9
 
 paths:
+
+  /api/auth/keys/publickey:
+    get:
+      tags:
+        - "Authentication Service"
+      summary: "Get public RSA key"
+      description: "The key is used to verify the JWT token provided with the 'jwt' cookie returned on login"
+      responses:
+        '200':
+          description: "Ok: The public key is return"
+          content:
+            text/plain:
+              schema:
+                example: "-----BEGIN PUBLIC KEY-----
+                          1234567890qwertyuiopasdfgh
+                          jklzxcvbnm1234567890
+                          -----END PUBLIC KEY-----"
+        '404':
+          description: "Not Found: The key was not found on the server."
+
+
   /api/auth/login:
     post:
       tags:
-        - "Authentication"
+        - "Authentication Service"
       summary: "User Login"
       description: "Stateless user login with JWT and refresh token cookies"
       parameters:
         - in: body
+          name: "User"
           schema:
-            name: user
             type: object
             required:
               - email
@@ -27,8 +48,65 @@ paths:
                 type: string
       responses:
         '200':
-          description: "OK: JWT cookie and RefreshToken cookie are attached to response."
+          description: "Ok: JWT cookie and RefreshToken cookie are attached to response."
         '400':
           description: "Bad Request: email and/or password is missing."
         '401':
           description: "Unauthorized: Credentials are incorrect or user is disabled."
+
+  /api/auth/register:
+    post:
+      tags:
+        - "Authentication Service"
+      summary: "User Registration"
+      description: "Creates new user and logs in the new user"
+      parameters:
+        - in: body
+          name: "User"
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+      responses:
+        '201':
+          description: "Created: User is created and 'jwt' and 'refresh_token' cookies are attached to response."
+        '400':
+          description: "Bad Request: Password is too short, email and/or password is missing or email is not a valid email address"
+        '409':
+          description: "Conflict: Email address already in use."
+
+  /api/auth/logout:
+    post:
+      tags:
+        - "Authentication Service"
+      summary: "User Logout"
+      description: "Expires 'jwt' and 'refresh_token' cookies. If a valid refresh token was provided it will be deleted from the database."
+      parameters:
+        - in: cookie
+          name: 'refresh_token'
+          description: "JWT token"
+      responses:
+        '204':
+          description: "No Content: User is logged out."
+
+  /api/auth/renew:
+    post:
+      tags:
+        - "Authentication Service"
+      summary: "Renew JWT token"
+      description: "Returns a new JWT cookie if a valid refresh token is provided"
+      parameters:
+        - in: cookie
+          name: 'refresh_token'
+          description: "JWT token"
+      responses:
+        '200':
+          description: "Ok: Refresh token was verified and a new 'jwt' cookie is provided"
+        '401':
+          description: "Unauthorized: A valid refresh token was not provided."
