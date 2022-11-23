@@ -1,11 +1,12 @@
 import {Router} from 'express';
 import bcrypt from "bcrypt";
 
-import {validateEmail, verifyUserRequestBody} from "../util/middleware.js";
-import {attachLoginCookies, respondError} from "../util/helpers.js";
-import {HttpErrMsg, StatusCode} from "../util/enums.js";
+import {filterAuthCookies, validateEmail, verifyUserRequestBody} from "../util/middleware.js";
+import {expireCookies, login, respondError, validateRefreshToken} from "../util/helpers.js";
+import {Cookies, HttpErrMsg, StatusCode} from "../util/enums.js";
 import {UserLogin} from "../util/interfaces.js";
 import db from "../database/DatabaseGateway.js";
+import Jwt from "../security/jwt.js";
 
 const router = Router();
 
@@ -27,11 +28,8 @@ router.post('/login', verifyUserRequestBody, async (req, res) => {
         return;
     }
 
-    // Cookie was signed successfully
-    const success = await attachLoginCookies(res, user);
-    if (!success) return;
-
-    res.send();
+    const refreshToken = await Jwt.getNewRefreshTokenFamily(user.id);
+    await login(res, user, refreshToken);
 });
 
 router.post('/register', verifyUserRequestBody, validateEmail, async (req, res) => {
@@ -57,11 +55,30 @@ router.post('/register', verifyUserRequestBody, validateEmail, async (req, res) 
         return;
     }
 
-    // Cookie was signed successfully
-    const success = await attachLoginCookies(res, user);
-    if (!success) return;
+    const refreshToken = await Jwt.getNewRefreshTokenFamily(user.id);
+    await login(res, user, refreshToken);
+});
 
-    res.send();
+router.get('/renew', filterAuthCookies, async (req, res) => {
+
+    // If JWT is valid, no need to renew.
+    const jwt = req.cookies[Cookies.JWT];
+    if (await Jwt.verifyJwt(jwt)) {
+        res.send();
+        return;
+    }
+
+    const refreshToken: string = req.cookies[Cookies.REFRESH_TOKEN];
+
+    const newToken = await validateRefreshToken(refreshToken);
+    if (!newToken) {
+        expireCookies(res, Cookies.REFRESH_TOKEN);
+        respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.INVALID_REFRESH_TOKEN);
+        return;
+    }
+
+    const user = await db.userRepo.findUserById(newToken.user_id);
+    await login(res, user, newToken);
 });
 
 export default router;

@@ -4,6 +4,11 @@ export enum UserRoles {
     USER = "USER"
 }
 
+export enum Cookies {
+    JWT = "jwt",
+    REFRESH_TOKEN = "refresh_token",
+}
+
 export enum StatusCode {
     OK = 200,
     CREATED = 201,
@@ -22,7 +27,8 @@ export enum HttpErrMsg {
     EMAIL_IN_USE = "Email address is already in use",
     INVALID_EMAIL = "A valid email address was not provided",
     PASSWORD_TOO_SHORT = "Password needs to be at least 6 characters long",
-    INTERNAL_ERROR = "An error occurred. Please try again later"
+    INTERNAL_ERROR = "An error occurred. Please try again later",
+    INVALID_REFRESH_TOKEN = "No valid refresh token was provided",
 }
 
 export enum ErrMsg {

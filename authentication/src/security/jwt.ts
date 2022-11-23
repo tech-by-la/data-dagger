@@ -21,22 +21,28 @@ class JwtUtil implements IJwtUtil {
     private privateRefKey: Buffer = Buffer.from([]);
     private publicRefKey: Buffer = Buffer.from([]);
 
-    private signOptions: SignOptions = {
+    private jwtSignOptions: SignOptions = {
         issuer: process.env.JWT_ISSUER,
         expiresIn: `${process.env.JWT_EXPIRES}m`,
         algorithm: `${process.env.JWT_ALGORITHM}` as Algorithm,
     }
 
-    private refreshTokenOptions: SignOptions = {
-        issuer: this.signOptions.issuer,
+    private refreshTokenSignOptions: SignOptions = {
+        issuer: this.jwtSignOptions.issuer,
         expiresIn: `1y`,
         algorithm: `${process.env.JWT_ALGORITHM}` as Algorithm,
     }
 
-    private verifyOptions: VerifyOptions = {
-        issuer: this.signOptions.issuer,
-        maxAge: this.signOptions.expiresIn,
-        algorithms: [this.signOptions.algorithm as Algorithm],
+    private jwtVerifyOptions: VerifyOptions = {
+        issuer: this.jwtSignOptions.issuer,
+        maxAge: this.jwtSignOptions.expiresIn,
+        algorithms: [this.jwtSignOptions.algorithm as Algorithm],
+    }
+
+    private refreshTokenVerifyOptions: VerifyOptions = {
+        issuer: this.refreshTokenSignOptions.issuer,
+        maxAge: this.refreshTokenSignOptions.expiresIn,
+        algorithms: [this.refreshTokenSignOptions.algorithm as Algorithm],
     }
 
     constructor() {
@@ -93,9 +99,9 @@ class JwtUtil implements IJwtUtil {
         }
     }
 
-    public getLoginJwt(user: UserWithRoles) {
+    public getLoginJwt(user: UserWithRoles | null) {
         return new Promise<string | null>((accept) => {
-            if (!user.id || !user.email || !user.roles) return accept(null);
+            if (!user || !user.id || !user.email || !user.roles) return accept(null);
 
             const payload: JwtUserPayload = {
                 id: user.id,
@@ -103,7 +109,7 @@ class JwtUtil implements IJwtUtil {
                 roles: user.roles.map(role => role.name),
             }
 
-            jwt.sign(payload, this.privateJwtKey, { ...this.signOptions, subject: user.email}, (error, encoded) => {
+            jwt.sign(payload, this.privateJwtKey, { ...this.jwtSignOptions, subject: user.email}, (error, encoded) => {
                 if (error) accept(null);
                 else accept(encoded as string);
             });
@@ -114,7 +120,7 @@ class JwtUtil implements IJwtUtil {
         const payload: RefreshTokenPayload = { id: user_id }
 
         return new Promise<RefreshToken | null>((accept) => {
-            jwt.sign(payload, this.privateRefKey, { ...this.refreshTokenOptions, subject: user_id}, async (error, encoded) => {
+            jwt.sign(payload, this.privateRefKey, { ...this.refreshTokenSignOptions, subject: user_id}, async (error, encoded) => {
                 if (error || !encoded) accept(null);
                 else {
                     const token = await db.refreshTokenRepo.startNewRefreshTokenFamily(user_id, encoded);
@@ -128,7 +134,7 @@ class JwtUtil implements IJwtUtil {
         const payload: RefreshTokenPayload = { id: user_id }
 
         return new Promise<RefreshToken | null>((accept) => {
-            jwt.sign(payload, this.privateRefKey, { ...this.signOptions, subject: user_id}, async (error, encoded) => {
+            jwt.sign(payload, this.privateRefKey, { ...this.jwtSignOptions, subject: user_id}, async (error, encoded) => {
                 if (error || !encoded) accept(null);
                 else {
                     const new_token = await db.refreshTokenRepo.renewRefreshToken(old_token, encoded);
@@ -140,7 +146,7 @@ class JwtUtil implements IJwtUtil {
 
     public verifyJwt(token: string) {
         return new Promise<string | null>((accept) => {
-            jwt.verify(token, this.publicJwtKey, this.verifyOptions, async (error, decoded) => {
+            jwt.verify(token, this.publicJwtKey, this.jwtVerifyOptions, async (error, decoded) => {
                 if (error) accept(null);
                 else {
                     const { sub } = decoded as JwtPayload;
@@ -156,7 +162,7 @@ class JwtUtil implements IJwtUtil {
 
     public verifyRefreshToken(token: string) {
         return new Promise<string | null>((accept) => {
-            jwt.verify(token, this.publicRefKey, this.verifyOptions, async (error, decoded) => {
+            jwt.verify(token, this.publicRefKey, this.refreshTokenVerifyOptions, async (error, decoded) => {
                 if (error) accept(null);
                 else {
                     const { sub } = decoded as JwtPayload;
