@@ -26,7 +26,6 @@ paths:
         '404':
           description: "Not Found: The key was not found on the server."
 
-
   /api/auth/login:
     post:
       tags:
@@ -110,3 +109,34 @@ paths:
           description: "Ok: Refresh token was verified and a new 'jwt' cookie is provided"
         '401':
           description: "Unauthorized: A valid refresh token was not provided."
+
+  /api/auth/orgs:
+    post:
+      tags:
+        - "Authentication Service"
+      summary: "Creates a new organization"
+      description: "A new organization is created. Requires a valid JWT cookie on request. The user that makes the request will automatically get owner role of the organization"
+      parameters:
+        - in: body
+          name: "Organization Info"
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+              contact_email:
+                type: string
+              contact_phone:
+                type: string
+      responses:
+        '201':
+          description: "Created: The new organization was successfully created."
+        '400':
+          description: "Bad Request: A name for the organization was not provided."
+        '401':
+          description: "Unauthorized: A valid JWT was not provided among cookies."
+        '409':
+          description: "Conflict: The organization name is unavailable."
+
