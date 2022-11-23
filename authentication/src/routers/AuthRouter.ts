@@ -70,14 +70,16 @@ router.post('/renew', filterAuthCookies, async (req, res) => {
     }
 
     const refreshToken = req.cookies[Cookies.REFRESH_TOKEN];
-    const newToken = await validateRefreshToken(refreshToken);
-    if (!newToken) {
+
+    const validation = await validateRefreshToken(refreshToken);
+
+    if (!validation) {
         expireCookies(res, Cookies.REFRESH_TOKEN);
         respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.INVALID_REFRESH_TOKEN);
         return;
     }
 
-    const user = await db.userRepo.findUserById(newToken.user_id);
+    const { user, newToken } = validation;
     await login(res, user, newToken);
 });
 

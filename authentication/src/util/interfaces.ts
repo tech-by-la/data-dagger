@@ -34,5 +34,5 @@ export interface JwtUserPayload {
 }
 
 export interface RefreshTokenPayload {
-    id: string;
+    token: string; // should be unique
 }

@@ -1,16 +1,17 @@
 import jwt, {Algorithm, JwtPayload, SignOptions, VerifyOptions} from 'jsonwebtoken';
+import {RefreshToken} from "@prisma/client";
 import fs from 'fs';
 
-import {JwtUserPayload, RefreshTokenPayload, UserWithRoles} from "../util/interfaces";
+import {JwtUserPayload, RefreshTokenPayload, UserWithRoles} from "../util/interfaces.js";
 import {ErrMsg, Warnings} from "../util/enums.js";
 import db from '../database/DatabaseGateway.js';
-import {RefreshToken} from "@prisma/client";
+import Snowflakes from "../util/snowflakes.js";
 
 interface IJwtUtil {
     verifyEnv(): Promise<void>;
     getLoginJwt(user: UserWithRoles): Promise<string | null>;
-    getNewRefreshTokenFamily(user_id: string): Promise<RefreshToken | null>;
-    renewRefreshToken(user_id: string, token: RefreshToken): Promise<RefreshToken | null>;
+    getNewRefreshTokenFamily(user_id: string): Promise<string | null>;
+    renewRefreshToken(user_id: string, token: RefreshToken): Promise<string | null>;
     verifyJwt(token: string): Promise<string | null>;
     verifyRefreshToken(token: string): Promise<JwtPayload | null>;
 }
@@ -121,28 +122,29 @@ class JwtUtil implements IJwtUtil {
     }
 
     public getNewRefreshTokenFamily(user_id: string) {
-        const payload: RefreshTokenPayload = { id: user_id }
+        const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
 
-        return new Promise<RefreshToken | null>((accept) => {
+        return new Promise<string | null>((accept) => {
             jwt.sign(payload, this.privateRefKey, { ...this.refreshTokenSignOptions, subject: user_id}, async (error, encoded) => {
                 if (error || !encoded) accept(null);
                 else {
-                    const token = await db.refreshTokenRepo.startNewRefreshTokenFamily(user_id, encoded);
-                    accept(token);
+
+                    const token = await db.refreshTokenRepo.startNewRefreshTokenFamily(user_id, payload.token);
+                    accept(token ? encoded : null);
                 }
             });
         });
     }
 
     public renewRefreshToken(user_id: string, old_token: RefreshToken) {
-        const payload: RefreshTokenPayload = { id: user_id }
+        const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
 
-        return new Promise<RefreshToken | null>((accept) => {
+        return new Promise<string | null>((accept) => {
             jwt.sign(payload, this.privateRefKey, { ...this.jwtSignOptions, subject: user_id}, async (error, encoded) => {
                 if (error || !encoded) accept(null);
                 else {
-                    const new_token = await db.refreshTokenRepo.renewRefreshToken(old_token, encoded);
-                    accept(new_token);
+                    const new_token = await db.refreshTokenRepo.renewRefreshToken(old_token, payload.token);
+                    accept(new_token ? encoded : null);
                 }
             });
         });

@@ -14,7 +14,7 @@ export const respondError = (res: Response, code: StatusCode, message: string) =
     });
 }
 
-export const login = async (res: Response, user: UserWithRoles | null, refreshToken: RefreshToken | null) => {
+export const login = async (res: Response, user: UserWithRoles | null, refreshToken: string | null) => {
     const jwt = await Jwt.getLoginJwt(user);
 
     if (!jwt || !refreshToken) {
@@ -29,7 +29,7 @@ export const login = async (res: Response, user: UserWithRoles | null, refreshTo
         secure: false, // TODO: use secure cookie
     });
 
-    res.cookie(Cookies.REFRESH_TOKEN, refreshToken.token, {
+    res.cookie(Cookies.REFRESH_TOKEN, refreshToken, {
         maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
         httpOnly: true,
         sameSite: 'strict',
@@ -41,13 +41,14 @@ export const login = async (res: Response, user: UserWithRoles | null, refreshTo
 
 /**
  * Verifies token validity, then invalidates token and renews it
- * @param token
- * @returns newToken
+ * @returns { user, newToken }
+ * @param jwt
  */
-export const validateRefreshToken = async (token: string) => {
-    const verified = await Jwt.verifyRefreshToken(token);
+export const validateRefreshToken = async (jwt: string) => {
+    const verified = await Jwt.verifyRefreshToken(jwt);
     if (!verified) return;
 
+    const { token } = verified;
     const refreshToken = await db.refreshTokenRepo.findRefreshTokenByToken(token);
     if (!refreshToken) return;
 
@@ -64,7 +65,8 @@ export const validateRefreshToken = async (token: string) => {
         return;
     }
 
-    return await Jwt.renewRefreshToken(refreshToken.user_id, refreshToken);
+    const newToken = await Jwt.renewRefreshToken(refreshToken.user_id, refreshToken);
+    return { user, newToken }
 }
 
 export const expireCookies = (res: Response, ...cookies: string[]) => {
