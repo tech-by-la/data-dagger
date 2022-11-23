@@ -68,8 +68,7 @@ router.get('/renew', filterAuthCookies, async (req, res) => {
         return;
     }
 
-    const refreshToken: string = req.cookies[Cookies.REFRESH_TOKEN];
-
+    const refreshToken = req.cookies[Cookies.REFRESH_TOKEN];
     const newToken = await validateRefreshToken(refreshToken);
     if (!newToken) {
         expireCookies(res, Cookies.REFRESH_TOKEN);
@@ -79,6 +78,23 @@ router.get('/renew', filterAuthCookies, async (req, res) => {
 
     const user = await db.userRepo.findUserById(newToken.user_id);
     await login(res, user, newToken);
+});
+
+router.post('/logout', filterAuthCookies, async (req, res) => {
+
+    const refreshToken = req.cookies[Cookies.REFRESH_TOKEN];
+
+    if (refreshToken) {
+        await db.refreshTokenRepo.findRefreshTokenByToken(refreshToken)
+            .then(token => {
+                if (token) {
+                    db.refreshTokenRepo.deleteRefreshTokensByUserAndFamily(token.user_id, token.family);
+                }
+            });
+    }
+
+    expireCookies(res, Cookies.JWT, Cookies.REFRESH_TOKEN);
+    res.status(StatusCode.NO_CONTENT).send();
 });
 
 export default router;
