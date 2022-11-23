@@ -29,7 +29,7 @@ model UserRole {
 
 model OrgRole {
   name EOrgRole @id
-  users OrgUser_OrgRole[]
+  users OrgUser[]
 }
 
 model User {
@@ -76,14 +76,8 @@ model OrgUser {
   user_id           String
   organization      Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
   organization_id   String
-  org_roles         OrgUser_OrgRole @relation(fields: [org_roles_id], references: [id])
-  org_roles_id      Int @unique
-}
-
-model OrgUser_OrgRole {
-  id        Int    @id @default(autoincrement())
-  org_user  OrgUser?
-  org_roles OrgRole[]
+  org_role          OrgRole @relation(fields: [org_role_id], references: [name])
+  org_role_id       EOrgRole
 }
 
 model Invite {

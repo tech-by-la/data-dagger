@@ -1,7 +1,33 @@
 import {NextFunction, Request, Response} from "express";
 import {Cookies, HttpErrMsg, StatusCode} from "./enums.js";
 import {respondError} from "./helpers.js";
-import {UserLogin} from "./interfaces";
+import {OrgRequestBody, UserLogin} from "./interfaces.js";
+import Jwt from "../security/jwt.js";
+import {JwtPayload} from "jsonwebtoken";
+
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
+
+    const cookie = req.header('cookie') || "";
+    const cookies = cookie.split(" ");
+    let jwt = "";
+    for (let cookie of cookies) {
+        if (cookie.startsWith(Cookies.JWT)) {
+            const token = cookie.split('=')[1];
+            jwt = token.replace(';', '');
+        }
+    }
+
+    const decoded = await Jwt.verifyJwt(jwt);
+
+    if (!decoded) {
+        respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
+        return;
+    }
+
+    const { id, email, roles } = decoded as unknown as JwtPayload;
+    req.user = { id, email, roles }
+    next();
+}
 
 export const verifyUserRequestBody = (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body as UserLogin;
@@ -10,6 +36,18 @@ export const verifyUserRequestBody = (req: Request, res: Response, next: NextFun
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_CREDENTIALS);
         return;
     }
+    next();
+}
+
+export const verifyOrgRequestBody = <T>(req: Request, res: Response, next: NextFunction) => {
+
+    let { name } = req.body as OrgRequestBody;
+
+    if (!name) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_ORG_INFO);
+        return;
+    }
+
     next();
 }
 
@@ -54,3 +92,5 @@ export const filterAuthCookies = (req: Request, res: Response, next: NextFunctio
 
     next();
 }
+
+

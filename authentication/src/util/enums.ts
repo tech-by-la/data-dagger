@@ -4,6 +4,12 @@ export enum UserRoles {
     USER = "USER"
 }
 
+export enum OrgRoles {
+    OWNER = "OWNER",
+    MODERATOR = "MODERATOR",
+    MEMBER = "MEMBER",
+}
+
 export enum Cookies {
     JWT = "jwt",
     REFRESH_TOKEN = "refresh_token",
@@ -22,15 +28,18 @@ export enum StatusCode {
 }
 
 export enum HttpErrMsg {
-    MISSING_CREDENTIALS = "Email or password was not provided.",
     BAD_CREDENTIALS = "Email or password is incorrect.",
-    USER_DISABLED = "This account is disabled",
     EMAIL_IN_USE = "Email address is already in use",
-    INVALID_EMAIL = "A valid email address was not provided",
-    PASSWORD_TOO_SHORT = "Password needs to be at least 6 characters long",
     INTERNAL_ERROR = "An error occurred. Please try again later",
+    INVALID_EMAIL = "A valid email address was not provided",
     INVALID_REFRESH_TOKEN = "No valid refresh token was provided",
+    MISSING_CREDENTIALS = "Email or password was not provided.",
+    MISSING_ORG_INFO = "Organization name was not provided",
+    ORG_NAME_IN_USE = "Organization name is unavailable",
+    PASSWORD_TOO_SHORT = "Password needs to be at least 6 characters long",
     RESOURCE_NOT_FOUND = "The requested resource was not found",
+    UNAUTHORIZED = "Unauthorized",
+    USER_DISABLED = "This account is disabled",
 }
 
 export enum ErrMsg {
