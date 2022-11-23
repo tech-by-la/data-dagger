@@ -1,4 +1,5 @@
 <script>
+	import { enhance } from "$app/forms";
 
     /**
 	 * @type {any}
@@ -11,12 +12,21 @@
 </script>
 
 <div class="form-div">
-    <form class="form-form" method="POST" action="?/{formFunction}">                  
-        <input class="input-name" name="name" type="text" placeholder="Name">                    
+    <form class="form-form" method="POST" action="?/{formFunction}" use:enhance> 
+        {#if formName == "Register"}
+        <input class="input-name" name="first-name" type="text" placeholder="First Name">   
+        <input class="input-name" name="last-name" type="text" placeholder="Last Name"> 
+        {/if} 
         <input class="input-email" name="email" type="email" placeholder="Email">
         <input class="input-password" name="password" type="password" placeholder="Password">
-        <button class="btn" type="submit">{formName}</button>
-        <button class="btn" type="reset">Reset</button>
+        {#if formName == "Register"}
+        <input class="input-password" name="confirm-password" type="password" placeholder="Confirm Password">
+        {/if}  
+        
+        <div class="inner-btn-div">
+            <button class="btn" type="reset">Reset</button>
+            <button class="btn" type="submit">{formName}</button>
+        </div>
     </form>    
 </div>
 
@@ -26,50 +36,48 @@
         flex-direction: column;
         border: 2px;
         border-color: black;
-        padding: 20px;
         justify-content: space-evenly;
+    }
+    .inner-btn-div {
+        display: flex;
+        flex-direction: row;
+    }
+
+
+    input, .btn, .input-email{
+    font-size: 15px;
+    line-height: 20px;
+    padding: 10px;
+    border-radius: 3px; 
+    font-family: 'Oswald';
+    font-weight: normal;  
+    font-style: normal; 
+    font-variant: normal; 
+    text-transform: none;   
+    border: 2px solid #798AC5; 
+    display: inline-block;
+    color: rgb(255, 255, 255); 
+    
     }
 
     input {
-    font-size: 15px;
-    line-height: 20px;
-    padding: 10px; 
-    border-radius: 3px; 
-    font-family: 'Oswald';
-    font-weight: normal;  
-    font-style: normal; 
-    font-variant: normal; 
-    text-transform: none;   
-    border: 2px solid #798AC5; 
-    display: inline-block;
-    color: rgb(255, 255, 255);
-    background: rgba(0, 0, 0, 0.2);
+    background:#1e184453;
     margin: 5px;
+    width: auto;
     }
 
-
     .btn {
-    color: rgb(255, 255, 255);
-    font-size: 20px;
-    line-height: 20px;
-    padding: 10px; 
-    border-radius: 3px; 
-    font-family: 'Oswald';
-    font-weight: normal;  
-    font-style: normal; 
-    font-variant: normal; 
-    text-transform: none;   
-    border: 2px solid #798AC5; 
-    display: inline-block;
     background: 0;
     margin: 5px;
-}
+    width: 50%;
+    }
 
-.btn:hover {
-    background: #798AC5; 
-}
+    .btn:hover {
+        background: #798AC5; 
+    }
 
-.btn:active {
-    background: #144E75; 
-} 
+    .btn:active {
+        background: #144E75; 
+    } 
+
 </style>

@@ -2,7 +2,6 @@
 import Prompt from "$lib/Components/Prompt.svelte";
 import InputForm from "$lib/Components/InputForm.svelte";
 import Button from "$lib/Components/Button.svelte";
-import { PersonPicture } from 'fluent-svelte'
 import { Space } from '@svelteuidev/core';
 
 
@@ -19,8 +18,8 @@ function toggleThePrompt() {
 <div class="navbar-container">
 
     <div class="logo-name-container">
-        <PersonPicture src={imgUrl}/>
-        <!-- <img class="logo" src={imgUrl} alt="goose-logo" width="70px"> -->
+        <!-- <PersonPicture src={imgUrl}/> -->
+        <img class="logo" src={imgUrl} alt="goose-logo" width="100px">
         <Space w="sm"/>
         <div class="title-name">Data Dagger</div>
     </div>
@@ -28,9 +27,13 @@ function toggleThePrompt() {
     <div class="links-container">
         <div class="links">
             <a href="Dashboard">Dashboard</a>
+            <Space w="sm"/>
             <p> / </p>
+            <Space w="sm"/>
             <a href="QA-workzone">QA-workzone</a>
+            <Space w="sm"/>
             <p> / </p>
+            <Space w="sm"/>
             <a href="Some Other Thing">Some Other Thing</a>
         </div>
         <Button btnClick={toggleThePrompt} btnTitle={"Login"}></Button>
@@ -50,17 +53,15 @@ function toggleThePrompt() {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    border: 2px #798AC5 solid;
-    border-radius: 10px;
+    border: 5px #1e184453 ;
+    border-radius: 0px;
     margin: 0 10px;
     top: 10;
+    background: #1e184453;
     
 }
-.navbar-container div{
-    border: 1px black solid;
+.navbar-container div{ 
     align-items: center;
-    
-
 }
 
 .logo-name-container, .links-container {
@@ -88,6 +89,9 @@ a {
     font-style: inherit;
     font-variant: inherit;
     font-display: inherit;
+}
+p {
+    font-size: 30px;
 }
 
 

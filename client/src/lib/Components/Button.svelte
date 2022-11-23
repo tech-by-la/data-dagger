@@ -27,7 +27,9 @@
     text-transform: none;   
     border: 2px solid #798AC5; 
     display: inline-block;
-    background: 0
+    background: 0;
+    margin: 5px;
+    width: auto;
 }
 
 .btn:hover {

@@ -22,7 +22,9 @@ export const actions: Actions = {
         const data = await request.formData()
         console.log("You clicked Login!  ")
         console.log(data)
-        
+        return {
+            success:true,
+        }
     },
     register: async ({ request }) => {
         const data = await request.formData()

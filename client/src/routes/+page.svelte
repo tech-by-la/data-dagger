@@ -3,7 +3,6 @@ import FillerText from "$lib/Components/FillerText.svelte"
 import Button from "$lib/Components/Button.svelte";
 import Prompt from "$lib/Components/Prompt.svelte";
 import InputForm from "$lib/Components/InputForm.svelte";
-import { typewriter } from '@svelteuidev/motion';
 export let data
 const text = data.fillerText
 const text2 = data.fillerText2
@@ -24,6 +23,7 @@ function toggleThePrompt() {
 {/if}
     
 <div class="page-con">
+
     <div class="main-con">
         <div class="text-con-1">
             {text}
@@ -41,6 +41,7 @@ function toggleThePrompt() {
             <FillerText/>
         </div>
     </div>
+
     <div class="side-con">
         <div class="text-con-6">
             <FillerText/>
@@ -48,10 +49,9 @@ function toggleThePrompt() {
         <div class="button-con">
             <Button btnClick ={toggleThePrompt} btnTitle="Get Started"></Button>
             <InputForm formFunction="register" formName="Register" />
-        </div>
-        
-        
-    </div>    
+        </div> 
+    </div>  
+
 </div>
 
 
@@ -59,13 +59,13 @@ function toggleThePrompt() {
     
 
 <style>
-    .main-con div, .side-con div{
-        border: 1px black solid;
+    .main-con div, .side-con div{  
+        border: 5px #1e18444b solid;
+        border-radius: 0px;
         margin: 10px 10px 0px 10px;
         padding: 10px;
     }
     .page-con {
-        border: 1px black solid;
         display: flex;
         flex-direction: row;
     }
