@@ -28,14 +28,14 @@ export const validateEmail = (req: Request, res: Response, next: NextFunction) =
 }
 
 export const filterAuthCookies = (req: Request, res: Response, next: NextFunction) => {
-    const cookie = req.header('cookie');
-    if (!cookie) {
-        respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.INVALID_REFRESH_TOKEN);
-        return;
-    }
-
     if (!req.cookies) {
         req.cookies = {}
+    }
+
+    const cookie = req.header('cookie');
+    if (!cookie) {
+        next();
+        return;
     }
 
     const cookies = cookie.split(" ");
