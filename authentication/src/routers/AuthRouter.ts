@@ -51,7 +51,7 @@ router.post('/register', verifyUserRequestBody, validateEmail, async (req, res) 
 
     // Error occurred when creating the user in the database
     if (!user) {
-        respondError(res, StatusCode.ERROR, HttpErrMsg.INTERNAL_ERROR);
+        respondError(res, StatusCode.INTERNAL_SERVER_ERROR, HttpErrMsg.INTERNAL_ERROR);
         return;
     }
 
