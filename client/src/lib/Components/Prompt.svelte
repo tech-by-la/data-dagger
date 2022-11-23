@@ -1,14 +1,14 @@
 <script>
 import {fly, fade} from 'svelte/transition'
-import PromptController from './stores/PromptController';
 
-function close() {
-    $PromptController = false;
-}
+/**
+	 * @type {any}
+	 */
+     export let toggle;
 </script>
 
-<div class="prompt">
-    <div class="shader" transition:fade on:click={close} on:keypress={close}/>
+<div class="prompt-div">
+    <div class="shader" transition:fade on:click={toggle} on:keypress={toggle}/>
     <div class="prompt-box" transition:fly={{y: -500}}>
         <slot></slot>
     </div>
@@ -31,7 +31,7 @@ function close() {
         top: auto;
         left: 40%;
         margin: auto auto;
-        height: 200px;
+        height: auto;
         width: 30%;
         color: white;
         padding: 15px;

@@ -1,8 +1,7 @@
 <script>
 import Prompt from "$lib/Components/Prompt.svelte";
-import InputForm from "./InputForm.svelte";
-import Button from "./Button.svelte";
-import PromptController from "./stores/PromptController";
+import InputForm from "$lib/Components/InputForm.svelte";
+import Button from "$lib/Components/Button.svelte";
 import { PersonPicture } from 'fluent-svelte'
 import { Space } from '@svelteuidev/core';
 
@@ -10,9 +9,9 @@ import { Space } from '@svelteuidev/core';
 
 
 const imgUrl = new URL('/static/images/data-dagger-logo.png', import.meta.url).href
-
+let navPromptController = false
 function toggleThePrompt() {
-    $PromptController ? $PromptController=false : $PromptController=true
+    navPromptController ? navPromptController=false : navPromptController=true
 }
 
 </script>
@@ -27,7 +26,6 @@ function toggleThePrompt() {
     </div>
 
     <div class="links-container">
-
         <div class="links">
             <a href="Dashboard">Dashboard</a>
             <p> / </p>
@@ -35,17 +33,14 @@ function toggleThePrompt() {
             <p> / </p>
             <a href="Some Other Thing">Some Other Thing</a>
         </div>
-
         <Button btnClick={toggleThePrompt} btnTitle={"Login"}></Button>
-
     </div>
-
 
 </div>
 
-{#if $PromptController}
-    <Prompt >
-       <InputForm/>
+{#if navPromptController}
+    <Prompt toggle={toggleThePrompt} >
+       <InputForm formFunction="login" formName="Login" />
        <Button btnClick={toggleThePrompt} btnTitle={"Close"}></Button>
     </Prompt>
 {/if}
@@ -74,9 +69,9 @@ function toggleThePrompt() {
     justify-content: space-between;
     padding: 10px;
 }
-.logo {
+/* .logo {
     margin-right: 10px;
-}
+} */
 
 .links {
     display: flex;
@@ -86,6 +81,13 @@ function toggleThePrompt() {
 
 .title-name {
     font-size: 50px;
+}
+a {
+    color: inherit;
+    font: inherit;
+    font-style: inherit;
+    font-variant: inherit;
+    font-display: inherit;
 }
 
 

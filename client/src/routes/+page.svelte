@@ -3,31 +3,36 @@ import FillerText from "$lib/Components/FillerText.svelte"
 import Button from "$lib/Components/Button.svelte";
 import Prompt from "$lib/Components/Prompt.svelte";
 import InputForm from "$lib/Components/InputForm.svelte";
-import PromptController from "$lib/Components/stores/PromptController";
+import { typewriter } from '@svelteuidev/motion';
+export let data
+const text = data.fillerText
+const text2 = data.fillerText2
+const text3 = data.fillerText3
 
+let pagePromptController = false;
 function toggleThePrompt() {
-    $PromptController ? $PromptController=false : $PromptController=true
+    pagePromptController ? pagePromptController=false : pagePromptController=true
 } 
         
 </script>
 
-{#if $PromptController}
-    <Prompt on:closePrompt={toggleThePrompt}>
-       <InputForm/>
-       <Button btnClick={toggleThePrompt} btnTitle={"Close"}></Button>
+{#if pagePromptController}
+    <Prompt toggle={toggleThePrompt}>
+        <InputForm formFunction="register" formName="Register" />
+        <Button btnClick={toggleThePrompt} btnTitle={"Close"}></Button>
     </Prompt>
 {/if}
     
 <div class="page-con">
     <div class="main-con">
         <div class="text-con-1">
-            <FillerText/>
+            {text}
         </div>
         <div class="text-con-2">
-            <FillerText/>
+            {text2}
         </div>
         <div class="text-con-3">
-            <FillerText/>
+            {text3}
         </div>
         <div class="text-con-4">
             <FillerText/>
@@ -42,6 +47,7 @@ function toggleThePrompt() {
         </div> 
         <div class="button-con">
             <Button btnClick ={toggleThePrompt} btnTitle="Get Started"></Button>
+            <InputForm formFunction="register" formName="Register" />
         </div>
         
         
@@ -72,6 +78,7 @@ function toggleThePrompt() {
     .button-con{
         display: flex;
         justify-content: center;
+        flex-direction: column;
     }
 </style>
 
