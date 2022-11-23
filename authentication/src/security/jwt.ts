@@ -12,7 +12,7 @@ interface IJwtUtil {
     getNewRefreshTokenFamily(user_id: string): Promise<RefreshToken | null>;
     renewRefreshToken(user_id: string, token: RefreshToken): Promise<RefreshToken | null>;
     verifyJwt(token: string): Promise<string | null>;
-    verifyRefreshToken(token: string): Promise<string | null>;
+    verifyRefreshToken(token: string): Promise<JwtPayload | null>;
 }
 
 class JwtUtil implements IJwtUtil {
@@ -165,7 +165,7 @@ class JwtUtil implements IJwtUtil {
     }
 
     public verifyRefreshToken(token: string) {
-        return new Promise<string | null>((accept) => {
+        return new Promise<JwtPayload | null>((accept) => {
             jwt.verify(token, this.publicRefKey, this.refreshTokenVerifyOptions, async (error, decoded) => {
                 if (error) accept(null);
                 else {
@@ -173,7 +173,7 @@ class JwtUtil implements IJwtUtil {
                     if (!sub) return;
 
                     const user = await db.userRepo.findUserById(sub);
-                    if (user && user.enabled) accept(decoded as string);
+                    if (user && user.enabled) accept(decoded as JwtPayload);
                     else accept(null);
                 }
             });
