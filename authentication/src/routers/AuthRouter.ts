@@ -56,10 +56,11 @@ router.post('/register', verifyUserRequestBody, validateEmail, async (req, res) 
     }
 
     const refreshToken = await Jwt.getNewRefreshTokenFamily(user.id);
+    res.status(StatusCode.CREATED);
     await login(res, user, refreshToken);
 });
 
-router.get('/renew', filterAuthCookies, async (req, res) => {
+router.post('/renew', filterAuthCookies, async (req, res) => {
 
     // If JWT is valid, no need to renew.
     const jwt = req.cookies[Cookies.JWT];
