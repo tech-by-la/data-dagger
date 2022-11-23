@@ -6,7 +6,7 @@ import db from '../database/DatabaseGateway.js';
 import {RefreshToken} from "@prisma/client";
 
 export const respondError = (res: Response, code: StatusCode, message: string) => {
-    const error = StatusCode[code].replace("_", " ");
+    const error = StatusCode[code].replaceAll("_", " ");
     res.status(code).send({
         code,
         error,
@@ -18,7 +18,7 @@ export const login = async (res: Response, user: UserWithRoles | null, refreshTo
     const jwt = await Jwt.getLoginJwt(user);
 
     if (!jwt || !refreshToken) {
-        respondError(res, StatusCode.ERROR, HttpErrMsg.INTERNAL_ERROR);
+        respondError(res, StatusCode.INTERNAL_SERVER_ERROR, HttpErrMsg.INTERNAL_ERROR);
         return false;
     }
 

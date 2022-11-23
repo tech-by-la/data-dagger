@@ -3,6 +3,7 @@ import {ErrMsg} from "./util/enums.js";
 import db from './database/DatabaseGateway.js';
 import JwtUtil from './security/jwt.js';
 import AuthRouter from "./routers/AuthRouter.js";
+import KeyRouter from "./routers/KeyRouter.js";
 
 db.initDb()
 .catch(err => {
@@ -21,6 +22,7 @@ const server = express();
 
 server.use(express.json());
 
+server.use('/api/auth/keys', KeyRouter);
 server.use('/api/auth', AuthRouter);
 
 const PORT = process.env.PORT || 3000;

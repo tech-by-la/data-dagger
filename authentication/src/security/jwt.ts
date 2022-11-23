@@ -46,10 +46,10 @@ class JwtUtil implements IJwtUtil {
     }
 
     constructor() {
-        this.fetchKeys().then();
+        this.readKeys().then();
     }
 
-    private async fetchKeys() {
+    private async readKeys() {
         await fs.readFile("src/security/keystore/private-jwt.pem",(err, data) => {
             if (err) {
                 this.privateJwtKey = Buffer.from([]);
@@ -97,6 +97,10 @@ class JwtUtil implements IJwtUtil {
         if (!process.env.JWT_ALGORITHM) {
             throw new Error(ErrMsg.MISSING_ENV + " JWT_ALGORITHM");
         }
+    }
+
+    public getPublicJwtKey() {
+        return this.publicJwtKey;
     }
 
     public getLoginJwt(user: UserWithRoles | null) {

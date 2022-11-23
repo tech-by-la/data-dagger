@@ -17,7 +17,7 @@ export enum StatusCode {
     UNAUTHORIZED = 401,
     NOT_FOUND = 404,
     CONFLICT = 409,
-    ERROR = 500
+    INTERNAL_SERVER_ERROR = 500
 }
 
 export enum HttpErrMsg {
@@ -29,6 +29,7 @@ export enum HttpErrMsg {
     PASSWORD_TOO_SHORT = "Password needs to be at least 6 characters long",
     INTERNAL_ERROR = "An error occurred. Please try again later",
     INVALID_REFRESH_TOKEN = "No valid refresh token was provided",
+    RESOURCE_NOT_FOUND = "The requested resource was not found",
 }
 
 export enum ErrMsg {
