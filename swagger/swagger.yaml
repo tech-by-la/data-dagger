@@ -51,7 +51,7 @@ paths:
         '400':
           description: "Bad Request: email and/or password is missing."
         '401':
-          description: "Unauthorized: Credentials are incorrect or user is disabled."
+          description: "Unauthorized: User could not be authenticated."
 
   /api/auth/register:
     post:
@@ -108,7 +108,7 @@ paths:
         '200':
           description: "Ok: Refresh token was verified and a new 'jwt' cookie is provided"
         '401':
-          description: "Unauthorized: A valid refresh token was not provided."
+          description: "Unauthorized: User could not be authenticated."
 
   /api/auth/orgs:
     post:
@@ -136,7 +136,45 @@ paths:
         '400':
           description: "Bad Request: A name for the organization was not provided."
         '401':
-          description: "Unauthorized: A valid JWT was not provided among cookies."
+          description: "Unauthorized: User could not be authenticated."
         '409':
           description: "Conflict: The organization name is unavailable."
 
+  /api/auth/orgs/invite:
+    post:
+      tags:
+        - "Authentication Service"
+      summary: "Invite users to an organization"
+      description: "Endpoint for organization owners and moderators to invite new members"
+      parameters:
+        - in: body
+          name: "request body"
+          schema:
+            type: object
+            required:
+              - org_id
+              - emails
+            properties:
+              org_id:
+                type: string
+              emails:
+                type: array
+      responses:
+        '200':
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  invited: "An array of the successfully invited emails"
+                  invalid: "An array of invalid email addresses"
+                  alreadyJoined: "An array of emails by users that have already joined the organization"
+                  tooEarly: "An array of emails that have active invitations sent less than 24 hours ago"
+
+        '400':
+          description: "Bad Request: The request includes illegal properties (not 'org_id' or 'emails'), 'org_id' or 'email' was not provided, properties are not of the correct type, or there are duplicate emails in the request"
+        '401':
+          description: "Unauthorized: User could not be authenticated."
+        '403':
+          description: "Forbidden: The user that made the request is not OWNER or MODERATOR in the organization."
