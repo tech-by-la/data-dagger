@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {Cookies, HttpErrMsg, RequestKeys, StatusCode} from "./enums.js";
+import {Cookies, HttpErrMsg, RequestKeys, StatusCode, UserRoles} from "./enums.js";
 import {partitionEmails, respondError} from "./helpers.js";
 import {OrgRequestBody, UserRequestBody} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
@@ -40,6 +40,21 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     next();
 }
 
+export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user.roles.includes(UserRoles.ADMIN) && !req.user.roles.includes(UserRoles.SUPER_ADMIN)) {
+        respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
+        return;
+    }
+    next();
+}
+
+export const authorizeSuperAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user.roles.includes(UserRoles.SUPER_ADMIN)) {
+        respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
+        return;
+    }
+    next();
+}
 
 // ===== Request body validation ===== //
 

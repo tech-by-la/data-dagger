@@ -48,6 +48,7 @@ export enum HttpErrMsg {
     INVALID_EMAIL = "No valid email address was not provided",
     INVALID_REFRESH_TOKEN = "No valid refresh token was provided",
     INVALID_TYPE = "A property in the request body was not of the expected type",
+    INVALID_QUERY = "Invalid query parameters",
     MISSING_REQUIRED_FIELDS = "The request body does not contain all required fields",
     ORG_NAME_IN_USE = "Organization name is unavailable",
     PASSWORD_TOO_SHORT = "Password needs to be at least 6 characters long",

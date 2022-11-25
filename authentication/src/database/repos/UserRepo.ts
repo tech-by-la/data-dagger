@@ -10,6 +10,7 @@ export interface IUserRepo {
     findUserByEmail(email: string): Promise<UserInfo | null>;
     findManyUsersByEmail(emails: string[]): Promise<UserInfo[] | null>;
     createUser(email: string, password: string): Promise<UserInfo | null>;
+    updateUser(user: UserInfo): Promise<UserInfo | null>;
 }
 
 export default class UserRepo implements IUserRepo {
@@ -56,5 +57,18 @@ export default class UserRepo implements IUserRepo {
                 include: { roles: true },
             })
             .catch(() => null);
+    }
+
+    public async updateUser(user: UserInfo) {
+        return await this.db.user.update({
+            where: { id: user.id },
+            data: {
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                password_hash: user.password_hash,
+                enabled: user.enabled,
+            },
+        });
     }
 }

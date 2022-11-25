@@ -1,5 +1,5 @@
-import {Response} from "express";
-import {Cookies, HttpErrMsg, StatusCode} from "./enums.js";
+import {Request, Response} from "express";
+import {Cookies, HttpErrMsg, StatusCode, UserRoles} from "./enums.js";
 import {UserInfo} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
 import db from '../database/DatabaseGateway.js';
