@@ -6,11 +6,13 @@ import {ErrMsg, OrgRoles, UserRoles} from "../util/enums.js";
 import Snowflakes from "../util/snowflakes.js";
 import UserRepo from "./repos/UserRepo.js";
 import OrgRepo from "./repos/OrgRepo.js";
+import InviteRepo from "./repos/InviteRepo.js";
 
 export interface IDatabaseGateway {
     userRepo: UserRepo;
     refreshTokenRepo: RefreshTokenRepo;
     orgRepo: OrgRepo;
+    inviteRepo: InviteRepo;
 }
 
 class DatabaseGateway implements IDatabaseGateway {
@@ -19,6 +21,7 @@ class DatabaseGateway implements IDatabaseGateway {
     public readonly userRepo = new UserRepo(this.db);
     public readonly refreshTokenRepo = new RefreshTokenRepo(this.db);
     public readonly orgRepo = new OrgRepo(this.db);
+    public readonly inviteRepo = new InviteRepo(this.db);
 
     /*
 	 * Populate database with default data if it doesn't exist

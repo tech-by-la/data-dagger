@@ -1,6 +1,8 @@
-import {User, UserRole} from "@prisma/client";
-import {UserRoles} from "./enums";
+import {User, UserRole, OrgUser, EOrgRole} from "@prisma/client";
+import {RequestKeys, UserRoles} from "./enums";
 import {Request} from "express";
+
+// ===== Module declarations ===== //
 
 declare module "express-serve-static-core" {
     interface Request {
@@ -8,15 +10,28 @@ declare module "express-serve-static-core" {
             id: string,
             email: string,
             roles: string[],
+            orgs: UserOrgs
         }
     }
 }
 
-export interface UserWithRoles extends User {
+
+// ===== Types ===== //
+
+type UserOrgs = { org_id: string, role: EOrgRole }[]
+
+
+// ===== User Interfaces ===== //
+
+export interface UserInfo extends User {
     roles?: UserRole[];
+    orgs?: OrgUser[]
 }
 
-export interface UserLogin {
+
+// ===== Request/Response body definitions ===== //
+
+export interface UserRequestBody {
     email: string;
     password: string;
 }
@@ -27,10 +42,25 @@ export interface OrgRequestBody {
     contact_phone?: string;
 }
 
+export interface InviteRequestBody {
+    org_id: string;
+    emails: string[];
+}
+
+export interface InviteResponseBody {
+    alreadyJoined?: string[];
+    invalid?: string[];
+    invited?: string[];
+    tooEarly?: string[];
+}
+
+
+// ===== JWT Payloads ===== //
+
 export interface JwtUserPayload {
-    id: string;
     email: string;
     roles: UserRole["name"][];
+    orgs: UserOrgs
 }
 
 export interface RefreshTokenPayload {

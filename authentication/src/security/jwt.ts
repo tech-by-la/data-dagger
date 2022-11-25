@@ -2,15 +2,15 @@ import jwt, {Algorithm, JwtPayload, SignOptions, VerifyOptions} from 'jsonwebtok
 import {RefreshToken} from "@prisma/client";
 import fs from 'fs';
 
-import {JwtUserPayload, RefreshTokenPayload, UserWithRoles} from "../util/interfaces.js";
+import {JwtUserPayload, RefreshTokenPayload, UserInfo} from "../util/interfaces.js";
 import {ErrMsg, Warnings} from "../util/enums.js";
 import db from '../database/DatabaseGateway.js';
 import Snowflakes from "../util/snowflakes.js";
 
 interface IJwtUtil {
     verifyEnv(): Promise<void>;
-    getLoginJwt(user: UserWithRoles): Promise<string | null>;
-    getNewRefreshTokenFamily(user_id: string): Promise<string | null>;
+    signLoginJwt(user: UserInfo): Promise<string | null>;
+    signNewRefreshTokenFamily(user_id: string): Promise<string | null>;
     renewRefreshToken(user_id: string, token: RefreshToken): Promise<string | null>;
     verifyJwt(token: string): Promise<string | null>;
     verifyRefreshToken(token: string): Promise<JwtPayload | null>;
@@ -104,24 +104,24 @@ class JwtUtil implements IJwtUtil {
         return this.publicJwtKey;
     }
 
-    public getLoginJwt(user: UserWithRoles | null) {
+    public signLoginJwt(user: UserInfo | null) {
         return new Promise<string | null>((accept) => {
-            if (!user || !user.id || !user.email || !user.roles) return accept(null);
+            if (!user || !user.id || !user.email || !user.roles || !user.orgs) return accept(null);
 
             const payload: JwtUserPayload = {
-                id: user.id,
                 email: user.email,
                 roles: user.roles.map(role => role.name),
+                orgs: user.orgs.map(org => { return {org_id: org.organization_id, role: org.org_role_id} }),
             }
 
-            jwt.sign(payload, this.privateJwtKey, { ...this.jwtSignOptions, subject: user.email}, (error, encoded) => {
+            jwt.sign(payload, this.privateJwtKey, { ...this.jwtSignOptions, subject: user.id}, (error, encoded) => {
                 if (error) accept(null);
                 else accept(encoded as string);
             });
         });
     }
 
-    public getNewRefreshTokenFamily(user_id: string) {
+    public signNewRefreshTokenFamily(user_id: string) {
         const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
 
         return new Promise<string | null>((accept) => {
@@ -158,7 +158,7 @@ class JwtUtil implements IJwtUtil {
                     const { sub } = decoded as JwtPayload;
                     if (!sub) return;
 
-                    const user = await db.userRepo.findUserByEmail(sub);
+                    const user = await db.userRepo.findUserById(sub);
                     if (user && user.enabled) accept(decoded as string);
                     else accept(null);
                 }

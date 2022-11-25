@@ -1,6 +1,6 @@
 import {Response} from "express";
 import {Cookies, HttpErrMsg, StatusCode} from "./enums.js";
-import {UserWithRoles} from "./interfaces.js";
+import {UserInfo} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
 import db from '../database/DatabaseGateway.js';
 import {RefreshToken} from "@prisma/client";
@@ -14,8 +14,8 @@ export const respondError = (res: Response, code: StatusCode, message: string) =
     });
 }
 
-export const login = async (res: Response, user: UserWithRoles | null, refreshToken: string | null) => {
-    const jwt = await Jwt.getLoginJwt(user);
+export const login = async (res: Response, user: UserInfo | null, refreshToken: string | null) => {
+    const jwt = await Jwt.signLoginJwt(user);
 
     if (!jwt || !refreshToken) {
         respondError(res, StatusCode.INTERNAL_SERVER_ERROR, HttpErrMsg.INTERNAL_ERROR);
@@ -75,4 +75,16 @@ export const expireCookies = (res: Response, ...cookies: string[]) => {
             expires: new Date(0)
         });
     }
-};
+}
+
+export const partitionEmails = (emails: string[]) => {
+    const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    let valid: string[], invalid: string[] = [];
+    valid = emails.filter(email => {
+        if (pattern.test(String(email).toLowerCase())) return true;
+        else invalid.push(email);
+    });
+
+    return {valid, invalid}
+}

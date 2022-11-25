@@ -3,6 +3,7 @@ import Snowflakes from "../../util/snowflakes.js";
 import {OrgRoles} from "../../util/enums.js";
 
 export interface IOrgRepo {
+    findOrgById(id: string): Promise<Organization | null>;
     findOrgByName(name: string): Promise<Organization | null>;
     createOrg(creator_id: string, name: string, contact_email: string, contact_phone?: string): Promise<Organization | null>;
 }
@@ -12,6 +13,13 @@ export default class OrgRepo implements IOrgRepo {
 
     constructor(db: PrismaClient) {
         this.db = db;
+    }
+
+    public async findOrgById(id: string) {
+        return await this.db.organization.findUnique({
+            where: { id },
+            include: { members: true }
+        });
     }
 
     public async findOrgByName(name: string) {

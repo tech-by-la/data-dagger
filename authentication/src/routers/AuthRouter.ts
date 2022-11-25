@@ -4,14 +4,14 @@ import bcrypt from "bcrypt";
 import {filterAuthCookies, validateEmail, verifyUserRequestBody} from "../util/middleware.js";
 import {expireCookies, login, respondError, validateRefreshToken} from "../util/helpers.js";
 import {Cookies, HttpErrMsg, StatusCode} from "../util/enums.js";
-import {UserLogin} from "../util/interfaces.js";
+import {UserRequestBody} from "../util/interfaces.js";
 import db from "../database/DatabaseGateway.js";
 import Jwt from "../security/jwt.js";
 
 const router = Router();
 
 router.post('/login', verifyUserRequestBody, async (req, res) => {
-    const { email, password } = req.body as UserLogin;
+    const { email, password } = req.body as UserRequestBody;
 
     const user = await db.userRepo.findUserByEmail(email);
     const isCorrectPassword = user && await bcrypt.compare(password, user.password_hash)
@@ -28,12 +28,12 @@ router.post('/login', verifyUserRequestBody, async (req, res) => {
         return;
     }
 
-    const refreshToken = await Jwt.getNewRefreshTokenFamily(user.id);
+    const refreshToken = await Jwt.signNewRefreshTokenFamily(user.id);
     await login(res, user, refreshToken);
 });
 
 router.post('/register', verifyUserRequestBody, validateEmail, async (req, res) => {
-    const { email, password } = req.body as UserLogin;
+    const { email, password } = req.body as UserRequestBody;
 
     // Password too short
     if (password.length < 6) {
@@ -55,7 +55,7 @@ router.post('/register', verifyUserRequestBody, validateEmail, async (req, res) 
         return;
     }
 
-    const refreshToken = await Jwt.getNewRefreshTokenFamily(user.id);
+    const refreshToken = await Jwt.signNewRefreshTokenFamily(user.id);
     res.status(StatusCode.CREATED);
     await login(res, user, refreshToken);
 });

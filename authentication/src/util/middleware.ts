@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
-import {Cookies, HttpErrMsg, StatusCode} from "./enums.js";
-import {respondError} from "./helpers.js";
-import {OrgRequestBody, UserLogin} from "./interfaces.js";
+import {Cookies, HttpErrMsg, RequestKeys, StatusCode} from "./enums.js";
+import {partitionEmails, respondError} from "./helpers.js";
+import {OrgRequestBody, UserRequestBody} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
 import {JwtPayload} from "jsonwebtoken";
 
@@ -18,19 +18,23 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     }
 
     const decoded = await Jwt.verifyJwt(jwt);
-
     if (!decoded) {
         respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
         return;
     }
 
-    const { id, email, roles } = decoded as unknown as JwtPayload;
-    req.user = { id, email, roles }
+    const { sub, email, roles, orgs } = decoded as unknown as JwtPayload;
+    if (!sub || !email || !roles || !orgs) {
+        respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
+        return;
+    }
+
+    req.user = { id: sub, email, roles, orgs }
     next();
 }
 
 export const verifyUserRequestBody = (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body as UserLogin;
+    const { email, password } = req.body as UserRequestBody;
 
     if (!email || !password) {
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_CREDENTIALS);
@@ -39,7 +43,7 @@ export const verifyUserRequestBody = (req: Request, res: Response, next: NextFun
     next();
 }
 
-export const verifyOrgRequestBody = <T>(req: Request, res: Response, next: NextFunction) => {
+export const verifyOrgRequestBody = (req: Request, res: Response, next: NextFunction) => {
 
     let { name } = req.body as OrgRequestBody;
 
@@ -51,14 +55,42 @@ export const verifyOrgRequestBody = <T>(req: Request, res: Response, next: NextF
     next();
 }
 
+export const verifyInviteRequestBody = (req: Request, res: Response, next: NextFunction) => {
+
+    const illegalArguments = getIllegalArguments(
+        Object.keys(req.body), RequestKeys.org_id, RequestKeys.emails
+    );
+
+    if (illegalArguments.length > 0) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.ILLEGAL_ARGUMENT + illegalArguments);
+        return;
+    }
+
+    let { org_id, emails } = req.body;
+
+    if (!org_id || !emails) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_INV_INFO);
+        return;
+    }
+
+    if (typeof org_id !== "string" || !(emails instanceof Array)) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_TYPE);
+        return;
+    }
+
+    if ((new Set(emails).size !== emails.length)) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.DUPLICATE_ENTRIES);
+        return;
+    }
+
+    next();
+}
+
 export const validateEmail = (req: Request, res: Response, next: NextFunction) => {
-    const { email } = req.body as UserLogin;
+    const { email } = req.body as UserRequestBody;
 
-    // email pattern
-    const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    const isValid = pattern.test(String(email).toLowerCase());
-    if (!isValid) {
+    const {valid} = partitionEmails([email]);
+    if (email !== valid[0]) {
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_EMAIL);
         return;
     }
@@ -92,5 +124,19 @@ export const filterAuthCookies = (req: Request, res: Response, next: NextFunctio
 
     next();
 }
+
+
+// Internal helpers
+
+const getIllegalArguments = (requestBodyKeys: string[], ...legalArgs: string[]) => {
+    let illegalArgs = [];
+    for (const key of requestBodyKeys) {
+        if (!legalArgs.includes(key)) {
+            illegalArgs.push(key);
+        }
+    }
+    return illegalArgs;
+}
+
 
 
