@@ -4,7 +4,6 @@ import {respondError} from "../util/helpers.js";
 import {HttpErrMsg, StatusCode} from "../util/enums.js";
 import db from '../database/DatabaseGateway.js';
 import {AssignRolesRequestBody} from "../util/interfaces";
-import {UserRole} from "@prisma/client";
 
 const router = Router();
 
