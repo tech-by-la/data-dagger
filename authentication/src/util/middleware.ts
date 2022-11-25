@@ -5,6 +5,13 @@ import {OrgRequestBody, UserRequestBody} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
 import {JwtPayload} from "jsonwebtoken";
 
+/**
+ * Authenticates a user by verifying a JWT token. Attaches the user object to the request object.
+ * Access by calling req.user
+ * @param req
+ * @param res
+ * @param next
+ */
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
 
     const cookie = req.header('cookie') || "";
@@ -33,11 +40,14 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     next();
 }
 
+
+// ===== Request body validation ===== //
+
 export const verifyUserRequestBody = (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body as UserRequestBody;
 
     if (!email || !password) {
-        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_CREDENTIALS);
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_REQUIRED_FIELDS + `: ${RequestKeys.email} or ${RequestKeys.password}`);
         return;
     }
     next();
@@ -48,7 +58,7 @@ export const verifyOrgRequestBody = (req: Request, res: Response, next: NextFunc
     let { name } = req.body as OrgRequestBody;
 
     if (!name) {
-        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_ORG_INFO);
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_REQUIRED_FIELDS + `: ${RequestKeys.name}`);
         return;
     }
 
@@ -57,19 +67,16 @@ export const verifyOrgRequestBody = (req: Request, res: Response, next: NextFunc
 
 export const verifyInviteRequestBody = (req: Request, res: Response, next: NextFunction) => {
 
-    const illegalArguments = getIllegalArguments(
-        Object.keys(req.body), RequestKeys.org_id, RequestKeys.emails
-    );
-
-    if (illegalArguments.length > 0) {
-        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.ILLEGAL_ARGUMENT + illegalArguments);
+    if (respondErrorIfIllegalArguments(res, Object.keys(req.body),
+        RequestKeys.org_id, RequestKeys.emails
+    )) {
         return;
     }
 
     let { org_id, emails } = req.body;
 
     if (!org_id || !emails) {
-        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_INV_INFO);
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_REQUIRED_FIELDS + `: ${RequestKeys.org_id} or ${RequestKeys.emails}`);
         return;
     }
 
@@ -85,6 +92,31 @@ export const verifyInviteRequestBody = (req: Request, res: Response, next: NextF
 
     next();
 }
+
+export const verifyInviteAnswerBody = (req: Request, res: Response, next: NextFunction) => {
+
+    if (respondErrorIfIllegalArguments(res, Object.keys(req.body),
+        RequestKeys.org_id, RequestKeys.answer
+    )) {
+        return;
+    }
+
+    const { org_id, answer } = req.body;
+
+    if (!org_id || !answer) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_REQUIRED_FIELDS + `: ${RequestKeys.org_id} or ${RequestKeys.answer}`);
+        return;
+    }
+
+    if (typeof org_id !== "string" || typeof answer !== "boolean") {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_TYPE);
+        return;
+    }
+
+    next();
+}
+
+// ===== Other ===== //
 
 export const validateEmail = (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body as UserRequestBody;
@@ -128,14 +160,20 @@ export const filterAuthCookies = (req: Request, res: Response, next: NextFunctio
 
 // Internal helpers
 
-const getIllegalArguments = (requestBodyKeys: string[], ...legalArgs: string[]) => {
-    let illegalArgs = [];
+const respondErrorIfIllegalArguments = (res: Response, requestBodyKeys: string[], ...legalArgs: string[]) => {
+    const illegalArguments = [];
     for (const key of requestBodyKeys) {
         if (!legalArgs.includes(key)) {
-            illegalArgs.push(key);
+            illegalArguments.push(key);
         }
     }
-    return illegalArgs;
+
+    if (illegalArguments.length > 0) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.ILLEGAL_ARGUMENT + illegalArguments);
+        return false;
+    }
+
+    return true;
 }
 
 

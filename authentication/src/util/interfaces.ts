@@ -54,6 +54,10 @@ export interface InviteResponseBody {
     tooEarly?: string[];
 }
 
+export interface InviteAnswerRequestBody {
+    org_id: string;
+    answer: boolean;
+}
 
 // ===== JWT Payloads ===== //
 

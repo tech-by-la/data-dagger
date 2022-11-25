@@ -1,4 +1,4 @@
-import {Organization, PrismaClient} from "@prisma/client";
+import {Organization, OrgUser, PrismaClient} from "@prisma/client";
 import Snowflakes from "../../util/snowflakes.js";
 import {OrgRoles} from "../../util/enums.js";
 
@@ -6,6 +6,7 @@ export interface IOrgRepo {
     findOrgById(id: string): Promise<Organization | null>;
     findOrgByName(name: string): Promise<Organization | null>;
     createOrg(creator_id: string, name: string, contact_email: string, contact_phone?: string): Promise<Organization | null>;
+    upsertOrgUser(organization_id: string, user_id: string): Promise<OrgUser | null>;
 }
 
 export default class OrgRepo implements IOrgRepo {
@@ -37,13 +38,23 @@ export default class OrgRepo implements IOrgRepo {
                 contact_email,
                 contact_phone: contact_phone ? contact_phone : null,
                 members: { create: {
-                    user: { connect: { id: creator_id } },
-                    org_role: { connect: { name: OrgRoles.OWNER } }
+                    user: { connect: { id: creator_id }},
+                    org_role: { connect: { name: OrgRoles.OWNER }}
                 } },
             },
-        }).catch((err: any) => {
-            console.error(err);
-            return null;
-        });
+        }).catch(() => null);
     }
+
+    public async upsertOrgUser(organization_id: string, user_id: string): Promise<OrgUser | null> {
+        return await this.db.orgUser.upsert({
+            where: { user_id_organization_id: { organization_id, user_id }},
+            update: {},
+            create: {
+                user: { connect: { id: user_id }},
+                organization: { connect: { id: organization_id }},
+                org_role: { connect: { name: OrgRoles.MEMBER }}
+            }
+        }).catch(() => null);
+    }
+
 }

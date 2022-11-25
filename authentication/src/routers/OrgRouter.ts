@@ -1,6 +1,10 @@
 import {Router} from 'express';
-import {authenticate, verifyInviteRequestBody, verifyOrgRequestBody} from "../util/middleware.js";
-import {InviteRequestBody, InviteResponseBody, OrgRequestBody} from "../util/interfaces.js";
+import {
+    authenticate, verifyInviteAnswerBody,
+    verifyInviteRequestBody,
+    verifyOrgRequestBody
+} from "../util/middleware.js";
+import {InviteAnswerRequestBody, InviteRequestBody, InviteResponseBody, OrgRequestBody} from "../util/interfaces.js";
 import db from '../database/DatabaseGateway.js'
 import {partitionEmails, respondError} from "../util/helpers.js";
 import {HttpErrMsg, StatusCode} from "../util/enums.js";
@@ -58,7 +62,7 @@ router.post('/invite', authenticate, verifyInviteRequestBody, async (req, res) =
     const emailsNotInOrg = validEmails.filter(email => !usersInOrg.find(e => e === email))
 
     // find active invitations among provided emails
-    const previousInvites = await db.inviteRepo.findInvitesByOrg_idAndEmails(org.id, emailsNotInOrg);
+    const previousInvites = await db.inviteRepo.findManyInvitesByOrg_idAndEmails(org.id, emailsNotInOrg);
 
     // filter emails based on existing invitations in the last 24 hours
     const tooEarly = previousInvites
@@ -78,6 +82,26 @@ router.post('/invite', authenticate, verifyInviteRequestBody, async (req, res) =
     if (tooEarly.length > 0)      responseBody.tooEarly      = tooEarly;
 
     res.status(StatusCode.OK).send({ data: responseBody });
+});
+
+router.post('/answer-invite', authenticate, verifyInviteAnswerBody, async (req, res) => {
+
+    const user = req.user;
+    const { org_id, answer } = req.body as InviteAnswerRequestBody;
+
+    const invite = await db.inviteRepo.findInviteByOrg_idAndEmail(org_id, user.email);
+
+    if (!invite) {
+        respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
+        return;
+    }
+
+    if (answer) {
+        db.orgRepo.upsertOrgUser(org_id, user.id).catch();
+    }
+    db.inviteRepo.deleteInviteByOrg_idAndEmail(org_id, user.email).catch();
+
+    res.status(StatusCode.NO_CONTENT).send();
 });
 
 export default router;
