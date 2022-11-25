@@ -24,6 +24,9 @@ export enum RequestKeys {
     name = "name",
     org_id = "org_id",
     password = "password",
+    remove = "remove",
+    role = "role",
+    user_id = "user_id",
 }
 
 export enum StatusCode {

@@ -1,4 +1,4 @@
-import {PrismaClient} from "@prisma/client";
+import {PrismaClient, UserRole} from "@prisma/client";
 import bcrypt from "bcrypt";
 
 import {UserInfo} from "../../util/interfaces.js";
@@ -11,6 +11,8 @@ export interface IUserRepo {
     findManyUsersByEmail(emails: string[]): Promise<UserInfo[] | null>;
     createUser(email: string, password: string): Promise<UserInfo | null>;
     updateUser(user: UserInfo): Promise<UserInfo | null>;
+    assignUserRole(user_id: string, role: UserRole["name"]): Promise<UserInfo | null>;
+    removeUserRole(user_id: string, role: UserRole["name"]): Promise<UserInfo | null>;
 }
 
 export default class UserRepo implements IUserRepo {
@@ -70,5 +72,23 @@ export default class UserRepo implements IUserRepo {
                 enabled: user.enabled,
             },
         });
+    }
+
+    public async assignUserRole(user_id: string, role: UserRole["name"]) {
+        return this.db.user.update({
+            where: { id: user_id },
+            data: {
+                roles: { connect: { name: role }}
+            }
+        }).catch(() => null);
+    }
+
+    public async removeUserRole(user_id: string, role: UserRole["name"]) {
+        return this.db.user.update({
+            where: { id: user_id },
+            data: {
+                roles: { disconnect: { name: role }}
+            }
+        }).catch(() => null);
     }
 }

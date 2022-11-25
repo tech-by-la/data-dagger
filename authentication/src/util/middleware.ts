@@ -108,7 +108,7 @@ export const verifyInviteRequestBody = (req: Request, res: Response, next: NextF
     next();
 }
 
-export const verifyInviteAnswerBody = (req: Request, res: Response, next: NextFunction) => {
+export const verifyInviteAnswerRequestBody = (req: Request, res: Response, next: NextFunction) => {
 
     if (respondErrorIfIllegalArguments(res, Object.keys(req.body),
         RequestKeys.org_id, RequestKeys.answer
@@ -125,6 +125,39 @@ export const verifyInviteAnswerBody = (req: Request, res: Response, next: NextFu
 
     if (typeof org_id !== "string" || typeof answer !== "boolean") {
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_TYPE);
+        return;
+    }
+
+    next();
+}
+
+export const verifyAssignRolesRequestBody = (req: Request, res: Response, next: NextFunction) => {
+
+    if (respondErrorIfIllegalArguments(res, Object.keys(req.body),
+        RequestKeys.user_id, RequestKeys.role, RequestKeys.remove
+    )) {
+        return;
+    }
+
+    const { user_id, role, remove } = req.body;
+
+    if (!user_id || !role || !remove) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_REQUIRED_FIELDS);
+        return;
+    }
+
+    if (
+        typeof user_id !== "string" ||
+        typeof role !== "string" ||
+        typeof remove !== "string"
+    ) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_TYPE);
+        return;
+    }
+
+    // cannot remove USER role. set enabled to false instead
+    if (remove && role === UserRoles.USER) {
+        respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
         return;
     }
 
@@ -173,8 +206,9 @@ export const filterAuthCookies = (req: Request, res: Response, next: NextFunctio
 }
 
 
-// Internal helpers
+// === Internal helpers === //
 
+// takes a request body and a list of legal keys and sends an error response if any illegal keys are found
 const respondErrorIfIllegalArguments = (res: Response, requestBodyKeys: string[], ...legalArgs: string[]) => {
     const illegalArguments = [];
     for (const key of requestBodyKeys) {

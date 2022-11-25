@@ -59,6 +59,12 @@ export interface InviteAnswerRequestBody {
     answer: boolean;
 }
 
+export interface AssignRolesRequestBody {
+    user_id: string;
+    role: UserRole["name"];
+    remove: boolean;
+}
+
 // ===== JWT Payloads ===== //
 
 export interface JwtUserPayload {

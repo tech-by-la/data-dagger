@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import {
-    authenticate, verifyInviteAnswerBody,
+    authenticate, verifyInviteAnswerRequestBody,
     verifyInviteRequestBody,
     verifyOrgRequestBody
 } from "../util/middleware.js";
@@ -84,7 +84,7 @@ router.post('/invite', authenticate, verifyInviteRequestBody, async (req, res) =
     res.status(StatusCode.OK).send({ data: responseBody });
 });
 
-router.post('/answer-invite', authenticate, verifyInviteAnswerBody, async (req, res) => {
+router.post('/answer-invite', authenticate, verifyInviteAnswerRequestBody, async (req, res) => {
 
     const user = req.user;
     const { org_id, answer } = req.body as InviteAnswerRequestBody;
