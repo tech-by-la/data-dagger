@@ -17,6 +17,22 @@ import {HttpErrMsg, StatusCode} from "../util/enums.js";
 
 const router = Router();
 
+router.get('/', authenticate, async (req, res) => {
+    const { org_id } = req.query;
+
+    if (!org_id || typeof org_id !== "string") {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_QUERY);
+        return;
+    }
+
+    if (!await authorizeOrgModerator(res, req.user, org_id)) {
+        return;
+    }
+
+    const invites = await db.inviteRepo.findManyInvitesByOrg_id(org_id);
+    res.send({ data: invites });
+});
+
 router.post('/', authenticate, verifyInviteRequestBody, async (req, res) => {
 
     const orgMod = req.user;

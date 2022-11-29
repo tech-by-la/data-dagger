@@ -2,6 +2,7 @@ import {PrismaClient, Invite} from "@prisma/client";
 
 export interface IInviteRepo {
     findInviteByOrg_idAndEmail(organization_id: string, email: string): Promise<Invite | null>;
+    findManyInvitesByOrg_id(organization_id: string): Promise<Invite[]>;
     findManyInvitesByOrg_idAndEmails(organization_id: string, emails: string[]): Promise<Invite[]>;
     upsertInvite(organization_id: string, email: string): Promise<Invite | null>;
     deleteInviteByOrg_idAndEmail(organization_id: string, email: string): Promise<void>;
@@ -16,8 +17,14 @@ export default class InviteRepo implements IInviteRepo {
 
     public async findInviteByOrg_idAndEmail(organization_id: string, email: string): Promise<Invite | null> {
         return await this.db.invite.findUnique({
-            where: { organization_id_email: { organization_id, email } }
+            where: { organization_id_email: { organization_id, email }},
         }).catch(() => null);
+    }
+
+    public async findManyInvitesByOrg_id(organization_id: string): Promise<Invite[]> {
+        return await this.db.invite.findMany({
+            where: { organization_id },
+        }).catch();
     }
 
     public async findManyInvitesByOrg_idAndEmails(organization_id: string, emails: string[]): Promise<Invite[]> {
