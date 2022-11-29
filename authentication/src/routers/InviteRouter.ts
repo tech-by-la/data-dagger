@@ -17,10 +17,10 @@ import {HttpErrMsg, StatusCode} from "../util/enums.js";
 
 const router = Router();
 
-router.get('/', authenticate, async (req, res) => {
-    const { org_id } = req.query;
+router.get('/:org_id', authenticate, async (req, res) => {
+    const { org_id } = req.params;
 
-    if (!org_id || typeof org_id !== "string") {
+    if (!org_id) {
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_QUERY);
         return;
     }
@@ -87,7 +87,7 @@ router.post('/answer', authenticate, verifyInviteAnswerRequestBody, async (req, 
     const invite = await db.inviteRepo.findInviteByOrg_idAndEmail(org_id, user.email);
 
     if (!invite) {
-        respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
+        respondError(res, StatusCode.NOT_FOUND, HttpErrMsg.RESOURCE_NOT_FOUND);
         return;
     }
 
