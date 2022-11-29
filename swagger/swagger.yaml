@@ -5,31 +5,21 @@ info:
   description: ""
   version: 0.1.9
 
+tags:
+  - "Authentication"
+  - "Authentication | Keys"
+  - "Authentication | Organizations"
+  - "Authentication | Invites"
+  - "Authentication | Admin"
+
 paths:
+# /api/auth
 
-  /api/auth/keys/publickey:
-    get:
-      tags:
-        - "Authentication Service"
-      summary: "Get public RSA key"
-      description: "The key is used to verify the JWT token provided with the 'jwt' cookie returned on login"
-      responses:
-        '200':
-          description: "Ok: The public key is return"
-          content:
-            text/plain:
-              schema:
-                example: "-----BEGIN PUBLIC KEY-----
-                          1234567890qwertyuiopasdfgh
-                          jklzxcvbnm1234567890
-                          -----END PUBLIC KEY-----"
-        '404':
-          description: "Not Found: The key was not found on the server."
-
+  # /
   /api/auth/login:
     post:
       tags:
-        - "Authentication Service"
+        - "Authentication"
       summary: "User Login"
       description: "Stateless user login with JWT and refresh token cookies"
       parameters:
@@ -56,7 +46,7 @@ paths:
   /api/auth/register:
     post:
       tags:
-        - "Authentication Service"
+        - "Authentication"
       summary: "User Registration"
       description: "Creates new user and logs in the new user"
       parameters:
@@ -72,6 +62,10 @@ paths:
                 type: string
               password:
                 type: string
+              first_name:
+                type: string
+              last_name:
+                type: string
       responses:
         '201':
           description: "Created: User is created and 'jwt' and 'refresh_token' cookies are attached to response."
@@ -83,7 +77,7 @@ paths:
   /api/auth/logout:
     post:
       tags:
-        - "Authentication Service"
+        - "Authentication"
       summary: "User Logout"
       description: "Expires 'jwt' and 'refresh_token' cookies. If a valid refresh token was provided it will be deleted from the database."
       parameters:
@@ -97,7 +91,7 @@ paths:
   /api/auth/renew:
     post:
       tags:
-        - "Authentication Service"
+        - "Authentication"
       summary: "Renew JWT token"
       description: "Returns a new JWT cookie if a valid refresh token is provided"
       parameters:
@@ -110,10 +104,31 @@ paths:
         '401':
           description: "Unauthorized: User could not be authenticated."
 
+  # /keys
+  /api/auth/keys/publickey:
+    get:
+      tags:
+        - "Authentication | Keys"
+      summary: "Get public RSA key"
+      description: "The key is used to verify the JWT token provided with the 'jwt' cookie returned on login"
+      responses:
+        '200':
+          description: "Ok: The public key is return"
+          content:
+            text/plain:
+              schema:
+                example: "-----BEGIN PUBLIC KEY-----
+                          1234567890qwertyuiopasdfgh
+                          jklzxcvbnm1234567890
+                          -----END PUBLIC KEY-----"
+        '404':
+          description: "Not Found: The key was not found on the server."
+
+  # /orgs
   /api/auth/orgs:
     post:
       tags:
-        - "Authentication Service"
+        - "Authentication | Organizations"
       summary: "Creates a new organization"
       description: "A new organization is created. Requires a valid JWT cookie on request. The user that makes the request will automatically get owner role of the organization"
       parameters:
@@ -140,10 +155,44 @@ paths:
         '409':
           description: "Conflict: The organization name is unavailable."
 
-  /api/auth/orgs/invite:
+  # /invite
+  /api/auth/invite/{org_id}:
+    get:
+      tags:
+        - "Authentication | Invites"
+      summary: "Get invitations"
+      description: "Returns all pending inviations for a given organization. (NOTE: only an org OWNER or MODERATOR can access this information)"
+      parameters:
+        - in: path
+          name: org_id
+          description: "the id for an organization"
+      responses:
+        '200':
+          description: "A list of invites"
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                  [
+                    {
+                      organization_id: "1234",
+                      email: "bob@johnson.com"
+                    },
+                    {
+                      organization_id: "1234",
+                      email: "john@bobson.com"
+                    }
+                  ]
+        '401':
+          description: "Unauthorized: User could not be authenticated."
+        '403':
+          description: "Forbidden: The user that made the request is not OWNER or MODERATOR in the organization."
+
+  /api/auth/invite:
     post:
       tags:
-        - "Authentication Service"
+        - "Authentication | Invites"
       summary: "Invite users to an organization"
       description: "Endpoint for organization owners and moderators to invite new members"
       parameters:
@@ -178,3 +227,157 @@ paths:
           description: "Unauthorized: User could not be authenticated."
         '403':
           description: "Forbidden: The user that made the request is not OWNER or MODERATOR in the organization."
+    delete:
+      tags:
+        - "Authentication | Invites"
+      summary: "Delete an invitation"
+      description: "Endpoint for organization owners and moderators to delete pending invitations"
+      parameters:
+        - in: body
+          name: "request body"
+          schema:
+            type: object
+            required:
+              - org_id
+              - email
+            properties:
+              org_id:
+                type: string
+              email:
+                type: string
+      responses:
+        '204':
+          description: "No Content: The request was processed successfully"
+        '400':
+          description: "Bad Request: the request body did not include the correct fields or types."
+        '401':
+          description: "Unauthorized: User could not be authenticated."
+        '403':
+          description: "Forbidden: The user that made the request is not OWNER or MODERATOR in the organization."
+
+  /api/auth/invite/answer:
+    post:
+      tags:
+        - "Authentication | Invites"
+      summary: "Answer invitations"
+      description: "Deletes an invitation an adds the user to the organization if it was accepted"
+      parameters:
+        - in: body
+          name: "request body"
+          schema:
+            type: object
+            required:
+              - org_id
+              - answer
+            properties:
+              org_id:
+                type: string
+              answer:
+                type: boolean
+      responses:
+        '204':
+          description: "No Content: The request was processed successfully."
+        '400':
+          description: "Bad Request: the request body did not include the correct fields or types."
+        '401':
+          description: "Unauthorized: User could not be authenticated."
+        '404':
+          description: "Not Found: No user found with that id."
+
+  # /admin
+  /api/auth/admin/user-enabled:
+    post:
+      tags:
+        - "Authentication | Admin"
+      summary: "Enable/disable a user"
+      description: "Enabled or disables a user"
+      parameters:
+        - in: body
+          name: "request body"
+          schema:
+            type: object
+            required:
+              - user_id
+              - enabled
+            properties:
+              user_id:
+                type: string
+              enabled:
+                type: boolean
+      responses:
+        '204':
+          description: "No Content: The request was processed successfully."
+        '400':
+          description: "Bad Request: the request body did not include the correct fields or types."
+        '401':
+          description: "Unauthorized: User could not be authenticated or authorized."
+        '403':
+          description: "Forbidden: An admin cannot enable/disable themselves or other admins."
+        '404':
+          description: "Not Found: No invitation found for the user with that organization."
+
+  /api/auth/admin/org-enabled:
+    post:
+      tags:
+        - "Authentication | Admin"
+      summary: "Enable/disable an organization"
+      description: "Enabled or disables an organization"
+      parameters:
+        - in: body
+          name: "request body"
+          schema:
+            type: object
+            required:
+              - org_id
+              - enabled
+            properties:
+              org_id:
+                type: string
+              enabled:
+                type: boolean
+      responses:
+        '204':
+          description: "No Content: The request was processed successfully."
+        '400':
+          description: "Bad Request: the request body did not include the correct fields or types."
+        '401':
+          description: "Unauthorized: User could not be authenticated or authorized."
+        '403':
+          description: "Forbidden: Attempted to use a role that doesn't exist or to remove the default USER role."
+        '404':
+          description: "Not Found: No organization found with that id."
+
+  /api/auth/admin/user-roles:
+    put:
+      tags:
+        - "Authentication | Admin"
+      summary: "Grant/remove roles"
+      description: "Endpoint for Super Admins to grant or remove role of ADMIN or SUPER ADMIN to a user"
+      parameters:
+        - in: body
+          name: "request body"
+          description: "A user_id and a role to grant. If 'remove' is 'true' the role will be removed from the user, else it will be granted"
+          schema:
+            type: object
+            required:
+              - user_id
+              - role
+              - remove
+            properties:
+              user_id:
+                type: string
+              role:
+                type: string
+              remove:
+                type: boolean
+      responses:
+        '204':
+          description: "No Content: The request was processed successfully."
+        '400':
+          description: "Bad Request: the request body did not include the correct fields or types."
+        '401':
+          description: "Unauthorized: User could not be authenticated or authorized."
+        '403':
+
+        '404':
+          description: "Not Found: No user found with that id."
