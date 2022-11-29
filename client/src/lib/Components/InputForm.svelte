@@ -14,13 +14,13 @@
 <div class="form-div">
     <form class="form-form" method="POST" action="?/{formFunction}" use:enhance> 
         {#if formName == "Register"}
-        <input class="input-name" name="first-name" type="text" placeholder="First Name">   
-        <input class="input-name" name="last-name" type="text" placeholder="Last Name"> 
+        <input class="input-name" name="first_name" type="text" placeholder="First Name">   
+        <input class="input-name" name="last_name" type="text" placeholder="Last Name"> 
         {/if} 
         <input class="input-email" name="email" type="email" placeholder="Email">
         <input class="input-password" name="password" type="password" placeholder="Password">
         {#if formName == "Register"}
-        <input class="input-password" name="confirm-password" type="password" placeholder="Confirm Password">
+        <input class="input-password" name="confirm_password" type="password" placeholder="Confirm Password">
         {/if}  
         
         <div class="inner-btn-div">

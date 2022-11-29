@@ -41,6 +41,7 @@
 		"@svelteuidev/dates": "^0.7.5",
 		"@svelteuidev/motion": "^0.7.5",
 		"dayjs": "^1.11.6",
-		"radix-icons-svelte": "^1.2.1"
+		"radix-icons-svelte": "^1.2.1",
+		"zod": "^3.19.1"
 	}
 }

@@ -26,15 +26,15 @@ function toggleThePrompt() {
 
     <div class="links-container">
         <div class="links">
-            <a href="Dashboard">Dashboard</a>
+            <a href="/dashboard" data-sveltekit-prefetch>Dashboard</a>
             <Space w="sm"/>
             <p> / </p>
             <Space w="sm"/>
-            <a href="QA-workzone">QA-workzone</a>
+            <a href="/qa-workzone" data-sveltekit-prefetch>QA-workzone</a>
             <Space w="sm"/>
             <p> / </p>
             <Space w="sm"/>
-            <a href="Some Other Thing">Some Other Thing</a>
+            <a href="/somewhereelse" data-sveltekit-prefetch>Some Other Thing</a>
         </div>
         <Button btnClick={toggleThePrompt} btnTitle={"Login"}></Button>
     </div>
