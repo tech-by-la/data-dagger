@@ -5,7 +5,8 @@ import JwtUtil from './security/jwt.js';
 import AuthRouter from "./routers/AuthRouter.js";
 import KeyRouter from "./routers/KeyRouter.js";
 import OrgRouter from "./routers/OrgRouter.js";
-import AdminRouter from "./routers/AdminRouter";
+import AdminRouter from "./routers/AdminRouter.js";
+import InviteRouter from "./routers/InviteRouter.js";
 
 db.initDb()
 .catch(err => {
@@ -26,8 +27,9 @@ server.use(express.json());
 
 server.use('/api/auth/keys', KeyRouter);
 server.use('/api/auth/orgs', OrgRouter);
+server.use('/api/auth/invite', InviteRouter);
+server.use('/api/auth/admin', AdminRouter);
 server.use('/api/auth', AuthRouter);
-server.use('/api/admin', AdminRouter);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

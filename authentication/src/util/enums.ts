@@ -72,15 +72,3 @@ export enum Warnings {
     MISSING_PRIVATE_REF_KEY = "Warning: No keyfile found for private-ref.pem",
     MISSING_PUBLIC_REF_KEY = "Warning: No keyfile found for public-ref.pem",
 }
-
-export enum t {
-    string = "string",
-    number = "number",
-    bigint = "bigint",
-    boolean = "boolean",
-    symbol = "symbol",
-    undefined = "undefined",
-    object = "object",
-    function = "function"
-
-}
