@@ -1,6 +1,4 @@
 import {User, UserRole, OrgUser, EOrgRole} from "@prisma/client";
-import {RequestKeys, UserRoles} from "./enums";
-import {Request} from "express";
 
 // ===== Module declarations ===== //
 
@@ -28,6 +26,12 @@ export interface UserInfo extends User {
     orgs?: OrgUser[]
 }
 
+export interface AuthUser {
+    id: string;
+    email: string;
+    roles: string[];
+    orgs: { org_id: string, role: EOrgRole }[]
+}
 
 // ===== Request/Response body definitions ===== //
 
@@ -45,6 +49,11 @@ export interface OrgRequestBody {
 export interface InviteRequestBody {
     org_id: string;
     emails: string[];
+}
+
+export interface InviteDeleteRequestBody {
+    org_id: string;
+    email: string;
 }
 
 export interface InviteResponseBody {

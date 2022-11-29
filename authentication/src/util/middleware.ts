@@ -1,9 +1,10 @@
 import {NextFunction, Request, Response} from "express";
 import {Cookies, HttpErrMsg, RequestKeys, StatusCode, UserRoles} from "./enums.js";
 import {partitionEmails, respondError} from "./helpers.js";
-import {OrgRequestBody, UserRequestBody} from "./interfaces.js";
+import {AuthUser, OrgRequestBody, UserRequestBody} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
 import {JwtPayload} from "jsonwebtoken";
+
 
 /**
  * Authenticates a user by verifying a JWT token. Attaches the user object to the request object.
@@ -36,7 +37,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         return;
     }
 
-    req.user = { id: sub, email, roles, orgs }
+    req.user = { id: sub, email, roles, orgs } as AuthUser;
     next();
 }
 
@@ -124,6 +125,32 @@ export const verifyInviteAnswerRequestBody = (req: Request, res: Response, next:
     }
 
     if (typeof org_id !== "string" || typeof answer !== "boolean") {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_TYPE);
+        return;
+    }
+
+    next();
+}
+
+export const verifyInviteDeleteRequestBody = (req: Request, res: Response, next: NextFunction) => {
+
+    if (respondErrorIfIllegalArguments(res, Object.keys(req.body),
+        RequestKeys.org_id, RequestKeys.email
+    )) {
+        return;
+    }
+
+    const { org_id, email } = req.body;
+
+    if (!org_id || !email) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_REQUIRED_FIELDS);
+        return;
+    }
+
+    if (
+        typeof org_id !== "string" ||
+        typeof email !== "string"
+    ) {
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_TYPE);
         return;
     }

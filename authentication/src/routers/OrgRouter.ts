@@ -1,13 +1,19 @@
 import {Router} from 'express';
 import {
-    authenticate, verifyInviteAnswerRequestBody,
-    verifyInviteRequestBody,
-    verifyOrgRequestBody
+    authenticate,
+    verifyInviteAnswerRequestBody, verifyInviteDeleteRequestBody,
+    verifyInviteRequestBody, verifyOrgRequestBody
 } from "../util/middleware.js";
-import {InviteAnswerRequestBody, InviteRequestBody, InviteResponseBody, OrgRequestBody} from "../util/interfaces.js";
+import {
+    InviteAnswerRequestBody,
+    InviteDeleteRequestBody,
+    InviteRequestBody,
+    InviteResponseBody,
+    OrgRequestBody
+} from "../util/interfaces.js";
 import db from '../database/DatabaseGateway.js'
-import {partitionEmails, respondError} from "../util/helpers.js";
-import {HttpErrMsg, StatusCode} from "../util/enums.js";
+import {authorizeOrgModerator, partitionEmails, respondError} from "../util/helpers.js";
+import {HttpErrMsg, StatusCode, t} from "../util/enums.js";
 
 const router = Router();
 
@@ -38,12 +44,7 @@ router.post('/invite', authenticate, verifyInviteRequestBody, async (req, res) =
     const orgMod = req.user;
     const request = req.body as InviteRequestBody;
 
-    const org = await db.orgRepo.findOrgById(request.org_id);
-    const orgRole = orgMod.orgs.find(o => o.org_id === org?.id)?.role;
-
-    // Must be OWNER or MODERATOR to send invites
-    if ((orgRole !== "OWNER" && orgRole !== "MODERATOR") || !org) {
-        respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
+    if (!await authorizeOrgModerator(res, orgMod, request.org_id)) {
         return;
     }
 
@@ -55,14 +56,14 @@ router.post('/invite', authenticate, verifyInviteRequestBody, async (req, res) =
 
     // filter users that are already in the organization
     const usersInOrg = invitedUsers
-        .filter(user => user.orgs.find(o => o.organization_id === org.id))
+        .filter(user => user.orgs.find(o => o.organization_id === request.org_id))
         .map(user => user.email);
 
     // filter out the remaining users that can be invited
     const emailsNotInOrg = validEmails.filter(email => !usersInOrg.find(e => e === email))
 
     // find active invitations among provided emails
-    const previousInvites = await db.inviteRepo.findManyInvitesByOrg_idAndEmails(org.id, emailsNotInOrg);
+    const previousInvites = await db.inviteRepo.findManyInvitesByOrg_idAndEmails(request.org_id, emailsNotInOrg);
 
     // filter emails based on existing invitations in the last 24 hours
     const tooEarly = previousInvites
@@ -72,7 +73,7 @@ router.post('/invite', authenticate, verifyInviteRequestBody, async (req, res) =
     const canBeInvited = emailsNotInOrg.filter(email => !tooEarly.find(e => e === email));
 
     for (const email of canBeInvited) {
-        db.inviteRepo.upsertInvite(org.id, email).catch();
+        db.inviteRepo.upsertInvite(request.org_id, email).catch();
     }
 
     const responseBody: InviteResponseBody = {}
@@ -82,6 +83,18 @@ router.post('/invite', authenticate, verifyInviteRequestBody, async (req, res) =
     if (tooEarly.length > 0)      responseBody.tooEarly      = tooEarly;
 
     res.status(StatusCode.OK).send({ data: responseBody });
+});
+
+router.delete('/invite', authenticate, verifyInviteDeleteRequestBody, async (req, res) => {
+    const orgMod = req.user;
+    const request = req.body as InviteDeleteRequestBody;
+
+    if (! await authorizeOrgModerator(res, orgMod, request.org_id)) {
+        return;
+    }
+
+    await db.inviteRepo.deleteInviteByOrg_idAndEmail(request.org_id, request.email);
+    res.status(StatusCode.NO_CONTENT).send();
 });
 
 router.post('/answer-invite', authenticate, verifyInviteAnswerRequestBody, async (req, res) => {

@@ -46,11 +46,11 @@ export enum HttpErrMsg {
     DUPLICATE_ENTRIES = "Duplicate entries not allowed",
     BAD_CREDENTIALS = "Email or password is incorrect.",
     EMAIL_IN_USE = "Email address is already in use",
-    ILLEGAL_ARGUMENT = "Illegal property in request body: ",
+    ILLEGAL_ARGUMENT = "One or more illegal properties was found in the request body",
     INTERNAL_ERROR = "An error occurred. Please try again later",
     INVALID_EMAIL = "No valid email address was not provided",
     INVALID_REFRESH_TOKEN = "No valid refresh token was provided",
-    INVALID_TYPE = "A property in the request body was not of the expected type",
+    INVALID_TYPE = "One or more properties in the request body was not of the expected type",
     INVALID_QUERY = "Invalid query parameters",
     MISSING_REQUIRED_FIELDS = "The request body does not contain all required fields",
     ORG_NAME_IN_USE = "Organization name is unavailable",
@@ -71,4 +71,16 @@ export enum Warnings {
     MISSING_PUBLIC_JWT_KEY = "Warning: No keyfile found for public-jwt.pem",
     MISSING_PRIVATE_REF_KEY = "Warning: No keyfile found for private-ref.pem",
     MISSING_PUBLIC_REF_KEY = "Warning: No keyfile found for public-ref.pem",
+}
+
+export enum t {
+    string = "string",
+    number = "number",
+    bigint = "bigint",
+    boolean = "boolean",
+    symbol = "symbol",
+    undefined = "undefined",
+    object = "object",
+    function = "function"
+
 }

@@ -1,9 +1,8 @@
-import {Request, Response} from "express";
-import {Cookies, HttpErrMsg, StatusCode, UserRoles} from "./enums.js";
-import {UserInfo} from "./interfaces.js";
+import {Response} from "express";
+import {Cookies, HttpErrMsg, StatusCode} from "./enums.js";
+import {AuthUser, UserInfo} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
 import db from '../database/DatabaseGateway.js';
-import {RefreshToken} from "@prisma/client";
 
 export const respondError = (res: Response, code: StatusCode, message: string) => {
     const error = StatusCode[code].replaceAll("_", " ");
@@ -87,4 +86,17 @@ export const partitionEmails = (emails: string[]) => {
     });
 
     return {valid, invalid}
+}
+
+export const authorizeOrgModerator = async (res: Response, user: AuthUser, org_id: string) => {
+    const org = await db.orgRepo.findOrgById(org_id);
+    const orgRole = user.orgs.find(o => o.org_id === org?.id)?.role;
+
+    // Must be OWNER or MODERATOR to send invites
+    if ((orgRole !== "OWNER" && orgRole !== "MODERATOR")) {
+        respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
+        return;
+    }
+
+    return true;
 }
