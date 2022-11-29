@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {authenticate, authorizeAdmin, authorizeSuperAdmin, verifyAssignRolesRequestBody} from "../util/middleware.js";
 import {respondError} from "../util/helpers.js";
-import {HttpErrMsg, StatusCode} from "../util/enums.js";
+import {HttpErrMsg, StatusCode, UserRoles} from "../util/enums.js";
 import db from '../database/DatabaseGateway.js';
 import {AssignRolesRequestBody} from "../util/interfaces";
 
@@ -21,8 +21,12 @@ router.put('/user-enabled', authenticate, authorizeAdmin, async (req, res) => {
         return;
     }
 
-    // An admin cannot disable themselves
-    if (req.user.id === user_id) {
+    // An admin cannot enable/disable themselves or other admins
+    if (
+        req.user.id === user_id ||
+        user.roles.includes({ name: UserRoles.ADMIN }) ||
+        user.roles.includes({ name: UserRoles.SUPER_ADMIN })
+    ) {
         respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
         return;
     }
@@ -32,25 +36,6 @@ router.put('/user-enabled', authenticate, authorizeAdmin, async (req, res) => {
     if (!success) {
         respondError(res, StatusCode.INTERNAL_SERVER_ERROR, HttpErrMsg.INTERNAL_ERROR);
         return;
-    }
-
-    res.status(StatusCode.NO_CONTENT).send();
-});
-
-router.put('/user-roles', authenticate, authorizeSuperAdmin, verifyAssignRolesRequestBody, async (req, res) => {
-
-    const { user_id, role, remove } = req.body as AssignRolesRequestBody;
-
-    const user = await db.userRepo.findUserById(user_id);
-    if (!user) {
-        respondError(res, StatusCode.NOT_FOUND, HttpErrMsg.RESOURCE_NOT_FOUND);
-        return;
-    }
-
-    if (remove && user.roles.find(r => r.name === role)) {
-        db.userRepo.removeUserRole(user_id, role).catch();
-    } else if (!user.roles.find(r => r.name === role)) {
-        db.userRepo.assignUserRole(user_id, role).catch();
     }
 
     res.status(StatusCode.NO_CONTENT).send();
@@ -79,5 +64,26 @@ router.put('/org-enabled', authenticate, authorizeAdmin, async (req, res) => {
 
     res.status(StatusCode.NO_CONTENT).send();
 });
+
+router.put('/user-roles', authenticate, authorizeSuperAdmin, verifyAssignRolesRequestBody, async (req, res) => {
+
+    const { user_id, role, remove } = req.body as AssignRolesRequestBody;
+
+    const user = await db.userRepo.findUserById(user_id);
+    if (!user) {
+        respondError(res, StatusCode.NOT_FOUND, HttpErrMsg.RESOURCE_NOT_FOUND);
+        return;
+    }
+
+    if (remove && user.roles.find(r => r.name === role)) {
+        db.userRepo.removeUserRole(user_id, role).catch();
+    } else if (!user.roles.find(r => r.name === role)) {
+        db.userRepo.assignUserRole(user_id, role).catch();
+    }
+
+    res.status(StatusCode.NO_CONTENT).send();
+});
+
+
 
 export default router;
