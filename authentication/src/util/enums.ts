@@ -21,6 +21,8 @@ export enum RequestKeys {
     contact_phone = "contact_phone",
     email = "email",
     emails = "emails",
+    first_name = "first_name",
+    last_name = "last_name",
     name = "name",
     org_id = "org_id",
     password = "password",

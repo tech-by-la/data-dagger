@@ -33,7 +33,7 @@ router.post('/login', verifyUserRequestBody, async (req, res) => {
 });
 
 router.post('/register', verifyUserRequestBody, validateEmail, async (req, res) => {
-    const { email, password } = req.body as UserRequestBody;
+    const { email, password, first_name, last_name } = req.body as UserRequestBody;
 
     // Password too short
     if (password.length < 6) {
@@ -47,7 +47,7 @@ router.post('/register', verifyUserRequestBody, validateEmail, async (req, res) 
         return;
     }
 
-    const user = await db.userRepo.createUser(email, password);
+    const user = await db.userRepo.createUser(email, password, first_name, last_name);
 
     // Error occurred when creating the user in the database
     if (!user) {

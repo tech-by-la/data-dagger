@@ -60,12 +60,27 @@ export const authorizeSuperAdmin = (req: Request, res: Response, next: NextFunct
 // ===== Request body validation ===== //
 
 export const verifyUserRequestBody = (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body as UserRequestBody;
+    const { email, password, first_name, last_name } = req.body;
+
+    if (respondErrorIfIllegalArguments(res, Object.keys(req.body),
+        RequestKeys.email, RequestKeys.password, RequestKeys.first_name, RequestKeys.last_name
+    )) {
+        return;
+    }
 
     if (!email || !password) {
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_REQUIRED_FIELDS + `: ${RequestKeys.email} or ${RequestKeys.password}`);
         return;
     }
+
+    if (typeof email !== "string" || typeof password !== "string" ||
+        (first_name && typeof first_name !== "string") ||
+        (last_name && typeof last_name !== "string")
+    ) {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_TYPE);
+        return;
+    }
+
     next();
 }
 
@@ -246,10 +261,10 @@ const respondErrorIfIllegalArguments = (res: Response, requestBodyKeys: string[]
 
     if (illegalArguments.length > 0) {
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.ILLEGAL_ARGUMENT + illegalArguments);
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 

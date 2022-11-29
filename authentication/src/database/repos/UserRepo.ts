@@ -9,7 +9,7 @@ export interface IUserRepo {
     findUserById(id: string): Promise<UserInfo | null>;
     findUserByEmail(email: string): Promise<UserInfo | null>;
     findManyUsersByEmail(emails: string[]): Promise<UserInfo[] | null>;
-    createUser(email: string, password: string): Promise<UserInfo | null>;
+    createUser(email: string, password: string, first_name?: string, last_name?: string): Promise<UserInfo | null>;
     updateUser(user: UserInfo): Promise<UserInfo | null>;
     assignUserRole(user_id: string, role: UserRole["name"]): Promise<UserInfo | null>;
     removeUserRole(user_id: string, role: UserRole["name"]): Promise<UserInfo | null>;
@@ -47,12 +47,14 @@ export default class UserRepo implements IUserRepo {
         });
     }
 
-    public async createUser(email: string, password: string) {
+    public async createUser(email: string, password: string, first_name?: string, last_name?: string) {
         return await this.db.user
             .create({
                 data: {
                     id: Snowflakes.nextHexId(),
                     email,
+                    first_name: first_name || null,
+                    last_name: last_name || null,
                     password_hash: await bcrypt.hash(password, 10),
                     roles: { connect: { name: UserRoles.USER } },
                 },
