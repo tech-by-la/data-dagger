@@ -6,6 +6,7 @@ export interface IOrgRepo {
     findOrgById(id: string): Promise<Organization | null>;
     findOrgByName(name: string): Promise<Organization | null>;
     createOrg(creator_id: string, name: string, contact_email: string, contact_phone?: string): Promise<Organization | null>;
+    updateOrg(org: Organization): Promise<Organization | null>;
     upsertOrgUser(organization_id: string, user_id: string): Promise<OrgUser | null>;
 }
 
@@ -42,6 +43,18 @@ export default class OrgRepo implements IOrgRepo {
                     org_role: { connect: { name: OrgRoles.OWNER }}
                 } },
             },
+        }).catch(() => null);
+    }
+
+    public async updateOrg(org: Organization): Promise<Organization | null> {
+        return await this.db.organization.update({
+            where: { id: org.id },
+            data: {
+                name: org.name,
+                contact_email: org.contact_email,
+                contact_phone: org.contact_phone,
+                enabled: org.enabled,
+            }
         }).catch(() => null);
     }
 

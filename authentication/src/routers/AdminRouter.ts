@@ -56,4 +56,28 @@ router.put('/user-roles', authenticate, authorizeSuperAdmin, verifyAssignRolesRe
     res.status(StatusCode.NO_CONTENT).send();
 });
 
+router.put('/org-enabled', authenticate, authorizeAdmin, async (req, res) => {
+    const { org_id, enabled } = req.query;
+
+    if ((enabled !== 'true' && enabled !== 'false') || !org_id || typeof org_id !== "string") {
+        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_QUERY);
+        return;
+    }
+
+    const org = await db.orgRepo.findOrgById(org_id);
+    if (!org) {
+        respondError(res, StatusCode.NOT_FOUND, HttpErrMsg.RESOURCE_NOT_FOUND);
+        return;
+    }
+
+    org.enabled = enabled === 'true';
+    const success = await db.orgRepo.updateOrg(org).catch();
+    if (!success) {
+        respondError(res, StatusCode.INTERNAL_SERVER_ERROR, HttpErrMsg.INTERNAL_ERROR);
+        return;
+    }
+
+    res.status(StatusCode.NO_CONTENT).send();
+});
+
 export default router;
