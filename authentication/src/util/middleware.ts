@@ -191,14 +191,19 @@ export const verifyAssignRolesRequestBody = (req: Request, res: Response, next: 
     if (
         typeof user_id !== "string" ||
         typeof role !== "string" ||
-        typeof remove !== "string"
+        typeof remove !== "boolean"
     ) {
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_TYPE);
         return;
     }
 
-    // cannot remove USER role. set enabled to false instead
-    if (remove && role === UserRoles.USER) {
+    // Role must be a valid role ||
+    // Cannot remove USER role. set enabled to false instead
+    const roles: string[] = [UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPER_ADMIN];
+    if (
+        !roles.includes(role) ||
+        (remove && role === UserRoles.USER)
+    ) {
         respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
         return;
     }
