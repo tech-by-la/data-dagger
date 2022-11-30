@@ -59,9 +59,11 @@ export const load: PageServerLoad = async ({ params }) => {
 	return {
 		fillerText: fillText,
 		fillerText2: fillText2,
-		fillerText3: fillText3
+		fillerText3: fillText3,
 		// translations: fetchTranslations()
+		
 	};
+	
 };
 
 export const actions: Actions = {

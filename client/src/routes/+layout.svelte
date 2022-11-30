@@ -1,25 +1,27 @@
 <script>
     import Navbar from "$lib/Components/Navbar.svelte";
-    // import Footer from "$lib/Components/Footer.svelte"
+    import Footer from "$lib/Components/Footer.svelte"
     import "@fontsource/oswald";
-
 </script>
 
 
 
 <main>
-    <Navbar/>
+    <Navbar />
     <slot />
+    <Footer />
 </main>
 
 
-<style>
+<style global>
     main {
-        background: #283871;
         font-family: 'Oswald';
         color: rgb(255, 255, 255);
-        height: 100%;
+        min-height:max-content;
         width: 100%;  
+    }
+    html {
+        background: #283871;
     }
     
         

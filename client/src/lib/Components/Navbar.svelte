@@ -34,7 +34,7 @@ function toggleThePrompt() {
             <Space w="sm"/>
             <p> / </p>
             <Space w="sm"/>
-            <a href="/somewhereelse" data-sveltekit-prefetch>Some Other Thing</a>
+            <a href="/" data-sveltekit-prefetch>Home</a>
         </div>
         <Button btnClick={toggleThePrompt} btnTitle={"Login"}></Button>
     </div>
