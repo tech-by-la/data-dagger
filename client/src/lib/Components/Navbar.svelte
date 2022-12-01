@@ -15,25 +15,19 @@ function toggleThePrompt() {
 
 </script>
 
-<div class="navbar-container">
+<div class="navbar-wrapper">
 
     <div class="logo-name-container">
-        <!-- <PersonPicture src={imgUrl}/> -->
         <img class="logo" src={imgUrl} alt="goose-logo" width="100px">
-        <Space w="sm"/>
         <div class="title-name">Data Dagger</div>
     </div>
 
     <div class="links-container">
         <div class="links">
             <a href="/dashboard" data-sveltekit-prefetch>Dashboard</a>
-            <Space w="sm"/>
             <p> / </p>
-            <Space w="sm"/>
             <a href="/qa-workzone" data-sveltekit-prefetch>QA-workzone</a>
-            <Space w="sm"/>
             <p> / </p>
-            <Space w="sm"/>
             <a href="/" data-sveltekit-prefetch>Home</a>
         </div>
         <Button btnClick={toggleThePrompt} btnTitle={"Login"}></Button>
@@ -49,18 +43,19 @@ function toggleThePrompt() {
 {/if}
 
 <style>
-.navbar-container {
+.navbar-wrapper {
+    height: 120px;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     border: 5px #1e184453 ;
     border-radius: 0px;
-    margin: 0 10px;
+    margin: 0 0;
     top: 10;
     background: #1e184453;
     
 }
-.navbar-container div{ 
+.navbar-wrapper div{ 
     align-items: center;
 }
 
@@ -82,6 +77,7 @@ function toggleThePrompt() {
 
 .title-name {
     font-size: 50px;
+    margin-left: 20px;
 }
 a {
     color: inherit;
@@ -92,6 +88,8 @@ a {
 }
 p {
     font-size: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 

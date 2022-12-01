@@ -5,24 +5,46 @@
 </script>
 
 
+<div class="wrapper">
+    <main>
+        <div class="navbar">
+            <Navbar />
+        </div>
+        
+        <div class="slot">
+            <slot />
+        </div>
+        
+        <div class="footer">
+            <Footer />
+        </div>
+        
+    </main>
+</div>
 
-<main>
-    <Navbar />
-    <slot />
-    <Footer />
-</main>
 
 
 <style global>
-    main {
-        font-family: 'Oswald';
-        color: rgb(255, 255, 255);
-        min-height:max-content;
-        width: 100%;  
-    }
     html {
         background: #283871;
+        font-family: 'Oswald';
+        color: rgb(255, 255, 255);
+        width: 100%
+        }
+    
+    main {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
     }
+
+    .slot {
+        flex: 1;
+        
+    }
+    
+    
     
         
 </style>

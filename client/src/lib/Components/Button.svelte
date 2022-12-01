@@ -19,13 +19,13 @@
     font-size: 20px;
     line-height: 20px;
     padding: 10px; 
-    border-radius: 3px; 
+    border-radius: 10px; 
     font-family: 'Oswald';
     font-weight: normal;  
     font-style: normal; 
     font-variant: normal; 
     text-transform: none;   
-    border: 2px solid #798AC5; 
+    border: 3px solid #798AC5; 
     display: inline-block;
     background: 0;
     margin: 5px;

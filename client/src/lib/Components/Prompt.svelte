@@ -34,10 +34,9 @@ import {fly, fade} from 'svelte/transition'
         height: auto;
         width: 30%;
         color: white;
-        padding: 15px;
+        padding: 20px;
         background-color: #283871;
-        border-radius: 20px;
-        border: solid 5px white;
+        border: solid 5px #798AC5;
         z-index: 3;
     }
 

@@ -1,5 +1,6 @@
 <script>
 	import { enhance } from "$app/forms";
+    import { Checkbox } from '@svelteuidev/core';
 
     /**
 	 * @type {any}
@@ -12,15 +13,22 @@
 </script>
 
 <div class="form-div">
-    <form class="form-form" method="POST" action="?/{formFunction}" use:enhance> 
+    <form class="form-form" method="POST" action="?/{formFunction}"> 
         {#if formName == "Register"}
+        <h1> Register Now</h1>
         <input class="input-name" name="first_name" type="text" placeholder="First Name">   
         <input class="input-name" name="last_name" type="text" placeholder="Last Name"> 
+        {:else}
+        <h1> Login </h1>
         {/if} 
-        <input class="input-email" name="email" type="email" placeholder="Email">
+        <input class="input-email" name="email" type="text" placeholder="Email">
         <input class="input-password" name="password" type="password" placeholder="Password">
         {#if formName == "Register"}
         <input class="input-password" name="confirm_password" type="password" placeholder="Confirm Password">
+        <div class="checkbox-div">
+            <input class="checkbox" type="checkbox" name="terms">
+            <label for="terms"> I sell my Soul</label>
+        </div>
         {/if}  
         
         <div class="inner-btn-div">
@@ -44,17 +52,17 @@
     }
 
 
-    input, .btn, .input-email{
+    input, .btn{
     font-size: 15px;
     line-height: 20px;
     padding: 10px;
-    border-radius: 3px; 
+     
     font-family: 'Oswald';
     font-weight: normal;  
     font-style: normal; 
     font-variant: normal; 
     text-transform: none;   
-    border: 2px solid #798AC5; 
+    
     display: inline-block;
     color: rgb(255, 255, 255); 
     
@@ -64,12 +72,20 @@
     background:#1e184453;
     margin: 5px;
     width: auto;
+    border: 2px solid #798AC5; 
+    }
+    input:focus{
+        background: #798AC5; 
+        outline: 3px solid #252e62;
+        color: #ffffff
     }
 
     .btn {
     background: 0;
     margin: 5px;
     width: 50%;
+    border: 3px solid #798AC5; 
+    border-radius: 10px;
     }
 
     .btn:hover {
@@ -79,5 +95,20 @@
     .btn:active {
         background: #144E75; 
     } 
+    h1 {
+        text-align: center;
+        margin-top: 0;
+        
+    }
+    .checkbox-div {
+        display: flex;
+        justify-content: center;
+        margin: 5px;
+    }
+    .checkbox {
+        display: grid;
+        grid-template-columns: 2em auto;
+        gap: 0.5em;
+    }
 
 </style>

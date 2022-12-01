@@ -1,20 +1,29 @@
-<div class="footer-div">
-    <p>Website Created by "Tech by LA"</p>
+<div class="footer-wrapper">
+    <div class="text-div">
+        Website Created by "Tech by LA"
+    </div>
+    
 </div>
     
 
 
 
 <style>
-    .footer-div {
+    .text-div {
+    font-size: 15px;
+        
+        
+    }
+    .footer-wrapper {
     display: flex;
-    flex-direction: row;
     justify-content: space-evenly;
-    border: 5px #1e184453 ;
-    border-radius: 0px;
-    margin: 0 10px;
-    top: 10;
+    margin-top: 10px;
     background: #1e184453;
+    text-align: center;
+    align-items: center;
+    height: 30px
+    
     
 }
+    
 </style>
