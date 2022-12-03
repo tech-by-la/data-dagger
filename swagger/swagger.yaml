@@ -174,16 +174,7 @@ paths:
               schema:
                 type: array
                 example:
-                  [
-                    {
-                      organization_id: "1234",
-                      email: "bob@johnson.com"
-                    },
-                    {
-                      organization_id: "1234",
-                      email: "john@bobson.com"
-                    }
-                  ]
+                  { data: [{ organization_id: "1234", email: "bob@johnson.com" }, { organization_id: "1234", email: "john@bobson.com" }]}
         '401':
           description: "Unauthorized: User could not be authenticated."
         '403':
