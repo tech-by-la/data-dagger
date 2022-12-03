@@ -1,12 +1,15 @@
-<script> 
+<script lang="ts"> 
 import FillerText from "$lib/Components/FillerText.svelte"
 import Button from "$lib/Components/Button.svelte";
 import Prompt from "$lib/Components/Prompt.svelte";
 import InputForm from "$lib/Components/InputForm.svelte";
-export let data
+import type { PageData, ActionData } from './$types';
+export let data: PageData
 const text = data.fillerText
 const text2 = data.fillerText2
 const text3 = data.fillerText3
+const user = data.user
+
 
 let pagePromptController = false;
 function toggleThePrompt() {
@@ -26,7 +29,8 @@ function toggleThePrompt() {
 
     <div class="main-con">
         <div class="text-con-1">
-            {text}
+            <!-- {text} -->
+            {user}
         </div>
         <div class="text-con-2">
             {text2}

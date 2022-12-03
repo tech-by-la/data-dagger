@@ -2,6 +2,8 @@ import type { PageServerLoad } from './$types';
 import type { Actions } from '@sveltejs/kit';
 import { z } from 'zod';
 
+const authServerURL = 'http://185.163.127.199/api/auth/';
+
 // Define Register User object, The form is checked agaisnt
 const registerSchema = z
 	.object({
@@ -27,7 +29,8 @@ const registerSchema = z
 		confirm_password: z
 			.string({ required_error: 'Confirm password required' })
 			.min(4, { message: 'Password must be atleast 4 character long' })
-			.max(64, { message: 'Password to long' })
+			.max(64, { message: 'Password to long' }),
+		terms: z.enum(['on'])
 	})
 	.superRefine(({ confirm_password, password }, ctx) => {
 		if (confirm_password !== password) {
@@ -50,29 +53,57 @@ const loginSchema = z.object({
 //     const data = await res.json()
 //     return data.results
 // }
-const fillText: String =
+const fillText: string =
 	'This Text was loaded throught the server and will be replaced by api calls to our translation database when needed!';
-const fillText2: String = 'This text was also loaded like that, but is diffrent';
-const fillText3: String = 'Okay i get it now. get on with your work';
+const fillText2: string = 'This text was also loaded like that, but is diffrent';
+const fillText3: string = 'Okay i get it now. get on with your work';
+
 
 export const load: PageServerLoad = async ({ params }) => {
 	return {
 		fillerText: fillText,
 		fillerText2: fillText2,
 		fillerText3: fillText3,
-		// translations: fetchTranslations()
 		
+		// translations: fetchTranslations()
 	};
-	
 };
 
 export const actions: Actions = {
-	login: async ({ request }) => {
-		const data = Object.fromEntries(await request.formData());
+	login: async ({ request, fetch, cookies }) => {
+		const userInfo = await request.formData()
+		const data = Object.fromEntries(userInfo)
 		try {
 			const result = loginSchema.parse(data);
-			console.log('You clicked Login!  ');
 		} catch (err) {
+			console.log('-------------------ERROR--------------------');
+			console.log(err);
+		}
+		try {
+			var loginData = JSON.stringify({
+				email: data.email,
+				password: data.password
+			});
+
+			const fetchOptions = {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					accept: 'application/json'
+				},
+				body: loginData
+			};
+
+			const response = await fetch(authServerURL + 'login', fetchOptions);
+			const res = response.json();
+
+			if(response.status == 200){console.log("Logged In as " + data.email);};
+
+			// const tokenData = {idToken: }
+			// cookies.set('idToken', res, {maxAge: 900})
+
+		} catch (err) {
+			console.log('-------------------ERROR--------------------');
 			console.log(err);
 		}
 	},
@@ -80,11 +111,11 @@ export const actions: Actions = {
 		const data = Object.fromEntries(await request.formData());
 		try {
 			const result = registerSchema.parse(data);
-			console.log('It worked!  ');
-			console.log(result);
+			
 		} catch (err) {
 			console.log('You clicked Register! But it didnt work  ');
 			console.log(err);
+			
 		}
 	}
 };

@@ -1,6 +1,10 @@
+<script>
+    import { page } from '$app/stores';
+</script>
+
 <div class="footer-wrapper">
     <div class="text-div">
-        Website Created by "Tech by LA"
+        Website Created by "Tech by LA" - {$page.data.user}
     </div>
     
 </div>

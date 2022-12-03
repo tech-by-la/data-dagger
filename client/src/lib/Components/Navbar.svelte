@@ -24,11 +24,11 @@ function toggleThePrompt() {
 
     <div class="links-container">
         <div class="links">
-            <a href="/dashboard" data-sveltekit-prefetch>Dashboard</a>
+            <a href="/dashboard" data-sveltekit-preload-data>Dashboard</a>
             <p> / </p>
-            <a href="/qa-workzone" data-sveltekit-prefetch>QA-workzone</a>
+            <a href="/qa-workzone" data-sveltekit-preload-data>QA-workzone</a>
             <p> / </p>
-            <a href="/" data-sveltekit-prefetch>Home</a>
+            <a href="/" data-sveltekit-preload-data>Home</a>
         </div>
         <Button btnClick={toggleThePrompt} btnTitle={"Login"}></Button>
     </div>
