@@ -3,6 +3,7 @@ import {Cookies, HttpErrMsg, StatusCode} from "./enums.js";
 import {AuthUser, UserInfo} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
 import db from '../database/DatabaseGateway.js';
+import {RefreshToken} from "@prisma/client";
 
 export const respondError = (res: Response, code: StatusCode, message: string) => {
     const error = StatusCode[code].replaceAll("_", " ");
@@ -13,10 +14,10 @@ export const respondError = (res: Response, code: StatusCode, message: string) =
     });
 }
 
-export const login = async (res: Response, user: UserInfo | null, refreshToken: string | null) => {
+export const login = async (res: Response, user: UserInfo | null, refreshToken: RefreshToken | null) => {
     const jwt = await Jwt.signLoginJwt(user);
 
-    if (!jwt || !refreshToken) {
+    if (!jwt || !refreshToken || !user) {
         respondError(res, StatusCode.INTERNAL_SERVER_ERROR, HttpErrMsg.INTERNAL_ERROR);
         return false;
     }
@@ -35,7 +36,13 @@ export const login = async (res: Response, user: UserInfo | null, refreshToken: 
         secure: false, // TODO: use secure cookie
     });
 
-    res.send();
+    res.send({
+        id: user.id,
+        email: user.email,
+        idToken: jwt,
+        expiresIn: 900,
+        refreshToken: refreshToken,
+    });
 }
 
 /**

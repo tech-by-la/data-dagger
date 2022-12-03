@@ -10,8 +10,8 @@ import Snowflakes from "../util/snowflakes.js";
 interface IJwtUtil {
     verifyEnv(): Promise<void>;
     signLoginJwt(user: UserInfo): Promise<string | null>;
-    signNewRefreshTokenFamily(user_id: string): Promise<string | null>;
-    renewRefreshToken(user_id: string, token: RefreshToken): Promise<string | null>;
+    signNewRefreshTokenFamily(user_id: string): Promise<RefreshToken | null>;
+    renewRefreshToken(user_id: string, token: RefreshToken): Promise<RefreshToken | null>;
     verifyJwt(token: string): Promise<string | null>;
     verifyRefreshToken(token: string): Promise<JwtPayload | null>;
 }
@@ -124,13 +124,13 @@ class JwtUtil implements IJwtUtil {
     public signNewRefreshTokenFamily(user_id: string) {
         const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
 
-        return new Promise<string | null>((accept) => {
+        return new Promise<RefreshToken | null>((accept) => {
             jwt.sign(payload, this.privateRefKey, { ...this.refreshTokenSignOptions, subject: user_id}, async (error, encoded) => {
                 if (error || !encoded) accept(null);
                 else {
 
                     const token = await db.refreshTokenRepo.startNewRefreshTokenFamily(user_id, payload.token);
-                    accept(token ? encoded : null);
+                    accept(token || null);
                 }
             });
         });
@@ -139,12 +139,12 @@ class JwtUtil implements IJwtUtil {
     public renewRefreshToken(user_id: string, old_token: RefreshToken) {
         const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
 
-        return new Promise<string | null>((accept) => {
+        return new Promise<RefreshToken | null>((accept) => {
             jwt.sign(payload, this.privateRefKey, { ...this.jwtSignOptions, subject: user_id}, async (error, encoded) => {
                 if (error || !encoded) accept(null);
                 else {
                     const new_token = await db.refreshTokenRepo.renewRefreshToken(old_token, payload.token);
-                    accept(new_token ? encoded : null);
+                    accept(new_token || null);
                 }
             });
         });
