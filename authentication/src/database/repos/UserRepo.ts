@@ -58,7 +58,7 @@ export default class UserRepo implements IUserRepo {
                     password_hash: await bcrypt.hash(password, 10),
                     roles: { connect: { name: UserRoles.USER } },
                 },
-                include: { roles: true },
+                include: { roles: true, orgs: true },
             })
             .catch(() => null);
     }
