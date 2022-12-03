@@ -14,7 +14,7 @@ export const respondError = (res: Response, code: StatusCode, message: string) =
     });
 }
 
-export const login = async (res: Response, user: UserInfo | null, refreshToken: RefreshToken | null) => {
+export const login = async (res: Response, user: UserInfo | null, refreshToken: string | null) => {
     const jwt = await Jwt.signLoginJwt(user);
 
     if (!jwt || !refreshToken || !user) {

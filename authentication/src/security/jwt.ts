@@ -10,8 +10,8 @@ import Snowflakes from "../util/snowflakes.js";
 interface IJwtUtil {
     verifyEnv(): Promise<void>;
     signLoginJwt(user: UserInfo): Promise<string | null>;
-    signNewRefreshTokenFamily(user_id: string): Promise<RefreshToken | null>;
-    renewRefreshToken(user_id: string, token: RefreshToken): Promise<RefreshToken | null>;
+    signNewRefreshTokenFamily(user_id: string): Promise<string | null>;
+    renewRefreshToken(user_id: string, token: RefreshToken): Promise<string | null>;
     verifyJwt(token: string): Promise<string | null>;
     verifyRefreshToken(token: string): Promise<JwtPayload | null>;
 }
@@ -124,13 +124,12 @@ class JwtUtil implements IJwtUtil {
     public signNewRefreshTokenFamily(user_id: string) {
         const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
 
-        return new Promise<RefreshToken | null>((accept) => {
+        return new Promise<string | null>((accept) => {
             jwt.sign(payload, this.privateRefKey, { ...this.refreshTokenSignOptions, subject: user_id}, async (error, encoded) => {
                 if (error || !encoded) accept(null);
                 else {
-
-                    const token = await db.refreshTokenRepo.startNewRefreshTokenFamily(user_id, payload.token);
-                    accept(token || null);
+                    await db.refreshTokenRepo.startNewRefreshTokenFamily(user_id, payload.token);
+                    accept(encoded || null);
                 }
             });
         });
@@ -139,12 +138,12 @@ class JwtUtil implements IJwtUtil {
     public renewRefreshToken(user_id: string, old_token: RefreshToken) {
         const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
 
-        return new Promise<RefreshToken | null>((accept) => {
+        return new Promise<string | null>((accept) => {
             jwt.sign(payload, this.privateRefKey, { ...this.jwtSignOptions, subject: user_id}, async (error, encoded) => {
                 if (error || !encoded) accept(null);
                 else {
-                    const new_token = await db.refreshTokenRepo.renewRefreshToken(old_token, payload.token);
-                    accept(new_token || null);
+                    await db.refreshTokenRepo.renewRefreshToken(old_token, payload.token);
+                    accept(encoded);
                 }
             });
         });
@@ -166,17 +165,24 @@ class JwtUtil implements IJwtUtil {
         });
     }
 
-    public verifyRefreshToken(token: string) {
+    public verifyRefreshToken(refreshToken: string) {
         return new Promise<JwtPayload | null>((accept) => {
-            jwt.verify(token, this.publicRefKey, this.refreshTokenVerifyOptions, async (error, decoded) => {
+            jwt.verify(refreshToken, this.publicRefKey, this.refreshTokenVerifyOptions, async (error, decoded) => {
                 if (error) accept(null);
                 else {
-                    const { sub } = decoded as JwtPayload;
-                    if (!sub) return;
+                    const { sub, token } = decoded as JwtPayload;
+                    if (!sub || !token) return;
 
                     const user = await db.userRepo.findUserById(sub);
-                    if (user && user.enabled) accept(decoded as JwtPayload);
-                    else accept(null);
+                    const tokenObj = await db.refreshTokenRepo.findRefreshTokenByToken(token);
+                    if (
+                        !user || !user.enabled ||
+                        !tokenObj || !tokenObj.valid || tokenObj.expires < Date.now()
+                    ) {
+                        accept(null);
+                    } else {
+                        accept(decoded as JwtPayload);
+                    }
                 }
             });
         });

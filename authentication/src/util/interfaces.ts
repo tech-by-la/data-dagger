@@ -1,4 +1,5 @@
 import {User, UserRole, OrgUser, EOrgRole} from "@prisma/client";
+import {JwtPayload} from "jsonwebtoken";
 
 // ===== Module declarations ===== //
 
@@ -78,12 +79,12 @@ export interface AssignRolesRequestBody {
 
 // ===== JWT Payloads ===== //
 
-export interface JwtUserPayload {
+export interface JwtUserPayload extends JwtPayload{
     email: string;
     roles: UserRole["name"][];
     orgs: UserOrgs
 }
 
-export interface RefreshTokenPayload {
+export interface RefreshTokenPayload extends JwtPayload {
     token: string; // should be unique
 }
