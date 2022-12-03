@@ -40,7 +40,7 @@ export const login = async (res: Response, user: UserInfo | null, refreshToken: 
         id: user.id,
         email: user.email,
         idToken: jwt,
-        expiresIn: 900,
+        expiresIn: 900, // seconds
         refreshToken: refreshToken,
     });
 }
