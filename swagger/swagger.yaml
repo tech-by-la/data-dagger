@@ -13,7 +13,7 @@ tags:
   - "Authentication | Admin"
 
 paths:
-# /api/auth
+  # /api/auth
 
   # /
   /api/auth/login:
@@ -286,7 +286,7 @@ paths:
 
   # /admin
   /api/auth/admin/user-enabled:
-    post:
+    put:
       tags:
         - "Authentication | Admin"
       summary: "Enable/disable a user"
@@ -317,7 +317,7 @@ paths:
           description: "Not Found: No invitation found for the user with that organization."
 
   /api/auth/admin/org-enabled:
-    post:
+    put:
       tags:
         - "Authentication | Admin"
       summary: "Enable/disable an organization"
