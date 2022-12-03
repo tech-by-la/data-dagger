@@ -76,14 +76,14 @@ class DatabaseGateway implements IDatabaseGateway {
 
         // Upsert default admin account
         await this.db.user.upsert({
-            where: { email: "admin" },
+            where: { email: "admin@datadagger.com" },
             update: {},
             create: {
                 id: Snowflakes.nextHexId(),
-                email: "admin",
+                email: "admin@datadagger.com",
                 password_hash: await bcrypt.hash(process.env.DEFAULT_ADMIN_PASS, 12),
                 roles: {
-                    connect: [{ name: UserRoles.ADMIN }],
+                    connect: [{ name: UserRoles.SUPER_ADMIN }],
                 },
             },
         });
