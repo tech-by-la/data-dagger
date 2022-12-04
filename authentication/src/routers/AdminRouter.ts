@@ -69,6 +69,12 @@ router.put('/user-roles', authorizeSuperAdmin, verifyAssignRolesRequestBody, asy
 
     const { user_id, role, remove } = req.body as AssignRolesRequestBody;
 
+    // A Super Admin cannot demote themselves from Super Admin to prevent a scenario where there are zero super admins
+    if (req.user.id === user_id && role === UserRoles.SUPER_ADMIN) {
+        respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
+        return;
+    }
+
     const user = await db.userRepo.findUserById(user_id);
     if (!user) {
         respondError(res, StatusCode.NOT_FOUND, HttpErrMsg.RESOURCE_NOT_FOUND);
