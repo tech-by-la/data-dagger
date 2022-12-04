@@ -175,9 +175,12 @@ class JwtUtil implements IJwtUtil {
 
                     const user = await db.userRepo.findUserById(sub);
                     const tokenObj = await db.refreshTokenRepo.findRefreshTokenByToken(token);
+
+                    if (!tokenObj || !tokenObj.expires) return;
+                    const expired = new Date(Number.parseInt(tokenObj.expires.toString())).getTime() < Date.now();
                     if (
                         !user || !user.enabled ||
-                        !tokenObj || !tokenObj.valid || tokenObj.expires < Date.now()
+                        !tokenObj || !tokenObj.valid || expired
                     ) {
                         accept(null);
                     } else {
