@@ -29,7 +29,13 @@ JwtUtil.verifyEnv()
 const server = express();
 
 if (process.env.ENVIRONMENT === 'development') {
-    server.use(cors());
+    server.options('/api/auth', cors())
+    server.use(cors({
+        credentials: true,
+        origin: (origin, callback) => {
+            callback(null, true);
+        }
+    }));
 }
 
 server.use(helmet());
