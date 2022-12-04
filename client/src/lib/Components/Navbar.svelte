@@ -18,13 +18,13 @@ function toggleThePrompt() {
 <div class="navbar-wrapper">
 
     <div class="logo-name-container">
-        <img class="logo" src={imgUrl} alt="goose-logo" width="100px">
+        <img class="logo" src={imgUrl} alt="goose-logo" width="60px">
         <div class="title-name">Data Dagger</div>
     </div>
 
     <div class="links-container">
         <div class="links">
-            <a href="/dashboard" data-sveltekit-preload-data>Dashboard</a>
+            <a href="/project/1" data-sveltekit-preload-data>Project Dashboard</a>
             <p> / </p>
             <a href="/qa-workzone" data-sveltekit-preload-data>QA-workzone</a>
             <p> / </p>
@@ -44,14 +44,14 @@ function toggleThePrompt() {
 
 <style>
 .navbar-wrapper {
-    height: 120px;
+    height: 80px;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     border: 5px #1e184453 ;
     border-radius: 0px;
     margin: 0 0;
-    top: 10;
+    /* top: 10; */
     background: #1e184453;
     
 }
@@ -76,7 +76,7 @@ function toggleThePrompt() {
 }
 
 .title-name {
-    font-size: 50px;
+    font-size: xx-large;
     margin-left: 20px;
 }
 a {
