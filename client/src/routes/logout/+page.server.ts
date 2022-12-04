@@ -19,6 +19,7 @@ export const actions: Actions = {
 			const response = await fetch(PUBLIC_API_URL + '/auth/logout', fetchOptions);
 			console.log(response.status)
 			cookies.delete('idToken')
+			cookies.delete('refreshToken')
 			console.log("You were logged out")
 			return invalid(400, { invalid: true });
 		} catch (err) {
@@ -26,7 +27,8 @@ export const actions: Actions = {
 			console.log(err);
 		}
 		cookies.delete('idToken')
+		cookies.delete('refreshToken')
 		console.log("You were logged out")
-		
+
 	}
 };
