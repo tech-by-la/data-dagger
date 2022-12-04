@@ -104,7 +104,24 @@ paths:
         '401':
           description: "Unauthorized: User could not be authenticated."
 
-  # /keys
+  # /users
+  /api/auth/users:
+    get:
+      tags:
+        - "Authentication | Users"
+      summary: "Get a list of users"
+      description: "Get all users, or specify which users you want returned with query params"
+      parameters:
+        - in: query
+          name: ids (optional)
+          description: "A list of user ids, comma separated"
+          example: "/api/auth/users?ids=asdf1234,fdsa4321"
+      responses:
+        '200':
+          description: "Ok: one or more users found"
+        '404':
+          description: "Not Found: No users found"
+        # /keys
   /api/auth/keys/publickey:
     get:
       tags:
