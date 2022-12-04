@@ -1,5 +1,7 @@
-import jwt from 'jsonwebtoken';
 import type { Algorithm } from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
+
+import { PUBLIC_API_URL } from "$env/static/public";
 import PublicKey from '$lib/server/security/PublicKey';
 
 const jwtVerifyOptions = {
@@ -19,9 +21,7 @@ export const verifyJwt = async (token: string | undefined) => {
 }
 
 export const renewJwt = async () => {
-    const HOST = "http://localhost:3000";
-    await fetch(HOST + '/api/auth/renew', {
+    await fetch(PUBLIC_API_URL + '/api/auth/renew', {
         method: 'POST',
     });
-
 }
