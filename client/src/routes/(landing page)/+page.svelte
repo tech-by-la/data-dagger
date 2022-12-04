@@ -29,7 +29,7 @@ function toggleThePrompt() {
 
 {#if pagePromptController}
     <Prompt toggle={toggleThePrompt}>
-        <InputForm formFunction="register" formName="Register" />
+        <InputForm formFunction="?/register" formName="Register" />
         <Button btnClick={toggleThePrompt} btnTitle={"Close"}></Button>
     </Prompt>
 {/if}
@@ -60,7 +60,6 @@ function toggleThePrompt() {
         </div> 
         <div class="button-con">
             <Button btnClick ={toggleThePrompt} btnTitle="Get Started"></Button>
-            <!-- <InputForm formFunction="register" formName="Register" /> -->
         </div> 
     </div>  
 

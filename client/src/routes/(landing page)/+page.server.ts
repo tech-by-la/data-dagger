@@ -1,8 +1,7 @@
 import type { PageServerLoad } from './$types';
 import { invalid, redirect, type Actions } from '@sveltejs/kit';
-import { z } from 'zod';
 import { PUBLIC_API_URL } from '$env/static/public';
-
+import { z } from 'zod';
 // Define Register User object, The form is checked agaisnt
 const registerSchema = z
 	.object({
@@ -73,7 +72,7 @@ export const actions: Actions = {
 		try {
 			const result = loginSchema.parse(data);
 		} catch (err) {
-			console.log('-------------------ERROR2--------------------');
+			console.log('-------------------Parse Form Error--------------------');
 			console.log(err);
 			return invalid(400, { invalid: true });
 		}
@@ -97,19 +96,70 @@ export const actions: Actions = {
 			cookies.set('idToken', res.idToken, { maxAge: 900 });
 			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365 });
 		} catch (err) {
-			console.log('-------------------ERROR--------------------');
+			console.log('-------------------SERVER ERROR--------------------');
 			console.log(err);
 			return invalid(400, { invalid: true });
 		}
 		throw redirect(302, '/project/1');
 	},
-	register: async ({ request }) => {
-		const data = Object.fromEntries(await request.formData());
+	register: async ({ request, fetch, cookies }) => {
+		const userInfo = await request.formData();
+		const data = Object.fromEntries(userInfo);
 		try {
 			const result = registerSchema.parse(data);
 		} catch (err) {
-			console.log('You clicked Register! But it didnt work  ');
+			console.log('-------------------Parse Form Error--------------------');
+			console.log(err);
+			return invalid(400, { invalid: true });
+		}
+		try {
+			var loginData = JSON.stringify({
+				first_name: data.first_name,
+				last_name: data.last_name,
+				email: data.email,
+				password: data.password
+			});
+
+			const fetchOptions = {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					accept: 'application/json'
+				},
+				body: loginData
+			};
+
+			const response = await fetch(PUBLIC_API_URL + '/auth/register', fetchOptions);
+			const res = await response.json();
+			cookies.set('idToken', res.idToken, { maxAge: 900 });
+			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365 });
+		} catch (err) {
+			console.log('-------------------SERVER ERROR--------------------');
+			console.log(err);
+			return invalid(400, { invalid: true });
+		}
+		throw redirect(302, '/project/1');
+	},
+	logout: async ({fetch, cookies}) => {
+		try {
+			const fetchOptions = {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					accept: 'application/json'
+				},
+			};
+			const response = await fetch(PUBLIC_API_URL + '/auth/logout', fetchOptions);
+			console.log(response.status)
+			cookies.delete('idToken')
+			console.log("You were logged out")
+			return invalid(400, { invalid: true });
+		} catch (err) {
+			console.log('-------------------SERVER ERROR--------------------');
 			console.log(err);
 		}
+		cookies.delete('idToken')
+		console.log("You were logged out")
+		
 	}
 };

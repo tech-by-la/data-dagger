@@ -1,12 +1,21 @@
-<script>
+<script lang="ts">
     import logo from '$lib/assets/img/data-dagger-logo.png';
     import Prompt from "$lib/Components/Prompt.svelte";
     import InputForm from "$lib/Components/InputForm.svelte";
     import Button from "$lib/Components/Button.svelte";
+    import { page } from '$app/stores';
 
-    let navPromptController = false
-    function toggleThePrompt() {
-        navPromptController ? navPromptController=false : navPromptController=true
+    let registerPromptController = false
+    function toggleTheRegisterPrompt() {
+        registerPromptController ? registerPromptController=false : registerPromptController=true
+    }
+    let logoutPromptController = false
+    function toggleTheLogoutPrompt() {
+        logoutPromptController ? logoutPromptController=false : logoutPromptController=true
+    }
+    let loginPromptController = false
+    function toggleTheLoginPrompt() {
+        loginPromptController ? loginPromptController=false : loginPromptController=true
     }
 
 </script>
@@ -26,15 +35,33 @@
             <p> / </p>
             <a href="/" data-sveltekit-preload-data>Home</a>
         </div>
-        <Button btnClick={toggleThePrompt} btnTitle={"Login"}></Button>
+        {#if $page.data.user}
+        <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Logout"}></Button>
+        {:else}
+        <Button btnClick={toggleTheLoginPrompt} btnTitle={"Login"}></Button>
+        <Button btnClick={toggleTheRegisterPrompt} btnTitle={"Register"}></Button>
+        {/if}
     </div>
 
 </div>
 
-{#if navPromptController}
-    <Prompt toggle={toggleThePrompt} >
-       <InputForm formFunction="login" formName="Login" />
-       <Button btnClick={toggleThePrompt} btnTitle={"Close"}></Button>
+{#if loginPromptController}
+    <Prompt toggle={toggleTheLoginPrompt} >
+       <InputForm formFunction="?/login" formName="Login" />
+       <Button btnClick={toggleTheLoginPrompt} btnTitle={"Close"}></Button>
+    </Prompt>
+
+{/if}
+{#if logoutPromptController}
+    <Prompt toggle={toggleTheLogoutPrompt} >
+       <InputForm formFunction="/logout" formName="Logout" />
+       <!-- <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Close"}></Button> -->
+    </Prompt>
+{/if}
+{#if registerPromptController}
+    <Prompt toggle={toggleTheRegisterPrompt}>
+        <InputForm formFunction="?/register" formName="Register" />
+        <Button btnClick={toggleTheRegisterPrompt} btnTitle={"Close"}></Button>
     </Prompt>
 {/if}
 
@@ -47,7 +74,6 @@
     border: 5px #1e184453 ;
     border-radius: 0px;
     margin: 0 0;
-    /* top: 10; */
     background: #1e184453;
 
 }
@@ -61,9 +87,7 @@
     justify-content: space-between;
     padding: 10px;
 }
-/* .logo {
-    margin-right: 10px;
-} */
+
 
 .links {
     display: flex;
