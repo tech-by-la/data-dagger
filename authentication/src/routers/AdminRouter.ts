@@ -7,7 +7,7 @@ import {AssignRolesRequestBody} from "../util/interfaces";
 
 const router = Router();
 
-router.put('/user-enabled', authenticate, authorizeAdmin, async (req, res) => {
+router.put('/user-enabled', async (req, res) => {
     const { user_id, enabled } = req.query;
 
     if ((enabled !== 'true' && enabled !== 'false') || !user_id || typeof user_id !== "string") {
@@ -41,7 +41,7 @@ router.put('/user-enabled', authenticate, authorizeAdmin, async (req, res) => {
     res.status(StatusCode.NO_CONTENT).send();
 });
 
-router.put('/org-enabled', authenticate, authorizeAdmin, async (req, res) => {
+router.put('/org-enabled', async (req, res) => {
     const { org_id, enabled } = req.query;
 
     if ((enabled !== 'true' && enabled !== 'false') || !org_id || typeof org_id !== "string") {
@@ -65,7 +65,7 @@ router.put('/org-enabled', authenticate, authorizeAdmin, async (req, res) => {
     res.status(StatusCode.NO_CONTENT).send();
 });
 
-router.put('/user-roles', authenticate, authorizeSuperAdmin, verifyAssignRolesRequestBody, async (req, res) => {
+router.put('/user-roles', authorizeSuperAdmin, verifyAssignRolesRequestBody, async (req, res) => {
 
     const { user_id, role, remove } = req.body as AssignRolesRequestBody;
 

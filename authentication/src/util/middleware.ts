@@ -183,7 +183,7 @@ export const verifyAssignRolesRequestBody = (req: Request, res: Response, next: 
 
     const { user_id, role, remove } = req.body;
 
-    if (!user_id || !role || !remove) {
+    if (!user_id || !role || remove === undefined) {
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_REQUIRED_FIELDS);
         return;
     }
