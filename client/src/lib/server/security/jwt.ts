@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken';
 
 import { PUBLIC_API_URL } from "$env/static/public";
 import PublicKey from '$lib/server/security/PublicKey';
+import type {RequestEvent} from "@sveltejs/kit";
+import type {LoginResponse} from "$lib/server/interfaces/interfaces";
 
 const jwtVerifyOptions = {
     issuer: "TechByLA",
@@ -20,8 +22,15 @@ export const verifyJwt = async (token: string | undefined) => {
     });
 }
 
-export const renewJwt = async () => {
-    await fetch(PUBLIC_API_URL + '/api/auth/renew', {
-        method: 'POST',
-    });
+export const renewJwt = async (event: RequestEvent): Promise<LoginResponse | null> => {
+    try {
+        return await event.fetch(PUBLIC_API_URL + '/auth/renew', {
+            method: 'POST',
+        })
+            .then(res => res.json())
+            .then(data => data)
+            .catch();
+    } catch (err) {
+        return null;
+    }
 }

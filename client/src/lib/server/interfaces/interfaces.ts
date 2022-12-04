@@ -8,3 +8,11 @@ export interface OrgPayload {
     org_id: string;
     role: string;
 }
+
+export interface LoginResponse {
+    id: string;
+    email: string;
+    idToken: string;
+    expiresIn: number;
+    refreshToken: string;
+}
