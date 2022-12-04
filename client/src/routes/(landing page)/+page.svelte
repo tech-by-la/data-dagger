@@ -4,11 +4,20 @@ import Button from "$lib/Components/Button.svelte";
 import Prompt from "$lib/Components/Prompt.svelte";
 import InputForm from "$lib/Components/InputForm.svelte";
 import type { PageData, ActionData } from './$types';
+// import { page } from "$app/stores";
+
 export let data: PageData
 const text = data.fillerText
 const text2 = data.fillerText2
 const text3 = data.fillerText3
-const user = data.user
+
+const user = data.user?.email
+
+
+
+
+
+
 
 
 let pagePromptController = false;
@@ -29,7 +38,6 @@ function toggleThePrompt() {
 
     <div class="main-con">
         <div class="text-con-1">
-            <!-- {text} -->
             {user}
         </div>
         <div class="text-con-2">
@@ -52,7 +60,7 @@ function toggleThePrompt() {
         </div> 
         <div class="button-con">
             <Button btnClick ={toggleThePrompt} btnTitle="Get Started"></Button>
-            <InputForm formFunction="register" formName="Register" />
+            <!-- <InputForm formFunction="register" formName="Register" /> -->
         </div> 
     </div>  
 

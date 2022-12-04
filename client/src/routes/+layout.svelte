@@ -4,26 +4,6 @@
     import "@fontsource/oswald";
 </script>
 
-
-<div class="wrapper">
-    <main>
-        <div class="navbar">
-            <Navbar />
-        </div>
-        
-        <div class="slot">
-            <slot />
-        </div>
-        
-        <div class="footer">
-            <Footer />
-        </div>
-        
-    </main>
-</div>
-
-
-
 <style global>
     html {
         background: #283871;
@@ -48,3 +28,22 @@
     
         
 </style>
+
+<div class="wrapper">
+    <main>
+        <div class="navbar">
+            <Navbar />
+        </div>
+        
+        <div class="slot">
+            <slot />
+        </div>
+        
+        <div class="footer">
+            <Footer />
+        </div>
+        
+    </main>
+</div>
+
+

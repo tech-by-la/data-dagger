@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
     export let width = 'fit-content';
     export let bgColor = "grey";
     export let padding = 2;
-    export let border = null;
+    export let border: null = null;
     export let radius = 2;
 </script>
 

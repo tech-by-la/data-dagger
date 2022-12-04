@@ -14,7 +14,7 @@
 <div class="navbar-wrapper">
 
     <div class="logo-name-container">
-        <a href="/"><img class="logo" src={logo} alt="goose-logo" width="100px"></a>
+        <a href="/"><img class="logo" src={logo} alt="goose-logo" width="60px"></a>
         <div class="title-name">Data Dagger</div>
     </div>
 

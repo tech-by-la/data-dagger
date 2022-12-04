@@ -1,8 +1,7 @@
 import type { PageServerLoad } from './$types';
-import type { Actions } from '@sveltejs/kit';
+import { invalid, redirect, type Actions } from '@sveltejs/kit';
 import { z } from 'zod';
-
-const authServerURL = 'http://185.163.127.199/api/auth/';
+import { PUBLIC_API_URL } from '$env/static/public';
 
 // Define Register User object, The form is checked agaisnt
 const registerSchema = z
@@ -58,26 +57,25 @@ const fillText: string =
 const fillText2: string = 'This text was also loaded like that, but is diffrent';
 const fillText3: string = 'Okay i get it now. get on with your work';
 
-
 export const load: PageServerLoad = async ({ params }) => {
 	return {
 		fillerText: fillText,
 		fillerText2: fillText2,
-		fillerText3: fillText3,
-		
+		fillerText3: fillText3
 		// translations: fetchTranslations()
 	};
 };
 
 export const actions: Actions = {
 	login: async ({ request, fetch, cookies }) => {
-		const userInfo = await request.formData()
-		const data = Object.fromEntries(userInfo)
+		const userInfo = await request.formData();
+		const data = Object.fromEntries(userInfo);
 		try {
 			const result = loginSchema.parse(data);
 		} catch (err) {
-			console.log('-------------------ERROR--------------------');
+			console.log('-------------------ERROR2--------------------');
 			console.log(err);
+			return invalid(400, { invalid: true });
 		}
 		try {
 			var loginData = JSON.stringify({
@@ -94,28 +92,24 @@ export const actions: Actions = {
 				body: loginData
 			};
 
-			const response = await fetch(authServerURL + 'login', fetchOptions);
-			const res = response.json();
-
-			if(response.status == 200){console.log("Logged In as " + data.email);};
-
-			// const tokenData = {idToken: }
-			// cookies.set('idToken', res, {maxAge: 900})
-
+			const response = await fetch(PUBLIC_API_URL + '/auth/login', fetchOptions);
+			const res = await response.json();
+			cookies.set('idToken', res.idToken, { maxAge: 900 });
+			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365 });
 		} catch (err) {
 			console.log('-------------------ERROR--------------------');
 			console.log(err);
+			return invalid(400, { invalid: true });
 		}
+		throw redirect(302, '/project/1');
 	},
 	register: async ({ request }) => {
 		const data = Object.fromEntries(await request.formData());
 		try {
 			const result = registerSchema.parse(data);
-			
 		} catch (err) {
 			console.log('You clicked Register! But it didnt work  ');
 			console.log(err);
-			
 		}
 	}
 };

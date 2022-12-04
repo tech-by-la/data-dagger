@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Divider } from "@svelteuidev/core";
-    export let menuItems = [];
+    export let menuItems: any[] = [];
 </script>
 
 <style>

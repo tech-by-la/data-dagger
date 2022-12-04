@@ -1,3 +1,4 @@
+import { PUBLIC_API_URL }	from '$env/static/public'
 class PublicKey {
     private jwtKey: Buffer = Buffer.from([]);
 
@@ -13,8 +14,7 @@ class PublicKey {
     }
 
     private async fetchJwtKey(): Promise<Buffer> {
-        const HOST = 'http://localhost:3000'
-        const response = await fetch( HOST + '/api/auth/keys/publickey');
+        const response = await fetch( PUBLIC_API_URL + '/auth/keys/publickey');
         if (response.ok) this.jwtKey = Buffer.from(await response.text());
         return this.jwtKey;
     }
