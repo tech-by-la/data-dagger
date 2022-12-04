@@ -51,10 +51,10 @@ const loginSchema = z.object({
 //     const data = await res.json()
 //     return data.results
 // }
-const fillText: string =
+const fillText =
 	'This Text was loaded throught the server and will be replaced by api calls to our translation database when needed!';
-const fillText2: string = 'This text was also loaded like that, but is diffrent';
-const fillText3: string = 'Okay i get it now. get on with your work';
+const fillText2 = 'This text was also loaded like that, but is diffrent';
+const fillText3 = 'Okay i get it now. get on with your work';
 
 export const load: PageServerLoad = async ({ params }) => {
 	return {
@@ -77,7 +77,7 @@ export const actions: Actions = {
 			return invalid(400, { invalid: true });
 		}
 		try {
-			var loginData = JSON.stringify({
+			const loginData = JSON.stringify({
 				email: data.email,
 				password: data.password
 			});
@@ -93,8 +93,8 @@ export const actions: Actions = {
 
 			const response = await fetch(PUBLIC_API_URL + '/auth/login', fetchOptions);
 			const res = await response.json();
-			cookies.set('idToken', res.idToken, { maxAge: 900 });
-			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365 });
+			cookies.set('idToken', res.idToken, { maxAge: 900, path: '/', httpOnly: true });
+			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true });
 		} catch (err) {
 			console.log('-------------------SERVER ERROR--------------------');
 			console.log(err);
@@ -113,7 +113,7 @@ export const actions: Actions = {
 			return invalid(400, { invalid: true });
 		}
 		try {
-			var loginData = JSON.stringify({
+			const loginData = JSON.stringify({
 				first_name: data.first_name,
 				last_name: data.last_name,
 				email: data.email,
@@ -131,8 +131,8 @@ export const actions: Actions = {
 
 			const response = await fetch(PUBLIC_API_URL + '/auth/register', fetchOptions);
 			const res = await response.json();
-			cookies.set('idToken', res.idToken, { maxAge: 900 });
-			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365 });
+			cookies.set('idToken', res.idToken, { maxAge: 900, path: '/', httpOnly: true });
+			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true });
 		} catch (err) {
 			console.log('-------------------SERVER ERROR--------------------');
 			console.log(err);
@@ -160,6 +160,6 @@ export const actions: Actions = {
 		}
 		cookies.delete('idToken')
 		console.log("You were logged out")
-		
+
 	}
 };
