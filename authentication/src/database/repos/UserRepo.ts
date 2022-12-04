@@ -6,9 +6,12 @@ import Snowflakes from "../../util/snowflakes.js";
 import {UserRoles} from "../../util/enums.js";
 
 export interface IUserRepo {
+
+    getAll(): Promise<UserInfo[]>;
     findUserById(id: string): Promise<UserInfo | null>;
+    findManyUsersById(ids: string[]): Promise<UserInfo[]>;
     findUserByEmail(email: string): Promise<UserInfo | null>;
-    findManyUsersByEmail(emails: string[]): Promise<UserInfo[] | null>;
+    findManyUsersByEmail(emails: string[]): Promise<UserInfo[]>;
     createUser(email: string, password: string, first_name?: string, last_name?: string): Promise<UserInfo | null>;
     updateUser(user: UserInfo): Promise<UserInfo | null>;
     assignUserRole(user_id: string, role: UserRole["name"]): Promise<UserInfo | null>;
@@ -17,9 +20,14 @@ export interface IUserRepo {
 
 export default class UserRepo implements IUserRepo {
     private readonly db: PrismaClient;
-
     constructor(db: PrismaClient) {
         this.db = db;
+    }
+
+    public async getAll(): Promise<UserInfo[]> {
+        return await this.db.user.findMany({
+            include: {roles: true, orgs: true}
+        }).catch(() => []);
     }
 
     public async findUserById(id: string) {
@@ -29,6 +37,14 @@ export default class UserRepo implements IUserRepo {
                 include: {roles: true, orgs: true},
             })
             .catch(() => null);
+    }
+    public async findManyUsersById(ids: string[]) {
+        return await this.db.user
+            .findMany({
+                where: {id: { in: ids }},
+                include: {roles: true, orgs: true},
+            })
+            .catch(() => []);
     }
 
     public async findUserByEmail(email: string) {
@@ -44,7 +60,7 @@ export default class UserRepo implements IUserRepo {
         return await this.db.user.findMany({
             where: { email: { in: emails } },
             include: {roles: true, orgs: true},
-        });
+        }).catch(() => []);
     }
 
     public async createUser(email: string, password: string, first_name?: string, last_name?: string) {
