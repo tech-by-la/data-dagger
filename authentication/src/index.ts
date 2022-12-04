@@ -1,4 +1,7 @@
 import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
+
 import {ErrMsg} from "./util/enums.js";
 import db from './database/DatabaseGateway.js';
 import JwtUtil from './security/jwt.js';
@@ -7,6 +10,8 @@ import KeyRouter from "./routers/KeyRouter.js";
 import OrgRouter from "./routers/OrgRouter.js";
 import AdminRouter from "./routers/AdminRouter.js";
 import InviteRouter from "./routers/InviteRouter.js";
+import UserRouter from "./routers/UserRouter.js";
+import {authenticate, authorizeAdmin} from "./util/middleware.js";
 
 db.initDb()
 .catch(err => {
@@ -23,12 +28,18 @@ JwtUtil.verifyEnv()
 
 const server = express();
 
+if (process.env.ENVIRONMENT === 'development') {
+    server.use(cors());
+}
+
+server.use(helmet());
 server.use(express.json());
 
 server.use('/api/auth/keys', KeyRouter);
 server.use('/api/auth/orgs', OrgRouter);
 server.use('/api/auth/invite', InviteRouter);
-server.use('/api/auth/admin', AdminRouter);
+server.use('/api/auth/users', UserRouter); // TODO: auth and authorize admins
+server.use('/api/auth/admin', authenticate, authorizeAdmin, AdminRouter);
 server.use('/api/auth', AuthRouter);
 
 const PORT = process.env.PORT || 3000;
