@@ -1,7 +1,6 @@
 import type {PageLoad} from "./$types";
 
 export const load: PageLoad = ({fetch}) => {
-
     const fetchUsers = async () => {
         const HOST = 'http://localhost:3000'
         return await fetch(HOST + '/api/auth/users')
@@ -14,3 +13,5 @@ export const load: PageLoad = ({fetch}) => {
         users: fetchUsers(),
     }
 }
+
+
