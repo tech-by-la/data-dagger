@@ -1,24 +1,20 @@
 <script>
-import Prompt from "$lib/Components/Prompt.svelte";
-import InputForm from "$lib/Components/InputForm.svelte";
-import Button from "$lib/Components/Button.svelte";
-import { Space } from '@svelteuidev/core';
+    import logo from '$lib/assets/img/data-dagger-logo.png';
+    import Prompt from "$lib/Components/Prompt.svelte";
+    import InputForm from "$lib/Components/InputForm.svelte";
+    import Button from "$lib/Components/Button.svelte";
 
-
-
-
-const imgUrl = new URL('/static/images/data-dagger-logo.png', import.meta.url).href
-let navPromptController = false
-function toggleThePrompt() {
-    navPromptController ? navPromptController=false : navPromptController=true
-}
+    let navPromptController = false
+    function toggleThePrompt() {
+        navPromptController ? navPromptController=false : navPromptController=true
+    }
 
 </script>
 
 <div class="navbar-wrapper">
 
     <div class="logo-name-container">
-        <img class="logo" src={imgUrl} alt="goose-logo" width="100px">
+        <a href="/"><img class="logo" src={logo} alt="goose-logo" width="100px"></a>
         <div class="title-name">Data Dagger</div>
     </div>
 
@@ -51,11 +47,11 @@ function toggleThePrompt() {
     border: 5px #1e184453 ;
     border-radius: 0px;
     margin: 0 0;
-    top: 10;
+    top: 10px;
     background: #1e184453;
-    
+
 }
-.navbar-wrapper div{ 
+.navbar-wrapper div{
     align-items: center;
 }
 
