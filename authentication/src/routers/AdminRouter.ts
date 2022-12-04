@@ -21,7 +21,7 @@ router.put('/user-enabled', async (req, res) => {
         return;
     }
 
-    // An admin cannot enable/disable themselves or other admins
+    // An admin cannot enable/disable themselves or other admins (for super admins, demote admins first)
     if (
         req.user.id === user_id ||
         user.roles.includes({ name: UserRoles.ADMIN }) ||
