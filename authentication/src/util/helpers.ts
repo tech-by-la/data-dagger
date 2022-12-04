@@ -22,7 +22,7 @@ export const login = async (res: Response, user: UserInfo | null, refreshToken: 
         return false;
     }
 
-    res.cookie(Cookies.JWT, jwt, {
+    res.cookie(Cookies.ID_TOKEN, jwt, {
         maxAge: 1000 * 60 * 15, // 15 minutes
         httpOnly: true,
         sameSite: 'strict',
