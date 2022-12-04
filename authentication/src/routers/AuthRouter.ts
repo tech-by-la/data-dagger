@@ -63,7 +63,7 @@ router.post('/register', verifyUserRequestBody, validateEmail, async (req, res) 
 router.post('/renew', filterAuthCookies, async (req, res) => {
 
     // If JWT is valid, no need to renew.
-    const jwt = req.cookies[Cookies.JWT];
+    const jwt = req.cookies[Cookies.ID_TOKEN];
     if (await Jwt.verifyJwt(jwt)) {
         res.send();
         return;
@@ -96,7 +96,7 @@ router.post('/logout', filterAuthCookies, async (req, res) => {
             });
     }
 
-    expireCookies(res, Cookies.JWT, Cookies.REFRESH_TOKEN);
+    expireCookies(res, Cookies.ID_TOKEN, Cookies.REFRESH_TOKEN);
     res.status(StatusCode.NO_CONTENT).send();
 });
 

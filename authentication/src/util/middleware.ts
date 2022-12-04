@@ -19,7 +19,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     const cookies = cookie.split(" ");
     let jwt = "";
     for (let cookie of cookies) {
-        if (cookie.startsWith(Cookies.JWT)) {
+        if (cookie.startsWith(Cookies.ID_TOKEN)) {
             const token = cookie.split('=')[1];
             jwt = token.replace(';', '');
         }
@@ -237,10 +237,10 @@ export const filterAuthCookies = (req: Request, res: Response, next: NextFunctio
 
     const cookies = cookie.split(" ");
     for (let cookie of cookies) {
-        if (cookie.startsWith(Cookies.JWT)) {
+        if (cookie.startsWith(Cookies.ID_TOKEN)) {
             const token = cookie.split('=')[1];
             if (!token) continue;
-            req.cookies[Cookies.JWT] = token.replace(';', '');
+            req.cookies[Cookies.ID_TOKEN] = token.replace(';', '');
 
         } else if (cookie.startsWith(Cookies.REFRESH_TOKEN)) {
             const token = cookie.split('=')[1];

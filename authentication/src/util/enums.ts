@@ -11,8 +11,8 @@ export enum OrgRoles {
 }
 
 export enum Cookies {
-    JWT = "jwt",
-    REFRESH_TOKEN = "refresh_token",
+    ID_TOKEN = "idToken",
+    REFRESH_TOKEN = "refreshToken",
 }
 
 export enum RequestKeys {
