@@ -386,6 +386,6 @@ paths:
         '401':
           description: "Unauthorized: User could not be authenticated or authorized."
         '403':
-
+          description: "Forbidden: Invalid role name or it was attempted to remove the USER role"
         '404':
           description: "Not Found: No user found with that id."
