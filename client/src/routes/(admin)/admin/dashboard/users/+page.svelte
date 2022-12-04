@@ -26,7 +26,7 @@
     }
 
     tr {
-        opacity: 0.5;
+        opacity: 1;
         height: 50px;
     }
 
@@ -37,10 +37,6 @@
 
     tr:nth-child(odd) {
         background-color: #144E75;
-    }
-
-    tr:hover {
-        opacity: 1;
     }
 
     .enabled {
@@ -81,7 +77,13 @@
                             <form method="post" action="?/enable">
                                 <input name="user_id" type="hidden" value={user.id}>
                                 <input name="enabled" type="hidden" value={!user.enabled}>
-                                <Checkbox checked={user.enabled} onChange="this.form.submit()">Enabled</Checkbox>
+                                <Checkbox
+                                    onChange="this.form.submit()"
+                                    checked={user.enabled}
+                                    disabled={user.roles.map(role => role.name).includes("ADMIN") || user.roles.map(role => role.name).includes("SUPER_ADMIN")}
+                                >
+                                    Enabled
+                                </Checkbox>
                             </form>
                         </svelte:fragment>
                     </Flyout>
