@@ -9,9 +9,10 @@
 	 * @type {any}
 	 */
      export let btnTitle;
+     export let width = "auto"
 </script>
 
-<button class="btn" on:click={btnClick} >{btnTitle}</button>
+<button class="btn" style="width:{width};" on:click={btnClick} >{btnTitle}</button>
 
 <style>
     .btn {
@@ -29,7 +30,7 @@
     display: inline-block;
     background: 0;
     margin: 5px;
-    width: auto;
+    /* width: {width}; */
 }
 
 .btn:hover {

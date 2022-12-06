@@ -1,10 +1,7 @@
-<script>
-    import { page } from '$app/stores';
-</script>
 
 <div class="footer-wrapper">
     <div class="text-div">
-        Website Created by "Tech by LA" - {$page.data.user}
+        Website created by "Tech by LA" - 2022
     </div>
     
 </div>

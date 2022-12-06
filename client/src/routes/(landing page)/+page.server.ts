@@ -104,7 +104,7 @@ export const actions: Actions = {
 			console.log(err);
 			return invalid(400, { invalid: true });
 		}
-		throw redirect(302, '/user/' +  userID);
+		throw redirect(302, '/user/' +  userID );
 	},
 	register: async ({ request, fetch, cookies }) => {
 		const userInfo = await request.formData();

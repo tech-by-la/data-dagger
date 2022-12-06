@@ -1,45 +1,24 @@
-<script>
-	// import { enhance } from "$app/forms";
-
-    /**
-	 * @type {any}
-	 */
-     export let formName;
-    /**
-	 * @type {any}
-	 */
-     export let formFunction;
+<script lang="ts">
+    import type { PageData } from './$types';
+    
+    
+    export let data: PageData;
 </script>
 
 <div class="form-wrapper">
-    <form class="form-form" method="POST" action="{formFunction}"> 
-        {#if formName != "Logout"}
-            {#if formName == "Register"}
-            <h1> Register Now</h1>
-            <input class="input-name" name="first_name" type="text" placeholder="First Name">   
-            <input class="input-name" name="last_name" type="text" placeholder="Last Name"> 
-            {:else}
-            <h1> Login </h1>
-            {/if} 
-            <input class="input-email" name="email" type="text" placeholder="Email">
-            <input class="input-password" name="password" type="password" placeholder="Password">
-            {#if formName == "Register"}
-            <input class="input-password" name="confirm_password" type="password" placeholder="Confirm Password">
+    <form class="form-form" method="POST" action="?/newOrg"> 
+            <h1> Create New Organization</h1>
+            <input class="input-name" name="name" type="text" placeholder="Organization Name">   
+            <input class="input-name" name="contact_phone" type="text" placeholder="Contact tlf nr."> 
+            <input class="input-email" name="contact_email" type="text" placeholder="Contact Email">
             <div class="checkbox-div">
                 <input class="checkbox" type="checkbox" name="terms">
                 <label for="terms"> I sell my Soul</label>
             </div>
-            {/if} 
-        
-            {:else}
-            <h1>You are about to logout</h1>
-            <h1> are you sure?</h1>
-            {/if} 
+             
             <div class="inner-btn-div">
-            {#if formName != "Logout"}
             <button class="btn" type="reset">Reset</button>
-            {/if}
-            <button class="btn" type="submit">{formName}</button>
+            <button class="btn" type="submit">Create</button>
         </div>
 
     </form>    

@@ -4,7 +4,6 @@
     export let data: PageData;
 
     let userid = data.user
-    console.log(userid);
     
 </script>
 <div class="project-page-wrapper">
