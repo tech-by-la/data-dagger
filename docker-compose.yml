@@ -66,9 +66,24 @@ services:
       MYSQL_DATABASE: auth
       MYSQL_TCP_PORT: ${MYSQL_PORT}
 
+  translation_db:
+    container_name: translation_db
+    image: mongo:latest
+    restart: always
+    networks:
+      - dd-net
+    volumes:
+      - "translations_data:/data/db"
+    expose:
+      - ${MONGO_PORT}
+    environment:
+      MONGO_INITDB_DATABASE: translations
+
+
 volumes:
   authentication_data:
   authentication_config:
+  translations_data:
 
 networks:
   dd-net:
