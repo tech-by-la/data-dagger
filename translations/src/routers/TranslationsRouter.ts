@@ -5,8 +5,7 @@ import {authorizeSuperAdmin} from "../security/middleware.js";
 
 const router = Router();
 
-// TODO: authorize super admin
-router.get('/',  async (req, res) => {
+router.get('/', authorizeSuperAdmin, async (req, res) => {
     const translations = await db.translations.findAll();
     res.send(translations);
 });
@@ -27,8 +26,7 @@ router.get('/:page', async (req, res) => {
     res.send(translations);
 });
 
-// TODO: Authorize Super Admin
-router.post('/',  async (req, res) => {
+router.post('/', authorizeSuperAdmin, async (req, res) => {
     const { _id, page, key, translations } = req.body;
 
     if (

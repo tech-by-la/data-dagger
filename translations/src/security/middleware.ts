@@ -4,6 +4,11 @@ import Jwt from "./jwt.js";
 
 export const authorizeSuperAdmin = async (req: Request, res: Response, next: NextFunction) => {
 
+    if (process.env.ENVIRONMENT === "development") {
+        next();
+        return;
+    }
+
     const cookie = req.header('cookie') || "";
     const cookies = cookie.split(" ");
     let idToken = "";
