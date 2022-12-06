@@ -1,5 +1,5 @@
 import {Translation} from "../../utils/interfaces";
-import {Connection, Schema} from "mongoose";
+import mongoose, {Connection, Schema, Types} from "mongoose";
 import {translationDefinition} from "../../utils/schema-definitions.js";
 
 class TranslationRepo {
@@ -8,7 +8,10 @@ class TranslationRepo {
 
     constructor(db: Connection) {
         this.db = db;
-        this.model = this.db.model('Translation', new Schema(translationDefinition));
+        this.model = this.db.model(
+            'Translation',
+            new Schema(translationDefinition, { versionKey: false })
+        );
     }
 
     public async findAll() {
@@ -24,11 +27,17 @@ class TranslationRepo {
     }
 
     public async upsert(translation: Translation) {
-        return await this.model.updateOne({_id: translation._id},  {
+        const _id = translation._id ?? new mongoose.Types.ObjectId();
+
+        return await this.model.findOneAndUpdate({_id},  {
             page: translation.page,
             key: translation.key,
             translations: translation.translations
-        }, { upsert: true });
+        }, { upsert: true, new: true }).catch(() => null);
+    }
+
+    public async deleteMany(ids: string[]) {
+        await this.model.deleteMany({ _id: { $in: ids } }).catch();
     }
 }
 

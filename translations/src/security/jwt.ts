@@ -34,9 +34,13 @@ class Jwt implements IJwt {
     private async fetchPublicJwtKey() {
         const API = process.env.KEY_API || '';
         this.publicKey = await fetch(API)
-            .then(response => response.json())
-            .then(data => data)
-            .catch(() => this.publicKey);
+            .then(response => response.text())
+            .then(data => Buffer.from(data))
+            .catch((err) => {
+                console.log(err)
+                return this.publicKey
+            });
+
     }
 }
 

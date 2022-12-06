@@ -45,11 +45,28 @@ router.put('/', authorizeSuperAdmin, async (req, res) => {
 
     const translation = await db.translations.findByPageAndKey(page, key);
     if (translation) {
-        req.body._id = translations._id;
+        req.body._id = translation._id;
     }
 
     const result = await db.translations.upsert(req.body);
+
     res.status(StatusCode.CREATED).send(result);
+});
+
+router.delete('/', authorizeSuperAdmin, async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids)) {
+        res.status(StatusCode.BAD_REQUEST).send({
+            status: StatusCode.BAD_REQUEST,
+            error: "Bad Request",
+            message: "IDs are missing or of an invalid type"
+        });
+        return;
+    }
+
+    await db.translations.deleteMany(ids);
+    res.status(StatusCode.NO_CONTENT).send();
 });
 
 export default router;
