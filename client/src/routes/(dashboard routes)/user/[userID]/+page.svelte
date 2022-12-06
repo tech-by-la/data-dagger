@@ -1,30 +1,29 @@
 <script lang="ts">
     import type { PageData } from './$types';
-  
+    
     export let data: PageData;
-  </script>
-  
-  <!-- <h1>{data.post.title}</h1>
-  <div>{@html data.post.content}</div> -->
 
+    let userEmail = data.user.email
+    
+</script>
 
-  <div class="project-page-wrapper">
-    <div class="con-1">Project con-1</div>
+<div class="user-page-wrapper">
+    <div class="con-1">User Dashboard - the main page after login - Logged in as {userEmail}</div>
     <div class="con-2">
-      <div class="con-2-1">Layer controlling con-2-1</div>
-      <div class="con-2-2">The Map will be Here con-2-2</div>
-      <div class="con-2-3">Buttons to manipulate data  con-2-3</div>
+      <div class="con-2-1">options to look at here</div>
+      <div class="con-2-2">information about orgs/projects here. with links</div>
+      <!-- <div class="con-2-3">right side panel</div> -->
     </div>
-    <div class="con-3">Bottom pannel con-3</div>
+    <div class="con-3">Bottom pannel</div>
   </div>
 
   <style>
     div {
       border: 5px #1e18444b solid; 
       padding: 10px;
-      margin: 0px 0px;
+      margin: 0px 10px;
     }
-    .project-page-wrapper {
+    .user-page-wrapper {
       display: flex;
       flex-direction: column;
       margin: 0;
@@ -39,21 +38,22 @@
       border: 0;
     }
     .con-2 div{
-      height: 70vh;
+      height: 50vh;
     }
     .con-2-1 {
       margin-left: 0;
       flex: 1;
-      height: 100px;
+      /* height: 100px; */
     }
     .con-2-2 {
       flex: 4;
+      margin-right: 0;
 
     }
-    .con-2-3 {
+    /* .con-2-3 {
       margin-right: 0;
       flex:1;
-    }
+    } */
      .con-1 {
       flex: 2;
      }

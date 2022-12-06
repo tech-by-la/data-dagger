@@ -69,6 +69,7 @@ export const actions: Actions = {
 	login: async ({ request, fetch, cookies }) => {
 		const userInfo = await request.formData();
 		const data = Object.fromEntries(userInfo);
+		let userID = ""
 		try {
 			const result = loginSchema.parse(data);
 		} catch (err) {
@@ -93,6 +94,9 @@ export const actions: Actions = {
 
 			const response = await fetch(PUBLIC_API_URL + '/auth/login', fetchOptions);
 			const res = await response.json();
+			console.log(res);
+			userID=res.id
+			
 			cookies.set('idToken', res.idToken, { maxAge: 900, path: '/', httpOnly: true });
 			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true });
 		} catch (err) {
@@ -100,7 +104,7 @@ export const actions: Actions = {
 			console.log(err);
 			return invalid(400, { invalid: true });
 		}
-		throw redirect(302, '/project/1');
+		throw redirect(302, '/user/' +  userID);
 	},
 	register: async ({ request, fetch, cookies }) => {
 		const userInfo = await request.formData();
@@ -138,7 +142,7 @@ export const actions: Actions = {
 			console.log(err);
 			return invalid(400, { invalid: true });
 		}
-		throw redirect(302, '/project/1');
+		throw redirect(302, '/user/1');
 	},
 	logout: async ({fetch, cookies}) => {
 		try {

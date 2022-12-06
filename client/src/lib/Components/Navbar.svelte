@@ -17,7 +17,12 @@
     function toggleTheLoginPrompt() {
         loginPromptController ? loginPromptController=false : loginPromptController=true
     }
-
+    let userID = "0";
+    if ($page.data.user) {
+        userID =$page.data.user.sub 
+    }
+    
+    
 </script>
 
 <div class="navbar-wrapper">
@@ -29,9 +34,13 @@
 
     <div class="links-container">
         <div class="links">
-            <a href="/project/1" data-sveltekit-preload-data>Project Dashboard</a>
+            <a href="/project/1" data-sveltekit-preload-data>Project</a>
             <p> / </p>
-            <a href="/qa-workzone" data-sveltekit-preload-data>QA-workzone</a>
+            <a href="/user/{userID}" data-sveltekit-preload-data>User</a>
+            <p> / </p>
+            <a href="/org/1" data-sveltekit-preload-data>Organization</a>
+            <p> / </p>
+            <a href="/admin" data-sveltekit-preload-data>Admin</a>
             <p> / </p>
             <a href="/" data-sveltekit-preload-data>Home</a>
         </div>
@@ -92,7 +101,7 @@
 .links {
     display: flex;
     margin: 0px 15px;
-    font-size: 20px;
+    font-size: 15px;
 }
 
 .title-name {
@@ -108,8 +117,8 @@ a {
 }
 p {
     font-size: 30px;
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 

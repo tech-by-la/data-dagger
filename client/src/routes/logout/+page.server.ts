@@ -17,7 +17,6 @@ export const actions: Actions = {
 				},
 			};
 			const response = await fetch(PUBLIC_API_URL + '/auth/logout', fetchOptions);
-			console.log(response.status)
 			cookies.delete('idToken')
 			cookies.delete('refreshToken')
 			console.log("You were logged out")
@@ -26,9 +25,6 @@ export const actions: Actions = {
 			console.log('-------------------SERVER ERROR--------------------');
 			console.log(err);
 		}
-		cookies.delete('idToken')
-		cookies.delete('refreshToken')
-		console.log("You were logged out")
 
 	}
 };
