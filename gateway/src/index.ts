@@ -11,6 +11,7 @@ const targets = {
     CLIENT: process.env.CLIENT,
     AUTH: process.env.AUTH,
     SWAGGER: process.env.SWAGGER,
+    TRANSLATIONS: process.env.TRANSLATIONS
 }
 
 // Verify IPs
@@ -32,6 +33,9 @@ server.use((req, res) => {
                 break;
             case Path.SWAGGER:
                 proxy.web(req, res, { target: targets.SWAGGER });
+                break;
+            case Path.TRANSLATIONS:
+                proxy.web(req, res, { target: targets.TRANSLATIONS });
                 break;
             default:
                 res.status(404).send();

@@ -26,8 +26,8 @@ router.get('/:page', async (req, res) => {
     res.send(translations);
 });
 
-router.post('/', authorizeSuperAdmin, async (req, res) => {
-    const { _id, page, key, translations } = req.body;
+router.put('/', authorizeSuperAdmin, async (req, res) => {
+    const { page, key, translations } = req.body;
 
     if (
         !page || !key || !translations ||
