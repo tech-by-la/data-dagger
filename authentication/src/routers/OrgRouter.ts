@@ -7,6 +7,12 @@ import {HttpErrMsg, StatusCode} from "../util/enums.js";
 
 const router = Router();
 
+router.get('/', authenticate, async (req, res) => {
+    const orgIds = req.user.orgs.map(org => org.org_id);
+    const orgs = await db.orgRepo.findManyOrgsByIds(orgIds);
+    res.send(orgs);
+});
+
 router.post('/', authenticate, verifyOrgRequestBody, async (req, res) => {
     let { name, contact_email, contact_phone } = req.body as OrgRequestBody;
 

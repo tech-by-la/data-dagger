@@ -5,6 +5,7 @@ import {OrgRoles} from "../../util/enums.js";
 export interface IOrgRepo {
     findOrgById(id: string): Promise<Organization | null>;
     findOrgByName(name: string): Promise<Organization | null>;
+    findManyOrgsByIds(ids: string[]): Promise<Organization[]>;
     createOrg(creator_id: string, name: string, contact_email: string, contact_phone?: string): Promise<Organization | null>;
     updateOrg(org: Organization): Promise<Organization | null>;
     upsertOrgUser(organization_id: string, user_id: string): Promise<OrgUser | null>;
@@ -27,6 +28,12 @@ export default class OrgRepo implements IOrgRepo {
     public async findOrgByName(name: string) {
         return await this.db.organization.findUnique({
             where: { name }
+        });
+    }
+
+    public async findManyOrgsByIds(ids: string[]) {
+        return await this.db.organization.findMany({
+            where: { id: { in: ids } }
         });
     }
 
