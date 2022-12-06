@@ -17,6 +17,10 @@ import {HttpErrMsg, StatusCode} from "../util/enums.js";
 
 const router = Router();
 
+router.get('/', authenticate, async (req, res) => {
+    const invites = await db.inviteRepo.findInvitesByEmail(req.user.email);
+    res.send({ data: invites });
+});
 router.get('/:org_id', authenticate, async (req, res) => {
     const { org_id } = req.params;
 

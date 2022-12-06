@@ -1,6 +1,8 @@
 import {PrismaClient, Invite} from "@prisma/client";
 
 export interface IInviteRepo {
+
+    findInvitesByEmail(email: string): Promise<Invite[]>;
     findInviteByOrg_idAndEmail(organization_id: string, email: string): Promise<Invite | null>;
     findManyInvitesByOrg_id(organization_id: string): Promise<Invite[]>;
     findManyInvitesByOrg_idAndEmails(organization_id: string, emails: string[]): Promise<Invite[]>;
@@ -13,6 +15,12 @@ export default class InviteRepo implements IInviteRepo {
 
     constructor(db: PrismaClient) {
         this.db = db;
+    }
+
+    public async findInvitesByEmail(email: string) {
+        return await this.db.invite.findMany({
+            where: { email },
+        });
     }
 
     public async findInviteByOrg_idAndEmail(organization_id: string, email: string): Promise<Invite | null> {

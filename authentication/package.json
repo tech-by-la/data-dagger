@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsc-watch --noClear -p tsconfig.json --onSuccess \"node -r dotenv/config ./dist/index.js\"",
     "build": "tsc",
-    "start": "npx prisma migrate deploy && ORIGIN=http://185.163.127.199 node dist/index.js",
+    "start": "npx prisma migrate deploy && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "JazzyMcJazz",
