@@ -94,7 +94,6 @@ export const actions: Actions = {
 
 			const response = await fetch(PUBLIC_API_URL + '/auth/login', fetchOptions);
 			const res = await response.json();
-			console.log(res);
 			userID=res.id
 			
 			cookies.set('idToken', res.idToken, { maxAge: 900, path: '/', httpOnly: true });

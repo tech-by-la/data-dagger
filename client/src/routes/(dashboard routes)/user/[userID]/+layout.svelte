@@ -42,7 +42,7 @@
       border: 0;
     }
     .con-2 div{
-      height: 50vh;
+      height: 100%;
     }
     .con-2-1 {
       margin-left: 0;

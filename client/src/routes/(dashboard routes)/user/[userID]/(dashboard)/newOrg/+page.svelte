@@ -3,6 +3,7 @@
     
     
     export let data: PageData;
+    let userEmail = data.user.email
 </script>
 
 <div class="form-wrapper">
@@ -10,7 +11,7 @@
             <h1> Create New Organization</h1>
             <input class="input-name" name="name" type="text" placeholder="Organization Name">   
             <input class="input-name" name="contact_phone" type="text" placeholder="Contact tlf nr."> 
-            <input class="input-email" name="contact_email" type="text" placeholder="Contact Email">
+            <input class="input-email" name="contact_email" type="text"  placeholder="Email tlf nr.">
             <div class="checkbox-div">
                 <input class="checkbox" type="checkbox" name="terms">
                 <label for="terms"> I sell my Soul</label>
