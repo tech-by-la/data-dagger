@@ -3,7 +3,7 @@
 action=$1; shift
 services=($@)
 
-all=("authentication" "client" "gateway" "swagger", "translations")
+all=("authentication" "client" "gateway" "swagger" "translations")
 
 echo ""
 
