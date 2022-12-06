@@ -26,6 +26,7 @@ export const login = async (res: Response, user: UserInfo | null, refreshToken: 
         maxAge: 1000 * 60 * 15, // 15 minutes
         httpOnly: true,
         sameSite: 'strict',
+        path: '/',
         secure: false, // TODO: use secure cookie
     });
 
@@ -33,6 +34,7 @@ export const login = async (res: Response, user: UserInfo | null, refreshToken: 
         maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
         httpOnly: true,
         sameSite: 'strict',
+        path: '/',
         secure: false, // TODO: use secure cookie
     });
 
