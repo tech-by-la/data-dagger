@@ -1,10 +1,10 @@
 import type { Algorithm } from "jsonwebtoken";
 import jwt from 'jsonwebtoken';
 
+import { PUBLIC_API_URL } from "$env/static/public";
 import PublicKey from '$lib/server/security/PublicKey';
 import type {RequestEvent} from "@sveltejs/kit";
 import type {LoginResponse} from "$lib/server/interfaces/interfaces";
-import {PUBLIC_API_URL} from "$env/static/public";
 
 const jwtVerifyOptions = {
     issuer: "TechByLA",
