@@ -19,10 +19,10 @@
     }
     let userID = "0";
     if ($page.data.user) {
-        userID =$page.data.user.sub 
+        userID =$page.data.user.sub
     }
-    
-    
+
+
 </script>
 
 <div class="navbar-wrapper">
@@ -34,14 +34,19 @@
 
     <div class="links-container">
         <div class="links">
-            <a href="/project/1" data-sveltekit-preload-data>Project</a>
-            <p> / </p>
-            <a href="/user/{userID}" data-sveltekit-preload-data>User</a>
-            <p> / </p>
-            <a href="/org/1" data-sveltekit-preload-data>Organization</a>
-            <p> / </p>
-            <a href="/admin" data-sveltekit-preload-data>Admin</a>
-            <p> / </p>
+            {#if $page.data.user}
+                <a href="/project/1" data-sveltekit-preload-data>Project</a>
+                <p> / </p>
+                <a href="/user/{userID}" data-sveltekit-preload-data>User</a>
+                <p> / </p>
+                <a href="/org/1" data-sveltekit-preload-data>Organization</a>
+                <p> / </p>
+                {#if $page.data.user.roles.includes('ADMIN') || $page.data.user.roles.includes("SUPER_ADMIN")}
+                    <a href="/admin" data-sveltekit-preload-data>Admin</a>
+                    <p> / </p>
+                {/if}
+            {/if}
+
             <a href="/" data-sveltekit-preload-data>Home</a>
         </div>
         {#if $page.data.user}
@@ -79,7 +84,7 @@
     height: 80px;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
     border: 5px #1e184453 ;
     border-radius: 0px;
     margin: 0 0;
