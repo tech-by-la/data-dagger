@@ -42,7 +42,6 @@ class JwtUtil implements IJwtUtil {
 
     private refreshTokenVerifyOptions: VerifyOptions = {
         issuer: this.refreshTokenSignOptions.issuer,
-        maxAge: this.refreshTokenSignOptions.expiresIn,
         algorithms: [this.refreshTokenSignOptions.algorithm as Algorithm],
     }
 
