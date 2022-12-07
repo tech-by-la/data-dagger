@@ -48,6 +48,8 @@ server.use('/api/auth/users', authenticate, UserRouter);
 server.use('/api/auth/admin', authenticate, authorizeAdmin, AdminRouter);
 server.use('/api/auth', AuthRouter);
 
+server.get('/api/auth/status', (req, res) => res.send());
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log('Authentication Service came online on port', PORT);

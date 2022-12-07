@@ -39,6 +39,9 @@ server.use((req, res) => {
             case Path.TRANSLATIONS:
                 proxy.web(req, res, { target: targets.TRANSLATIONS });
                 break;
+            case Path.STATUS:
+                res.send();
+                break;
             default:
                 res.status(404).send();
         }

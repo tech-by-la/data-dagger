@@ -3,4 +3,5 @@ export enum Path {
     AUTH = 'auth',
     SWAGGER = 'swagger',
     TRANSLATIONS = 'tl',
+    STATUS= 'status'
 }
