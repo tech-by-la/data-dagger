@@ -7,6 +7,8 @@
     const userEmail = data.user.email
 
     const userOrgs = data.userOrgs
+    console.log(userOrgs);
+    
     interface Org {
         name: string;
         contact_email: string;
@@ -30,6 +32,11 @@
 <h1>This will show a list of organizations you are a part of</h1>
 <h1>There will also be a option to start a new oprginization</h1>
 <p>Your Orgs: {userOrgs}</p>
+{#each userOrgs as org, i }
+<div class="org-wrapper">
+    <h1>{org.id}</h1>
+</div>   
+{/each}
 {#each orgArray as org, i }
 <div class="org-wrapper">
     <h1>{org.name}</h1>
