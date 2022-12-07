@@ -1,10 +1,10 @@
 import type { Algorithm } from "jsonwebtoken";
 import jwt from 'jsonwebtoken';
 
+import { PUBLIC_API_URL } from "$env/static/public";
 import PublicKey from '$lib/server/security/PublicKey';
 import type {RequestEvent} from "@sveltejs/kit";
 import type {LoginResponse} from "$lib/server/interfaces/interfaces";
-import {PRIVATE_API_URL} from "$env/static/private";
 
 const jwtVerifyOptions = {
     issuer: "TechByLA",
@@ -24,7 +24,7 @@ export const verifyJwt = async (token: string | undefined) => {
 
 export const renewJwt = async (event: RequestEvent): Promise<LoginResponse | null> => {
     try {
-        return await event.fetch(PRIVATE_API_URL + '/auth/renew', {
+        return await event.fetch(PUBLIC_API_URL + '/auth/renew', {
             method: 'POST',
         })
             .then(res => res.json())
