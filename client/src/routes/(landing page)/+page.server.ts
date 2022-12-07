@@ -95,9 +95,9 @@ export const actions: Actions = {
 			const response = await fetch(PUBLIC_API_URL + '/auth/login', fetchOptions);
 			const res = await response.json();
 			userID=res.id
-			
-			cookies.set('idToken', res.idToken, { maxAge: 900, path: '/', httpOnly: true });
-			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true });
+
+			cookies.set('idToken', res.idToken, { maxAge: 900, path: '/', httpOnly: true, secure: false });
+			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true, secure: false });
 		} catch (err) {
 			console.log('-------------------SERVER ERROR--------------------');
 			console.log(err);

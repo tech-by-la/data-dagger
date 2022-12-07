@@ -6,7 +6,8 @@ const config = {
 	// Consult https://github.com/sveltejs/svelte-preprocess
 	// for more information about preprocessors
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		csrf: { checkOrigin: process.env.ENVIRONMENT === 'development' }
 	},
 	preprocess: [
 		preprocess({
