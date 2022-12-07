@@ -28,9 +28,9 @@ export const renewJwt = async (event: RequestEvent): Promise<LoginResponse | nul
             method: 'POST',
         })
             .then(res => res.json())
-            .then(data => data)
-            .catch();
+            .then(data => data);
     } catch (err) {
+        console.log(err);
         return null;
     }
 }

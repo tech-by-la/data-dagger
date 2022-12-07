@@ -10,6 +10,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     // renew idToken using the refreshToken
     if (!user && refreshToken) {
         const response: LoginResponse | null = await renewJwt(event);
+        console.log(response)
         if (response) {
             event.cookies.set('idToken', response.idToken, { maxAge: response.expiresIn, path: '/' });
             event.cookies.set('refreshToken', response.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/' });
@@ -21,11 +22,11 @@ export const handle: Handle = async ({ event, resolve }) => {
     return resolve(event);
 }
 
-export const handleFetch: HandleFetch = ({ event, request, fetch }) => {
-    if (request.url.startsWith(PUBLIC_API_URL)) {
-        request.headers.set('cookie', event.request.headers.get('cookie') || '');
-    }
-
-    return fetch(request);
-}
-
+// export const handleFetch: HandleFetch = ({ event, request, fetch }) => {
+//     if (request.url.startsWith(PUBLIC_API_URL)) {
+//         request.headers.set('cookie', event.request.headers.get('cookie') || '');
+//     }
+//
+//     return fetch(request);
+// }
+//
