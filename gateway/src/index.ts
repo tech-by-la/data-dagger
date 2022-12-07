@@ -18,6 +18,8 @@ const targets = {
 Util.verifyTargets(targets);
 
 server.use((req, res) => {
+    console.log("Request made to", req.hostname + req.url);
+
     proxy.on('error', (err) => {
         console.log(err);
         res.status(404).send();
