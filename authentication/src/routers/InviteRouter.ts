@@ -17,11 +17,18 @@ import {HttpErrMsg, StatusCode} from "../util/enums.js";
 
 const router = Router();
 
-router.get('/', authenticate, async (req, res) => {
+/*
+ * fetch invites for logged-in user
+ */
+router.get('/', async (req, res) => {
     const invites = await db.inviteRepo.findInvitesByEmail(req.user.email);
     res.send({ data: invites });
 });
-router.get('/:org_id', authenticate, async (req, res) => {
+
+/*
+ * fetch pending invites for an organization
+ */
+router.get('/:org_id', async (req, res) => {
     const { org_id } = req.params;
 
     if (!org_id) {
@@ -29,22 +36,24 @@ router.get('/:org_id', authenticate, async (req, res) => {
         return;
     }
 
-    if (!await authorizeOrgModerator(res, req.user, org_id)) {
-        return;
-    }
+    const isMod = await authorizeOrgModerator(res, req.user, org_id)
+    if (!isMod) return;
 
     const invites = await db.inviteRepo.findManyInvitesByOrg_id(org_id);
     res.send({ data: invites });
 });
 
-router.post('/', authenticate, verifyInviteRequestBody, async (req, res) => {
+
+/*
+ * invite users to an organizations
+ */
+router.post('/', verifyInviteRequestBody, async (req, res) => {
 
     const orgMod = req.user;
     const request = req.body as InviteRequestBody;
 
-    if (!await authorizeOrgModerator(res, orgMod, request.org_id)) {
-        return;
-    }
+    const isMod = await authorizeOrgModerator(res, orgMod, request.org_id)
+    if (!isMod) return;
 
     // filter valid and invalid email addresses
     const { valid: validEmails, invalid: invalidEmails } = partitionEmails(request.emails);
@@ -83,7 +92,11 @@ router.post('/', authenticate, verifyInviteRequestBody, async (req, res) => {
     res.status(StatusCode.OK).send({ data: responseBody });
 });
 
-router.post('/answer', authenticate, verifyInviteAnswerRequestBody, async (req, res) => {
+
+/*
+ * accept or decline an invitation to an organization
+ */
+router.post('/answer', verifyInviteAnswerRequestBody, async (req, res) => {
 
     const user = req.user;
     const { org_id, answer } = req.body as InviteAnswerRequestBody;
@@ -103,13 +116,15 @@ router.post('/answer', authenticate, verifyInviteAnswerRequestBody, async (req, 
     res.status(StatusCode.NO_CONTENT).send();
 });
 
-router.delete('/', authenticate, verifyInviteDeleteRequestBody, async (req, res) => {
+/*
+ * delete pending invitation (used by orgs to un-invite)
+ */
+router.delete('/', verifyInviteDeleteRequestBody, async (req, res) => {
     const orgMod = req.user;
     const request = req.body as InviteDeleteRequestBody;
 
-    if (! await authorizeOrgModerator(res, orgMod, request.org_id)) {
-        return;
-    }
+    const isMod = await authorizeOrgModerator(res, orgMod, request.org_id)
+    if (!isMod) return;
 
     await db.inviteRepo.deleteInviteByOrg_idAndEmail(request.org_id, request.email);
     res.status(StatusCode.NO_CONTENT).send();

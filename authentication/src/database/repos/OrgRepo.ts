@@ -21,8 +21,16 @@ export default class OrgRepo implements IOrgRepo {
     public async findOrgById(id: string) {
         return await this.db.organization.findUnique({
             where: { id },
-            include: { members: true }
-        });
+            include: { members: { select: {
+                user_id: true,
+                org_role_id: true,
+                user: { select: {
+                    email: true,
+                    first_name: true,
+                    last_name: true,
+                }
+            }
+        }}}});
     }
 
     public async findOrgByName(name: string) {
@@ -76,5 +84,4 @@ export default class OrgRepo implements IOrgRepo {
             }
         }).catch(() => null);
     }
-
 }

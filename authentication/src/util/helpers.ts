@@ -98,14 +98,29 @@ export const partitionEmails = (emails: string[]) => {
 }
 
 export const authorizeOrgModerator = async (res: Response, user: AuthUser, org_id: string) => {
-    const org = await db.orgRepo.findOrgById(org_id);
-    const orgRole = user.orgs.find(o => o.org_id === org?.id)?.role;
 
-    // Must be OWNER or MODERATOR to send invites
+    const orgRole = user.orgs.find(o => o.org_id === org_id)?.role;
+
+    // verify role
     if ((orgRole !== "OWNER" && orgRole !== "MODERATOR")) {
         respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
         return;
     }
 
     return true;
+}
+
+export const excludeKey = <T, K extends keyof T>(object: T, keys: K[]): T => {
+    for (const key of keys) {
+        delete object[key];
+    }
+    return object;
+}
+export const excludeKeys = <T, K extends keyof T>(objects: T[], keys: K[]): T[] => {
+    for (const obj of objects) {
+        for (const key of keys) {
+            delete obj[key];
+        }
+    }
+    return objects;
 }

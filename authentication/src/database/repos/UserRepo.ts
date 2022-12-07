@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import {UserInfo} from "../../util/interfaces.js";
 import Snowflakes from "../../util/snowflakes.js";
 import {UserRoles} from "../../util/enums.js";
+import {excludeKey, excludeKeys} from "../../util/helpers.js";
 
 export interface IUserRepo {
 
@@ -26,8 +27,10 @@ export default class UserRepo implements IUserRepo {
 
     public async getAll(): Promise<UserInfo[]> {
         return await this.db.user.findMany({
-            include: {roles: true, orgs: true}
-        }).catch(() => []);
+            include: {roles: true, orgs: true},
+        })
+            .then(users => excludeKeys(users, ['password_hash']))
+            .catch(() => []);
     }
 
     public async findUserById(id: string) {
@@ -36,6 +39,7 @@ export default class UserRepo implements IUserRepo {
                 where: {id},
                 include: {roles: true, orgs: true},
             })
+            .then(user => user ? excludeKey(user, ['password_hash']) : null)
             .catch(() => null);
     }
     public async findManyUsersById(ids: string[]) {
@@ -44,6 +48,7 @@ export default class UserRepo implements IUserRepo {
                 where: {id: { in: ids }},
                 include: {roles: true, orgs: true},
             })
+            .then(users => excludeKeys(users, ['password_hash']))
             .catch(() => []);
     }
 
@@ -53,6 +58,7 @@ export default class UserRepo implements IUserRepo {
                 where: {email},
                 include: {roles: true, orgs: true},
             })
+            .then(user => user ? excludeKey(user, ['password_hash']) : null)
             .catch(() => null);
     }
 
@@ -60,7 +66,9 @@ export default class UserRepo implements IUserRepo {
         return await this.db.user.findMany({
             where: { email: { in: emails } },
             include: {roles: true, orgs: true},
-        }).catch(() => []);
+        })
+            .then(users => excludeKeys(users, ['password_hash']))
+            .catch(() => []);
     }
 
     public async createUser(email: string, password: string, first_name?: string, last_name?: string) {
@@ -76,6 +84,7 @@ export default class UserRepo implements IUserRepo {
                 },
                 include: { roles: true, orgs: true },
             })
+            .then(user => excludeKey(user, ['password_hash']))
             .catch(() => null);
     }
 
@@ -89,7 +98,9 @@ export default class UserRepo implements IUserRepo {
                 password_hash: user.password_hash,
                 enabled: user.enabled,
             },
-        });
+        })
+            .then(user => excludeKey(user, ['password_hash']))
+            .catch();
     }
 
     public async assignUserRole(user_id: string, role: UserRole["name"]) {
@@ -98,7 +109,9 @@ export default class UserRepo implements IUserRepo {
             data: {
                 roles: { connect: { name: role }}
             }
-        }).catch(() => null);
+        })
+            .then(user => excludeKey(user, ['password_hash']))
+            .catch(() => null);
     }
 
     public async removeUserRole(user_id: string, role: UserRole["name"]) {
@@ -107,6 +120,8 @@ export default class UserRepo implements IUserRepo {
             data: {
                 roles: { disconnect: { name: role }}
             }
-        }).catch(() => null);
+        })
+            .then(user => excludeKey(user, ['password_hash']))
+            .catch(() => null);
     }
 }

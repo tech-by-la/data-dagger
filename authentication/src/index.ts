@@ -42,13 +42,13 @@ server.use(helmet());
 server.use(express.json());
 
 server.use('/api/auth/keys', KeyRouter);
-server.use('/api/auth/orgs', OrgRouter);
-server.use('/api/auth/invite', InviteRouter);
-server.use('/api/auth/users', UserRouter); // TODO: auth and authorize admins
+server.use('/api/auth/orgs', authenticate, OrgRouter);
+server.use('/api/auth/invite', authenticate, InviteRouter);
+server.use('/api/auth/users', authenticate, UserRouter);
 server.use('/api/auth/admin', authenticate, authorizeAdmin, AdminRouter);
 server.use('/api/auth', AuthRouter);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
     console.log('Authentication Service came online on port', PORT);
 })

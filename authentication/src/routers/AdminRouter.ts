@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {authenticate, authorizeAdmin, authorizeSuperAdmin, verifyAssignRolesRequestBody} from "../util/middleware.js";
+import {authorizeSuperAdmin, verifyAssignRolesRequestBody} from "../util/middleware.js";
 import {respondError} from "../util/helpers.js";
 import {HttpErrMsg, StatusCode, UserRoles} from "../util/enums.js";
 import db from '../database/DatabaseGateway.js';
@@ -7,6 +7,9 @@ import {AssignRolesRequestBody} from "../util/interfaces";
 
 const router = Router();
 
+/*
+ * enable/disable user account
+ */
 router.put('/user-enabled', async (req, res) => {
     const { user_id, enabled } = req.query;
 
@@ -41,6 +44,9 @@ router.put('/user-enabled', async (req, res) => {
     res.status(StatusCode.NO_CONTENT).send();
 });
 
+/*
+ * enable/disable organization
+ */
 router.put('/org-enabled', async (req, res) => {
     const { org_id, enabled } = req.query;
 
@@ -65,6 +71,9 @@ router.put('/org-enabled', async (req, res) => {
     res.status(StatusCode.NO_CONTENT).send();
 });
 
+/*
+ * grant/remove roles to/from a user account
+ */
 router.put('/user-roles', authorizeSuperAdmin, verifyAssignRolesRequestBody, async (req, res) => {
 
     const { user_id, role, remove } = req.body as AssignRolesRequestBody;
@@ -89,7 +98,5 @@ router.put('/user-roles', authorizeSuperAdmin, verifyAssignRolesRequestBody, asy
 
     res.status(StatusCode.NO_CONTENT).send();
 });
-
-
 
 export default router;

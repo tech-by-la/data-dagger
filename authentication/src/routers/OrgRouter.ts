@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {authenticate, verifyOrgRequestBody} from "../util/middleware.js";
+import {verifyOrgRequestBody} from "../util/middleware.js";
 import {OrgRequestBody} from "../util/interfaces.js";
 import db from '../database/DatabaseGateway.js'
 import {respondError} from "../util/helpers.js";
@@ -7,13 +7,38 @@ import {HttpErrMsg, StatusCode} from "../util/enums.js";
 
 const router = Router();
 
-router.get('/', authenticate, async (req, res) => {
+/*
+ * fetch logged-in user's organizations
+ */
+router.get('/', async (req, res) => {
     const orgIds = req.user.orgs.map(org => org.org_id);
     const orgs = await db.orgRepo.findManyOrgsByIds(orgIds);
     res.send(orgs);
 });
 
-router.post('/', authenticate, verifyOrgRequestBody, async (req, res) => {
+/*
+ * fetch organization data by ID
+ */
+router.get('/:org_id', async (req, res) => {
+
+    const org_id = req.params.org_id;
+
+    // verify user is member of org
+    const isMember = req.user.orgs.find(o => o.org_id === org_id);
+    if (!isMember) {
+        respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
+        return;
+    }
+
+    const org = await db.orgRepo.findOrgById(org_id);
+
+    res.send({ data: org });
+});
+
+/*
+ * create new organization
+ */
+router.post('/', verifyOrgRequestBody, async (req, res) => {
     let { name, contact_email, contact_phone } = req.body as OrgRequestBody;
 
     if (!contact_email) {

@@ -2,11 +2,15 @@ import {Router} from 'express';
 import db from '../database/DatabaseGateway.js';
 import {respondError} from "../util/helpers.js";
 import {HttpErrMsg, StatusCode} from "../util/enums.js";
-import {UserInfo} from "../util/interfaces";
+import {UserInfo} from "../util/interfaces.js";
+import {authorizeAdmin} from "../util/middleware.js";
 
 const router = Router();
 
-router.get('/', async (req, res) => {
+/*
+ * fetch ALL users
+ */
+router.get('/', authorizeAdmin, async (req, res) => {
     const query = req.query.ids?.toString();
 
     let users: UserInfo[] | null = [];
@@ -23,4 +27,13 @@ router.get('/', async (req, res) => {
         res.send({users});
     }
 });
+
+/*
+ * fetch self
+ */
+router.get('/self', async (req, res) => {
+    const user = await db.userRepo.findUserById(req.user.id);
+    res.send({ data: user });
+});
+
 export default router;

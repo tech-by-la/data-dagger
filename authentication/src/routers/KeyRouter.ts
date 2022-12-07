@@ -5,6 +5,9 @@ import {HttpErrMsg, StatusCode} from "../util/enums.js";
 
 const router = Router();
 
+/*
+ * fetch public RSA key used to verify idToken
+ */
 router.get('/publickey', (req, res) => {
 
     const key = Jwt.getPublicJwtKey();
