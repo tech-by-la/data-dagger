@@ -36,19 +36,6 @@ services:
       - ${INT_PORT}
     depends_on:
       - authentication_db
-    environment:
-      PORT: ${INT_PORT}
-
-  swagger:
-    container_name: swagger
-    image: teamcity-dd-swagger:latest
-    restart: unless-stopped
-    networks:
-      - dd-net
-    expose:
-      - ${INT_PORT}
-    environment:
-      - PORT=${INT_PORT}
 
   translations:
     container_name: translations
@@ -64,7 +51,19 @@ services:
       KEY_API: ${KEY_API}
       JWT_ISSUER: ${JWT_ISSUER}
       JWT_ALGORITHM: ${JWT_ALGORITHM}
-      ENVIRONMENT: development
+    depends_on:
+      - translation_db
+
+  swagger:
+    container_name: swagger
+    image: teamcity-dd-swagger:latest
+    restart: unless-stopped
+    networks:
+      - dd-net
+    expose:
+      - ${INT_PORT}
+    environment:
+      - PORT=${INT_PORT}
 
   # === Databases === #
   authentication_db:
