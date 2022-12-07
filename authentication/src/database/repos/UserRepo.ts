@@ -52,13 +52,16 @@ export default class UserRepo implements IUserRepo {
             .catch(() => []);
     }
 
+    /*
+     * IMPORTANT:
+     * Never include the result of this function in a request response without removing the password_hash first!
+     */
     public async findUserByEmail(email: string) {
         return await this.db.user
             .findUnique({
                 where: {email},
                 include: {roles: true, orgs: true},
             })
-            .then(user => user ? excludeKey(user, ['password_hash']) : null)
             .catch(() => null);
     }
 
