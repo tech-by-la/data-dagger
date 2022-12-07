@@ -1,6 +1,7 @@
 import type {Handle, HandleFetch} from "@sveltejs/kit";
 import {renewJwt, verifyJwt} from "$lib/server/security/jwt";
 import {PUBLIC_API_URL} from "$env/static/public";
+import {PRIVATE_API_URL} from "$env/static/private";
 import type {LoginResponse} from "$lib/server/interfaces/interfaces";
 
 export const handle: Handle = async ({ event, resolve }) => {
