@@ -8,8 +8,6 @@ services:
     restart: unless-stopped
     networks:
       - dd-net
-    expose:
-      - ${INT_PORT}
     ports:
       - ${EXT_PORT}:${INT_PORT}
     environment:
