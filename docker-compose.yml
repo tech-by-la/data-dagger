@@ -84,7 +84,7 @@ services:
 
   translation_db:
     container_name: translation_db
-    image: mongo:latest
+    image: mongo:4.4.18
     restart: always
     networks:
       - dd-net
