@@ -14,6 +14,10 @@ export const load: LayoutLoad = () => {
             {
                 name: "Projects",
                 target: "/admin/dashboard/projects"
+            },
+            {
+                name: "Translations",
+                target: "/admin/dashboard/translations"
             }
         ]
     }

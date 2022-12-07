@@ -3,7 +3,6 @@
     import { InfoBadge, IconButton, Flyout, Checkbox, ProgressRing } from "fluent-svelte";
     import FaChevronDown from 'svelte-icons/fa/FaChevronDown.svelte'
     import {PUBLIC_API_URL} from "$env/static/public";
-    import { goto } from '$app/navigation';
 
     export let data: PageData;
     const { users, user: loggedInUser } = data;
