@@ -1,23 +1,24 @@
 import type {PageLoad} from "./$types";
+import {PUBLIC_API_URL} from "$env/static/public";
 
 export const load: PageLoad = ({fetch}) => {
 
     const getUsers = async () => {
-        return await fetch('http://localhost:3000/api/auth/users')
+        return await fetch(PUBLIC_API_URL + '/auth/users')
             .then(res => res.json())
             .then(data => data.users)
             .catch(() => []);
     }
 
     const getOrganizations = async () => {
-        // return await fetch('http://localhost:3000/api/auth/orgs')
+        // return await fetch(PUBLIC_API_URL + '/auth/orgs')
         //     .then(res => res.json())
         //     .then(data => data.organizations)
         //     .catch(() => [1,2,3,4]);
         return [1,2,3];
     }
     const getProjects = async () => {
-        // return await fetch('http://localhost:3000/api/projects')
+        // return await fetch(PUBLIC_API_URL + '/api/projects')
         //     .then(res => res.json())
         //     .then(data => data.projects)
         //     .catch(() => [1,2]);
