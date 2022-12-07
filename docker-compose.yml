@@ -11,11 +11,11 @@ services:
     ports:
       - ${EXT_PORT}:${INT_PORT}
     environment:
-      - PORT=${INT_PORT}
-      - CLIENT=http://client:${INT_PORT}
-      - AUTH=http://authentication:${INT_PORT}
-      - SWAGGER=http://swagger:${INT_PORT}
-      - TRANSLATIONS=http://translations:${INT_PORT}
+      PORT: ${INT_PORT}
+      CLIENT: http://client:${INT_PORT}
+      AUTH: http://authentication:${INT_PORT}
+      SWAGGER: http://swagger:${INT_PORT}
+      TRANSLATIONS: http://translations:${INT_PORT}
 
   client:
     container_name: client
@@ -37,7 +37,7 @@ services:
     depends_on:
       - authentication_db
     environment:
-      - PORT=${INT_PORT}
+      PORT: ${INT_PORT}
 
   swagger:
     container_name: swagger
@@ -59,11 +59,12 @@ services:
     expose:
       - ${INT_PORT}
     environment:
-      - PORT=${INT_PORT}
-      - DATABASE_URL=${TL_DATABASE_URL}
-      - KEY_API=${KEY_API}
-      - JWT_ISSUER=${JWT_ISSUER}
-      - JWT_ALGORITHM=${JWT_ALGORITHM}
+      PORT: ${INT_PORT}
+      DATABASE_URL: ${TL_DATABASE_URL}
+      KEY_API: ${KEY_API}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      ENVIRONMENT: development
 
   # === Databases === #
   authentication_db:
