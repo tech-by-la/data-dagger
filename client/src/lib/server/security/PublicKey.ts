@@ -16,6 +16,7 @@ class PublicKey {
     private async fetchJwtKey(): Promise<Buffer> {
         try {
             const response = await fetch( PUBLIC_API_URL + '/auth/keys/publickey');
+            console.log(response);
             if (response.ok) this.jwtKey = Buffer.from(await response.text());
             return this.jwtKey;
         } catch (err) {
