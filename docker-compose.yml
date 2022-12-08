@@ -90,16 +90,17 @@ services:
       - dd-net
     volumes:
       - "translations_data:/data/db"
+      - "translations_config:/data/configdb"
     expose:
       - ${MONGO_PORT}
     environment:
       MONGO_INITDB_DATABASE: translations
 
-
 volumes:
   authentication_data:
   authentication_config:
   translations_data:
+  translations_config:
 
 networks:
   dd-net:
