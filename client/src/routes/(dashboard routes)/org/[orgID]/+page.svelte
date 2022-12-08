@@ -1,24 +1,14 @@
 <script lang="ts">
-    import type { PageData } from './$types';
-    
-    export let data: PageData;
+    import { page } from '$app/stores';
 
-    let userid = data.user
-    
+    const organization = $page.data.organization.data;
+
 </script>
-<div class="project-page-wrapper">
-    <div class="con-1">Orginization</div>
-    <div class="con-2">
-      <div class="con-2-1">left side panel</div>
-      <div class="con-2-2">middle panel</div>
-      <div class="con-2-3">right side panel</div>
-    </div>
-    <div class="con-3">Bottom pannel</div>
-  </div>
+
 
   <style>
     div {
-      border: 5px #1e18444b solid; 
+      border: 5px #1e18444b solid;
       padding: 10px;
       margin: 0px 10px;
     }
