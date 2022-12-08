@@ -14,7 +14,7 @@ import {
 import {authorizeOrgModerator, partitionEmails, respondError} from "../util/helpers.js";
 import db from "../database/DatabaseGateway.js";
 import {HttpErrMsg, StatusCode} from "../util/enums.js";
-import Logger from "../util/logger.js";
+import Logger from "../util/Logger.js";
 
 const router = Router();
 
@@ -130,7 +130,9 @@ router.delete('/', verifyInviteDeleteRequestBody, async (req, res) => {
     const isMod = await authorizeOrgModerator(res, orgMod, request.org_id)
     if (!isMod) return;
 
-    await db.inviteRepo.deleteInviteByOrg_idAndEmail(request.org_id, request.email);
+    await db.inviteRepo.deleteManyInvitesByOrg_idAndEmail(request.org_id, request.emails);
+
+    Logger.log("InviteRouter:", "Deleted invites to", request.emails, "by organization with id", request.org_id)
     res.status(StatusCode.NO_CONTENT).send();
 });
 

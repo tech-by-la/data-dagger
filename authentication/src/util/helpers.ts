@@ -3,7 +3,7 @@ import {Cookies, HttpErrMsg, StatusCode} from "./enums.js";
 import {AuthUser, UserInfo} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
 import db from '../database/DatabaseGateway.js';
-import Logger from "./logger.js";
+import Logger from "./Logger.js";
 
 export const respondError = (res: Response, code: StatusCode, message: string) => {
     const error = StatusCode[code].replaceAll("_", " ");
@@ -109,7 +109,7 @@ export const authorizeOrgModerator = async (res: Response, user: AuthUser, org_i
     // verify role
     if ((orgRole !== "OWNER" && orgRole !== "MODERATOR")) {
         Logger.log("Authorization:", "Could not authorize", user.email, "as OWNER or MODERATOR in org with id", org_id);
-        respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
+        respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.PERMISSION_DENIED);
         return;
     }
 

@@ -4,7 +4,7 @@ import {respondError} from "../util/helpers.js";
 import {HttpErrMsg, StatusCode} from "../util/enums.js";
 import {UserInfo} from "../util/interfaces.js";
 import {authorizeAdmin} from "../util/middleware.js";
-import Logger from "../util/logger.js";
+import Logger from "../util/Logger.js";
 
 const router = Router();
 

@@ -57,7 +57,7 @@ export enum HttpErrMsg {
     MISSING_REQUIRED_FIELDS = "The request body does not contain all required fields",
     ORG_NAME_IN_USE = "Organization name is unavailable",
     PASSWORD_TOO_SHORT = "Password needs to be at least 6 characters long",
-    PERMISSION_DENIED = "The user does not have permission to perform this action",
+    PERMISSION_DENIED = "You do not have permission to perform this action",
     RESOURCE_NOT_FOUND = "The requested resource was not found",
     UNAUTHORIZED = "Unauthorized",
     USER_DISABLED = "This account is disabled",

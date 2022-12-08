@@ -6,7 +6,7 @@ import {JwtUserPayload, RefreshTokenPayload, UserInfo} from "../util/interfaces.
 import {ErrMsg, Warnings} from "../util/enums.js";
 import db from '../database/DatabaseGateway.js';
 import Snowflakes from "../util/snowflakes.js";
-import Logger from "../util/logger.js";
+import Logger from "../util/Logger.js";
 
 interface IJwtUtil {
     verifyEnv(): Promise<void>;
@@ -138,17 +138,12 @@ class JwtUtil implements IJwtUtil {
 
     public renewRefreshToken(user_id: string, old_token: RefreshToken) {
         const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
-        Logger.log("RefreshToken:", "Refreshing Token for user with id", user_id, "with old token", old_token);
+
         return new Promise<string | null>((accept) => {
             jwt.sign(payload, this.privateRefKey, { ...this.jwtSignOptions, subject: user_id}, async (error, encoded) => {
-                if (error || !encoded) {
-                    Logger.log("RefreshToken", "Error -", error)
-                    accept(null);
-                }
+                if (error || !encoded) accept(null);
                 else {
-                    const newTokenn = await db.refreshTokenRepo.renewRefreshToken(old_token, payload.token);
-                    Logger.log("RefreshToken", "New Token -", newTokenn);
-                    Logger.log("RefreshToken", "Successfully renewed refresh token");
+                    await db.refreshTokenRepo.renewRefreshToken(old_token, payload.token);
                     accept(encoded);
                 }
             });
@@ -174,7 +169,10 @@ class JwtUtil implements IJwtUtil {
     public verifyRefreshToken(refreshToken: string) {
         return new Promise<JwtPayload | null>((accept) => {
             jwt.verify(refreshToken, this.publicRefKey, this.refreshTokenVerifyOptions, async (error, decoded) => {
-                if (error) accept(null);
+                if (error) {
+                    Logger.log("RefreshToken:", "Error -", error)
+                    accept(null);
+                }
                 else {
                     const { sub, token } = decoded as JwtPayload;
                     if (!sub || !token) return;
@@ -188,8 +186,13 @@ class JwtUtil implements IJwtUtil {
                         !user || !user.enabled ||
                         !tokenObj || !tokenObj.valid || expired
                     ) {
+                        Logger.log("RefreshToken", "Failed!");
+                        Logger.log("RefreshToken", "Expired -", expired);
+                        Logger.log("RefreshToken", "User -", user);
+                        Logger.log("RefreshToken", "Token Data -", tokenObj);
                         accept(null);
                     } else {
+                        Logger.log("RefreshToken", "Successfully renewed refresh token");
                         accept(decoded as JwtPayload);
                     }
                 }

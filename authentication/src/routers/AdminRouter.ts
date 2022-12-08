@@ -4,7 +4,7 @@ import {respondError} from "../util/helpers.js";
 import {HttpErrMsg, StatusCode, UserRoles} from "../util/enums.js";
 import db from '../database/DatabaseGateway.js';
 import {AssignRolesRequestBody} from "../util/interfaces";
-import Logger from "../util/logger.js";
+import Logger from "../util/Logger.js";
 
 const router = Router();
 

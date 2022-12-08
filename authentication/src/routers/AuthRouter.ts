@@ -7,7 +7,7 @@ import {Cookies, HttpErrMsg, StatusCode} from "../util/enums.js";
 import {UserRequestBody} from "../util/interfaces.js";
 import db from "../database/DatabaseGateway.js";
 import Jwt from "../security/jwt.js";
-import Logger from "../util/logger.js";
+import Logger from "../util/Logger.js";
 
 const router = Router();
 

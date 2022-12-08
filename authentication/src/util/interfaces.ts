@@ -56,7 +56,7 @@ export interface InviteRequestBody {
 
 export interface InviteDeleteRequestBody {
     org_id: string;
-    email: string;
+    emails: string[];
 }
 
 export interface InviteResponseBody {

@@ -12,7 +12,7 @@ import AdminRouter from "./routers/AdminRouter.js";
 import InviteRouter from "./routers/InviteRouter.js";
 import UserRouter from "./routers/UserRouter.js";
 import {authenticate, authorizeAdmin} from "./util/middleware.js";
-import Logger from "./util/logger.js";
+import Logger from "./util/Logger.js";
 
 db.initDb()
 .catch(err => {

@@ -1,15 +1,15 @@
 class Logger {
 
     public log(...message: any[]) {
-        console.log(this.getDate(), message.toString().replace(",", " "));
+        console.log(this.getDate(), message.join(" "));
     }
 
     public warn(...message: any[]) {
-        console.warn(this.getDate(), message.toString().replace(",", " "));
+        console.warn(this.getDate(), message.join(" "));
     }
 
     public error(...message: any[]) {
-        console.error(this.getDate(), message.toString().replace(",", " "));
+        console.error(this.getDate(), message.join(" "));
     }
 
     private getDate = () => {

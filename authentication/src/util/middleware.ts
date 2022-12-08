@@ -4,6 +4,7 @@ import {partitionEmails, respondError} from "./helpers.js";
 import {AuthUser, OrgRequestBody, UserRequestBody} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
 import {JwtPayload} from "jsonwebtoken";
+import Logger from "./Logger.js";
 
 
 /**
@@ -27,14 +28,14 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
     const decoded = await Jwt.verifyJwt(jwt);
     if (!decoded) {
-        console.log('idToken:', "Failed to verify idToken");
+        Logger.log('idToken:', "Failed to verify idToken");
         respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
         return;
     }
 
     const { sub, email, roles, orgs } = decoded as unknown as JwtPayload;
     if (!sub || !email || !roles || !orgs) {
-        console.log('idToken:', "Verified idToken but it didn't destructure with the correct keys");
+        Logger.log('idToken:', "Verified idToken but it didn't destructure with the correct keys");
         respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
         return;
     }
@@ -49,7 +50,7 @@ export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) 
         return;
     }
 
-    console.log("Authorization:", "Authorized Admin", req.user.email);
+    Logger.log("Authorization:", "Authorized Admin", req.user.email);
     next();
 }
 
@@ -59,7 +60,7 @@ export const authorizeSuperAdmin = (req: Request, res: Response, next: NextFunct
         return;
     }
 
-    console.log("Authorization:", "Authorized Super Admin", req.user.email);
+    Logger.log("Authorization:", "Authorized Super Admin", req.user.email);
     next();
 }
 
@@ -157,22 +158,26 @@ export const verifyInviteAnswerRequestBody = (req: Request, res: Response, next:
 export const verifyInviteDeleteRequestBody = (req: Request, res: Response, next: NextFunction) => {
 
     if (respondErrorIfIllegalArguments(res, Object.keys(req.body),
-        RequestKeys.org_id, RequestKeys.email
+        RequestKeys.org_id, RequestKeys.emails
     )) {
+        Logger.log("Bad Request:", "A request by user with id", req.user.id, "contained illegal request keys");
         return;
     }
 
-    const { org_id, email } = req.body;
+    const { org_id, emails } = req.body;
 
-    if (!org_id || !email) {
+    if (!org_id || !emails) {
+        Logger.log("Bad Request:", "A request by user with id", req.user.id, "had missing properties");
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.MISSING_REQUIRED_FIELDS);
         return;
     }
 
     if (
         typeof org_id !== "string" ||
-        typeof email !== "string"
+        !Array.isArray(emails) ||
+        emails.find(e => typeof e !== "string")
     ) {
+        Logger.log("Bad Request:", "A request by user with id", req.user.id, "contained invalid property types");
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_TYPE);
         return;
     }

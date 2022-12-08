@@ -2,7 +2,7 @@ import {Router} from 'express';
 import Jwt from "../security/jwt.js";
 import {respondError} from "../util/helpers.js";
 import {HttpErrMsg, StatusCode} from "../util/enums.js";
-import Logger from "../util/logger.js";
+import Logger from "../util/Logger.js";
 
 const router = Router();
 

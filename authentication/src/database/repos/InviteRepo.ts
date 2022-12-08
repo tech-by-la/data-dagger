@@ -8,6 +8,7 @@ export interface IInviteRepo {
     findManyInvitesByOrg_idAndEmails(organization_id: string, emails: string[]): Promise<Invite[]>;
     upsertInvite(organization_id: string, email: string): Promise<Invite | null>;
     deleteInviteByOrg_idAndEmail(organization_id: string, email: string): Promise<void>;
+    deleteManyInvitesByOrg_idAndEmail(organization_id: string, emails: string[]): Promise<void>
 }
 
 export default class InviteRepo implements IInviteRepo {
@@ -53,5 +54,11 @@ export default class InviteRepo implements IInviteRepo {
         await this.db.invite.delete({
             where: { organization_id_email: { organization_id, email }},
         });
+    }
+
+    public async deleteManyInvitesByOrg_idAndEmail(organization_id: string, emails: string[]): Promise<void> {
+        await this.db.invite.deleteMany({
+            where: { organization_id: organization_id, AND: { email: { in: emails } }},
+        }).catch();
     }
 }
