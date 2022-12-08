@@ -27,12 +27,14 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
     const decoded = await Jwt.verifyJwt(jwt);
     if (!decoded) {
+        console.log('idToken:', "Failed to verify idToken");
         respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
         return;
     }
 
     const { sub, email, roles, orgs } = decoded as unknown as JwtPayload;
     if (!sub || !email || !roles || !orgs) {
+        console.log('idToken:', "Verified idToken but it didn't destructure with the correct keys");
         respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
         return;
     }
@@ -46,6 +48,8 @@ export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) 
         respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
         return;
     }
+
+    console.log("Authorization:", "Authorized Admin", req.user.email);
     next();
 }
 
@@ -54,6 +58,8 @@ export const authorizeSuperAdmin = (req: Request, res: Response, next: NextFunct
         respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
         return;
     }
+
+    console.log("Authorization:", "Authorized Super Admin", req.user.email);
     next();
 }
 
@@ -116,11 +122,12 @@ export const verifyInviteRequestBody = (req: Request, res: Response, next: NextF
         return;
     }
 
-    if ((new Set(emails).size !== emails.length)) {
-        respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.DUPLICATE_ENTRIES);
-        return;
-    }
+    // if ((new Set(emails).size !== emails.length)) {
+    //     respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.DUPLICATE_ENTRIES);
+    //     return;
+    // }
 
+    req.body.emails = Array.from(new Set(req.body.emails));
     next();
 }
 

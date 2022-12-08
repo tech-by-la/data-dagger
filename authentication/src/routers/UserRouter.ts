@@ -4,6 +4,7 @@ import {respondError} from "../util/helpers.js";
 import {HttpErrMsg, StatusCode} from "../util/enums.js";
 import {UserInfo} from "../util/interfaces.js";
 import {authorizeAdmin} from "../util/middleware.js";
+import Logger from "../util/logger.js";
 
 const router = Router();
 
@@ -22,6 +23,7 @@ router.get('/', authorizeAdmin, async (req, res) => {
     }
 
     if (!users || users.length === 0) {
+        Logger.error("UserRouter:", "Error - no users found when querying database");
         respondError(res, StatusCode.NOT_FOUND, HttpErrMsg.RESOURCE_NOT_FOUND);
     } else {
         res.send({users});

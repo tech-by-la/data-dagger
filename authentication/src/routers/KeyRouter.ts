@@ -2,6 +2,7 @@ import {Router} from 'express';
 import Jwt from "../security/jwt.js";
 import {respondError} from "../util/helpers.js";
 import {HttpErrMsg, StatusCode} from "../util/enums.js";
+import Logger from "../util/logger.js";
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router.get('/publickey', (req, res) => {
     const key = Jwt.getPublicJwtKey();
 
     if (!(key + "")) {
+        Logger.warn("KeyRouter:", "PublicKey is empty");
         respondError(res, StatusCode.NOT_FOUND, HttpErrMsg.RESOURCE_NOT_FOUND);
         return;
     }

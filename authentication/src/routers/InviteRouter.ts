@@ -14,6 +14,7 @@ import {
 import {authorizeOrgModerator, partitionEmails, respondError} from "../util/helpers.js";
 import db from "../database/DatabaseGateway.js";
 import {HttpErrMsg, StatusCode} from "../util/enums.js";
+import Logger from "../util/logger.js";
 
 const router = Router();
 
@@ -21,6 +22,7 @@ const router = Router();
  * fetch invites for logged-in user
  */
 router.get('/', async (req, res) => {
+    Logger.log("InviteRouter", "Fetching logged-in users's invites");
     const invites = await db.inviteRepo.findInvitesByEmail(req.user.email);
     res.send({ data: invites });
 });
@@ -30,6 +32,8 @@ router.get('/', async (req, res) => {
  */
 router.get('/:org_id', async (req, res) => {
     const { org_id } = req.params;
+
+    Logger.log("InviteRouter", "Fetching pending invites for org with ID", org_id);
 
     if (!org_id) {
         respondError(res, StatusCode.BAD_REQUEST, HttpErrMsg.INVALID_QUERY);

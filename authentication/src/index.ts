@@ -12,23 +12,25 @@ import AdminRouter from "./routers/AdminRouter.js";
 import InviteRouter from "./routers/InviteRouter.js";
 import UserRouter from "./routers/UserRouter.js";
 import {authenticate, authorizeAdmin} from "./util/middleware.js";
+import Logger from "./util/logger.js";
 
 db.initDb()
 .catch(err => {
-    console.error("\n" + ErrMsg.INIT_DB_FAIL + "\n");
-    console.error(err);
+    Logger.error("\n" + ErrMsg.INIT_DB_FAIL + "\n");
+    Logger.error(err);
     process.exit(1);
 });
 
 JwtUtil.verifyEnv()
 .catch(err => {
-    console.error("\n" + err);
+    Logger.error("\n" + err);
     process.exit(1);
 });
 
 const server = express();
 
 if (process.env.ENVIRONMENT === 'development') {
+    Logger.warn("WARNING:", "CORS is enabled");
     server.options('/api/auth', cors())
     server.use(cors({
         credentials: true,
@@ -52,5 +54,5 @@ server.get('/api/auth/status', (req, res) => res.send());
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log('Authentication Service came online on port', PORT);
+    Logger.log('Authentication Service came online on port', PORT);
 })

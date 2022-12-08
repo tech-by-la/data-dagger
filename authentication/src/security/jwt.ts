@@ -6,6 +6,7 @@ import {JwtUserPayload, RefreshTokenPayload, UserInfo} from "../util/interfaces.
 import {ErrMsg, Warnings} from "../util/enums.js";
 import db from '../database/DatabaseGateway.js';
 import Snowflakes from "../util/snowflakes.js";
+import Logger from "../util/logger.js";
 
 interface IJwtUtil {
     verifyEnv(): Promise<void>;
@@ -121,6 +122,7 @@ class JwtUtil implements IJwtUtil {
     }
 
     public signNewRefreshTokenFamily(user_id: string) {
+        Logger.log("JWT:", "Signing Refresh Token for user with id", user_id);
         const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
 
         return new Promise<string | null>((accept) => {
@@ -136,12 +138,17 @@ class JwtUtil implements IJwtUtil {
 
     public renewRefreshToken(user_id: string, old_token: RefreshToken) {
         const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
-
+        Logger.log("RefreshToken:", "Refreshing Token for user with id", user_id, "with old token", old_token);
         return new Promise<string | null>((accept) => {
             jwt.sign(payload, this.privateRefKey, { ...this.jwtSignOptions, subject: user_id}, async (error, encoded) => {
-                if (error || !encoded) accept(null);
+                if (error || !encoded) {
+                    Logger.log("RefreshToken", "Error -", error)
+                    accept(null);
+                }
                 else {
-                    await db.refreshTokenRepo.renewRefreshToken(old_token, payload.token);
+                    const newTokenn = await db.refreshTokenRepo.renewRefreshToken(old_token, payload.token);
+                    Logger.log("RefreshToken", "New Token -", newTokenn);
+                    Logger.log("RefreshToken", "Successfully renewed refresh token");
                     accept(encoded);
                 }
             });

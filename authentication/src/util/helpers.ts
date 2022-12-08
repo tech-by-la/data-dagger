@@ -3,10 +3,12 @@ import {Cookies, HttpErrMsg, StatusCode} from "./enums.js";
 import {AuthUser, UserInfo} from "./interfaces.js";
 import Jwt from "../security/jwt.js";
 import db from '../database/DatabaseGateway.js';
-import {RefreshToken} from "@prisma/client";
+import Logger from "./logger.js";
 
 export const respondError = (res: Response, code: StatusCode, message: string) => {
     const error = StatusCode[code].replaceAll("_", " ");
+
+    Logger.log("Responding with error:", code, error, message);
     res.status(code).send({
         code,
         error,
@@ -18,9 +20,12 @@ export const login = async (res: Response, user: UserInfo | null, refreshToken: 
     const jwt = await Jwt.signLoginJwt(user);
 
     if (!jwt || !refreshToken || !user) {
+        Logger.error("LoginHelper:", "Error - idToken, refreshToken or user is null");
         respondError(res, StatusCode.INTERNAL_SERVER_ERROR, HttpErrMsg.INTERNAL_ERROR);
         return false;
     }
+
+    Logger.log("LoginHelper:", "Logging in user with email", user.email);
 
     res.cookie(Cookies.ID_TOKEN, jwt, {
         maxAge: 1000 * 60 * 15, // 15 minutes
@@ -103,10 +108,12 @@ export const authorizeOrgModerator = async (res: Response, user: AuthUser, org_i
 
     // verify role
     if ((orgRole !== "OWNER" && orgRole !== "MODERATOR")) {
+        Logger.log("Authorization:", "Could not authorize", user.email, "as OWNER or MODERATOR in org with id", org_id);
         respondError(res, StatusCode.FORBIDDEN, HttpErrMsg.PERMISSION_DENIED);
         return;
     }
 
+    Logger.log("Authorization:", "Authorized user", user.email, "as", orgRole, "in org with id", org_id);
     return true;
 }
 
