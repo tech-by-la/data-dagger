@@ -22,11 +22,11 @@ export const handle: Handle = async ({ event, resolve }) => {
     return resolve(event);
 }
 
-// export const handleFetch: HandleFetch = ({ event, request, fetch }) => {
-//     if (request.url.startsWith(PUBLIC_API_URL)) {
-//         request.headers.set('cookie', event.request.headers.get('cookie') || '');
-//     }
-//
-//     return fetch(request);
-// }
-//
+export const handleFetch: HandleFetch = ({ event, request, fetch }) => {
+    if (request.url.startsWith(PUBLIC_API_URL)) {
+        request.headers.set('cookie', event.request.headers.get('cookie') || '');
+    }
+
+    return fetch(request);
+}
+
