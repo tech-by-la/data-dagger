@@ -26,7 +26,7 @@
         loading = true;
 
         const body = { org_id: $page.data.organization.data.id, emails }
-        const response = await safeFetch(PUBLIC_API_URL + '/auth/invite', body, 'POST');
+        const response = await safeFetch('/auth/invite', body, 'POST');
 
         const data = await response.json().catch();
         if (!response.ok) {
@@ -40,14 +40,11 @@
             return;
         }
 
-        if (response.ok) {
-            console.log(data);
-            const end = new Date();
-            setTimeout(() => {
-                emails = [''];
-                loading = false;
-            }, 1000 - (end.getTime() - start.getTime()));
-        }
+        const end = new Date();
+        setTimeout(() => {
+            emails = [''];
+            loading = false;
+        }, 1000 - (end.getTime() - start.getTime()));
     }
 </script>
 

@@ -1,7 +1,17 @@
 import {PUBLIC_API_URL} from "$env/static/public";
 
-export const handleFetch = async (URL: string, body: object, method = 'GET', useCredentials = false) => {
-    return await fetch(URL, {
+/*
+ * Fetch method that automatically attempt to renew idToken if the request return unauthorized and retries the request
+ * @params path: string, body: object, method: string (default: GET)
+ */
+export const safeFetch = async (path: string, body: object, method = 'GET') => {
+    const response = await handleFetch(path, body, method, true);
+    if (response.status !== 401) return response;
+    await refreshIdToken();
+    return handleFetch(path, body, method, true);
+}
+const handleFetch = async (path: string, body: object, method = 'GET', useCredentials = false) => {
+    return await fetch(PUBLIC_API_URL + path, {
         method,
         headers: { "Content-Type": "application/json" },
         credentials: useCredentials ? "include" : "omit",
@@ -9,16 +19,9 @@ export const handleFetch = async (URL: string, body: object, method = 'GET', use
     });
 }
 
-export const refreshIdToken = async () => {
+const refreshIdToken = async () => {
     return await fetch(PUBLIC_API_URL + '/auth/renew', {
         method: 'POST',
         credentials: "include"
     });
-}
-
-export const safeFetch = async (URL: string, body: object, method = 'GET') => {
-    const response = await handleFetch(URL, body, method, true);
-    if (response.status !== 401) return response;
-    await refreshIdToken();
-    return handleFetch(URL, body, method, true);
 }
