@@ -72,7 +72,7 @@ export const actions: Actions = {
 		let userID = ""
 		try {
 			const result = loginSchema.parse(data);
-		} catch (err) {
+		} catch (err: any) {
 			console.log('-------------------Parse Form Error--------------------');
 			console.log(err);
 			const error = err.issues[0];
@@ -122,7 +122,7 @@ export const actions: Actions = {
 		const data = Object.fromEntries(userInfo);
 		try {
 			const result = registerSchema.parse(data);
-		} catch (err) {
+		} catch (err: any) {
 			console.log('-------------------Parse Form Error--------------------');
 			console.log(err);
 			return invalid(400, { invalid: true, register: true, message: err.issues[0].message });

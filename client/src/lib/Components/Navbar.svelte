@@ -5,8 +5,6 @@
     import Button from "$lib/Components/Button.svelte";
     import { page } from '$app/stores';
 
-    console.log($page.form);
-
     let registerPromptController = ($page.form?.invalid && $page.form?.register) || false
     function toggleTheRegisterPrompt() {
         registerPromptController ? registerPromptController=false : registerPromptController=true
