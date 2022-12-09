@@ -160,26 +160,26 @@ export const actions: Actions = {
 		}
 		throw redirect(302, '/user/1');
 	},
-	logout: async ({fetch, cookies}) => {
-		try {
-			const fetchOptions = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					accept: 'application/json'
-				},
-			};
-			const response = await fetch(PUBLIC_API_URL + '/auth/logout', fetchOptions);
-			console.log(response.status)
-			cookies.delete('idToken')
-			console.log("You were logged out")
-			return invalid(400, { invalid: true });
-		} catch (err) {
-			console.log('-------------------SERVER ERROR--------------------');
-			console.log(err);
-		}
-		cookies.delete('idToken')
-		console.log("You were logged out")
-
-	}
+	// logout: async ({fetch, cookies}) => {
+	// 	try {
+	// 		const fetchOptions = {
+	// 			method: 'POST',
+	// 			headers: {
+	// 				'Content-Type': 'application/json',
+	// 				accept: 'application/json'
+	// 			},
+	// 		};
+	// 		const response = await fetch(PUBLIC_API_URL + '/auth/logout', fetchOptions);
+	// 		console.log(response.status)
+	// 		cookies.delete('idToken')
+	// 		console.log("You were logged out")
+	// 		return invalid(400, { invalid: true });
+	// 	} catch (err) {
+	// 		console.log('-------------------SERVER ERROR--------------------');
+	// 		console.log(err);
+	// 	}
+	// 	cookies.delete('idToken')
+	// 	console.log("You were logged out")
+	//
+	// }
 };

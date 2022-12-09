@@ -69,7 +69,7 @@
 {#if logoutPromptController}
     <Prompt toggle={toggleTheLogoutPrompt} >
        <InputForm formFunction="/logout" formName="Logout" />
-       <!-- <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Close"}></Button> -->
+<!--        <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Close"}></Button> -->
     </Prompt>
 {/if}
 {#if registerPromptController}

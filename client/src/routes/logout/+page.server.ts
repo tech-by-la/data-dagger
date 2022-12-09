@@ -8,23 +8,28 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
     default: async ({fetch, cookies}) => {
-		try {
-			const fetchOptions = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					accept: 'application/json'
-				},
-			};
-			const response = await fetch(PUBLIC_API_URL + '/auth/logout', fetchOptions);
-			cookies.delete('idToken')
-			cookies.delete('refreshToken')
-			console.log("You were logged out")
-			return invalid(400, { invalid: true });
-		} catch (err) {
-			console.log('-------------------SERVER ERROR--------------------');
-			console.log(err);
-		}
+
+		const fetchOptions = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				accept: 'application/json'
+			},
+		};
+
+		await fetch(PUBLIC_API_URL + '/auth/logout', fetchOptions)
+			.then(res => console.log('Logout response:', res.status, res.statusText))
+			.catch(err => console.log('Logout error:', err));
+
+		cookies.delete('idToken')
+		cookies.delete('refreshToken')
+		// console.log("You were logged out")
+		throw redirect(302, '/');
+
+		// } catch (err) {
+		// 	console.log('-------------------SERVER ERROR--------------------');
+		// 	console.log(err);
+		// }
 
 	}
 };
