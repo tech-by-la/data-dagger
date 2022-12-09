@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "vite build --mode production",
 		"preview": "vite preview",
 		"test": "playwright test",
 		"start": "ORIGIN=http://185.163.127.199 node ./build/",
