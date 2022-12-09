@@ -1,30 +1,21 @@
-<script lang="ts"> 
-import FillerText from "$lib/Components/FillerText.svelte"
-import Button from "$lib/Components/Button.svelte";
-import Prompt from "$lib/Components/Prompt.svelte";
-import InputForm from "$lib/Components/InputForm.svelte";
-import type { PageData, ActionData } from './$types';
-// import { page } from "$app/stores";
+<script lang="ts">
+    import FillerText from "$lib/Components/FillerText.svelte"
+    import Button from "$lib/Components/Button.svelte";
+    import Prompt from "$lib/Components/Prompt.svelte";
+    import InputForm from "$lib/Components/InputForm.svelte";
+    import { page } from "$app/stores";
 
-export let data: PageData
-const text = data.fillerText
-const text2 = data.fillerText2
-const text3 = data.fillerText3
+    const text = $page.data.fillerText
+    const text2 = $page.data.fillerText2
+    const text3 = $page.data.fillerText3
 
-const user = data.user?.email
+    const user = $page.data.user?.email
 
+    let pagePromptController = false;
+    function toggleThePrompt() {
+        pagePromptController ? pagePromptController=false : pagePromptController=true
+    }
 
-
-
-
-
-
-
-let pagePromptController = false;
-function toggleThePrompt() {
-    pagePromptController ? pagePromptController=false : pagePromptController=true
-} 
-        
 </script>
 
 {#if pagePromptController}
@@ -33,7 +24,7 @@ function toggleThePrompt() {
         <Button btnClick={toggleThePrompt} btnTitle={"Close"}></Button>
     </Prompt>
 {/if}
-    
+
 <div class="page-con">
 
     <div class="main-con">
@@ -48,7 +39,7 @@ function toggleThePrompt() {
         </div>
         <div class="text-con-4">
             <FillerText/>
-        </div>   
+        </div>
         <div class="text-con-5">
             <FillerText/>
         </div>
@@ -57,20 +48,20 @@ function toggleThePrompt() {
     <div class="side-con">
         <div class="text-con-6">
             <FillerText/>
-        </div> 
+        </div>
         <div class="button-con">
             <Button btnClick ={toggleThePrompt} btnTitle="Get Started"></Button>
-        </div> 
-    </div>  
+        </div>
+    </div>
 
 </div>
 
 
-    
-    
+
+
 
 <style>
-    .main-con div, .side-con div{  
+    .main-con div, .side-con div{
         border: 5px #1e18444b solid;
         border-radius: 0px;
         margin: 10px 10px 0px 10px;

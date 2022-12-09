@@ -22,13 +22,13 @@ const registerSchema = z
 			.email({ message: 'Must Be valid Email' }),
 		password: z
 			.string({ required_error: 'Password required' })
-			.min(4, { message: 'Password must be atleast 4 character long' })
+			.min(6, { message: 'Password must be at least 6 character long' })
 			.max(64, { message: 'Password to long' }),
 		confirm_password: z
 			.string({ required_error: 'Confirm password required' })
-			.min(4, { message: 'Password must be atleast 4 character long' })
+			.min(6, { message: 'Password must be at least 6 character long' })
 			.max(64, { message: 'Password to long' }),
-		terms: z.enum(['on'])
+		terms: z.enum(['on'], { required_error: "Please accept to sell your soul!" })
 	})
 	.superRefine(({ confirm_password, password }, ctx) => {
 		if (confirm_password !== password) {
@@ -41,7 +41,7 @@ const registerSchema = z
 
 const loginSchema = z.object({
 	email: z.string().min(1).max(64).email(),
-	password: z.string().min(4).max(64)
+	password: z.string().min(6).max(64)
 });
 
 // This will laater link to our translations database
@@ -75,7 +75,14 @@ export const actions: Actions = {
 		} catch (err) {
 			console.log('-------------------Parse Form Error--------------------');
 			console.log(err);
-			return invalid(400, { invalid: true });
+			const error = err.issues[0];
+			let message = error.message;
+			const minimumOne = error.minimum === 1;
+			message = message
+				.replace('String', minimumOne ? 'Email' : 'Password')
+				.replace('(s)', minimumOne ? '' : 's');
+
+			return invalid(400, { invalid: true, login: true, message: message || '' });
 		}
 		try {
 			const loginData = JSON.stringify({
@@ -94,8 +101,13 @@ export const actions: Actions = {
 
 			const response = await fetch(PUBLIC_API_URL + '/auth/login', fetchOptions);
 			const res = await response.json();
-			userID=res.id
 
+			if (!response.ok) {
+				console.log(res);
+				return invalid(res.code, { invalid: true, login: true, message: res.message });
+			}
+
+			userID = res.id
 			cookies.set('idToken', res.idToken, { maxAge: 900, path: '/', httpOnly: true, secure: false });
 			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true, secure: false });
 		} catch (err) {
@@ -113,7 +125,7 @@ export const actions: Actions = {
 		} catch (err) {
 			console.log('-------------------Parse Form Error--------------------');
 			console.log(err);
-			return invalid(400, { invalid: true });
+			return invalid(400, { invalid: true, register: true, message: err.issues[0].message });
 		}
 		try {
 			const loginData = JSON.stringify({
@@ -134,6 +146,11 @@ export const actions: Actions = {
 
 			const response = await fetch(PUBLIC_API_URL + '/auth/register', fetchOptions);
 			const res = await response.json();
+
+			if (!response.ok) {
+				return invalid(401, { invalid: true, register: true, message: res.message });
+			}
+
 			cookies.set('idToken', res.idToken, { maxAge: 900, path: '/', httpOnly: true });
 			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true });
 		} catch (err) {

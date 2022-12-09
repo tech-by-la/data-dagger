@@ -5,7 +5,9 @@
     import Button from "$lib/Components/Button.svelte";
     import { page } from '$app/stores';
 
-    let registerPromptController = false
+    console.log($page.form);
+
+    let registerPromptController = ($page.form?.invalid && $page.form?.register) || false
     function toggleTheRegisterPrompt() {
         registerPromptController ? registerPromptController=false : registerPromptController=true
     }
@@ -13,7 +15,7 @@
     function toggleTheLogoutPrompt() {
         logoutPromptController ? logoutPromptController=false : logoutPromptController=true
     }
-    let loginPromptController = false
+    let loginPromptController = ($page.form?.invalid && $page.form?.login) || false
     function toggleTheLoginPrompt() {
         loginPromptController ? loginPromptController=false : loginPromptController=true
     }
