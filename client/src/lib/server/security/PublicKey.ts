@@ -14,16 +14,19 @@ class PublicKey {
     }
 
     private async fetchJwtKey(): Promise<Buffer> {
-        try {
-            const response = await fetch( PUBLIC_API_URL + '/auth/keys/publickey');
-            console.log(response);
-            if (response.ok) this.jwtKey = Buffer.from(await response.text());
-            return this.jwtKey;
-        } catch (err) {
-            console.log(err);
-            return this.jwtKey;
-        }
 
+        const response = await fetch( PUBLIC_API_URL + '/auth/keys/publickey');
+
+        if (!response.ok) console.log("Public Key Fetch Error", response);
+
+        this.jwtKey = Buffer.from(
+            await response.text().catch(err => {
+                console.log('Public Key Reponse Decode Error:', err);
+                return ''
+            })
+        );
+        
+        return this.jwtKey;
     }
 }
 
