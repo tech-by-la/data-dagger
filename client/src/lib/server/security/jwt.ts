@@ -14,23 +14,28 @@ export const verifyJwt = async (token: string | undefined) => {
     if (!token) return null;
 
     const publicKey = await PublicKey.getJwtKey();
+    if (!publicKey) {
+        console.log('idToken Verify Error:', "No publickey");
+        return null;
+    }
     return new Promise((accept) => {
         jwt.verify(token, publicKey, jwtVerifyOptions, (error, decoded) => {
-            if (error) accept(null);
+            if (error) {
+                console.log("idToken Verify Error", error);
+                accept(null);
+            }
             else accept(decoded);
         });
     });
 }
 
 export const renewJwt = async (event: RequestEvent): Promise<LoginResponse | null> => {
-    try {
-        return await event.fetch(PUBLIC_API_URL + '/auth/renew', {
-            method: 'POST',
-        })
-            .then(res => res.json())
-            .then(data => data);
-    } catch (err) {
-        console.log(err);
-        return null;
-    }
+    const response = await event.fetch(PUBLIC_API_URL + '/auth/renew', {
+        method: 'POST',
+    });
+
+    if (response.ok) return await response.json();
+
+    console.log('idToken Renew Error:', response);
+    return null;
 }

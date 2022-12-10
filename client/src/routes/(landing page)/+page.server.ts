@@ -40,8 +40,8 @@ const registerSchema = z
 	});
 
 const loginSchema = z.object({
-	email: z.string().min(1).max(64).email(),
-	password: z.string().min(6).max(64)
+	email: z.string().min(1, { message: 'Email cannot be empty' }).email(),
+	password: z.string().min(1, { message: 'Password cannot be empty'}).max(64)
 });
 
 // This will laater link to our translations database
@@ -76,13 +76,7 @@ export const actions: Actions = {
 			console.log('-------------------Parse Form Error--------------------');
 			console.log(err);
 			const error = err.issues[0];
-			let message = error.message;
-			const minimumOne = error.minimum === 1;
-			message = message
-				.replace('String', minimumOne ? 'Email' : 'Password')
-				.replace('(s)', minimumOne ? '' : 's');
-
-			return invalid(400, { invalid: true, login: true, message: message || '' });
+			return invalid(400, { invalid: true, login: true, message: error.message || '' });
 		}
 		try {
 			const loginData = JSON.stringify({
