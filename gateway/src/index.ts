@@ -1,8 +1,9 @@
-import http from "http";
 import httpProxy from 'http-proxy';
+import express from 'express';
 import Util from "./util.js";
 import {Path} from "./enums.js";
 
+const server = express();
 const proxy = httpProxy.createProxyServer({});
 
 // Target IPs
@@ -16,15 +17,11 @@ const targets = {
 // Verify IPs
 Util.verifyTargets(targets);
 
-const PORT = process.env.PORT || 3000;
-http.createServer((req, res) => {
+server.use
+server.use((req, res) => {
     console.log(Util.getDate(), "Request made to", req.url);
 
-    const path = req.url?.split('/'); // "", "/[1]", "/[2]", "/[3]", etc.
-    if (!path) {
-        res.writeHead(404).end();
-        return;
-    }
+    const path = req.url.split('/'); // "", "/[1]", "/[2]", "/[3]", etc.
 
     if (path[1] === Path.API) {
         switch (path[2]) { // service
@@ -38,10 +35,10 @@ http.createServer((req, res) => {
                 proxy.web(req, res, { target: targets.TRANSLATIONS });
                 return;
             case Path.STATUS:
-                res.end();
+                res.send();
                 return;
             default:
-                res.writeHead(404).end();
+                res.status(404).send();
                 return;
         }
 
@@ -53,9 +50,12 @@ http.createServer((req, res) => {
 
     proxy.on('error', (err) => {
         console.log(Util.getDate(), err);
-        res.writeHead(404).end();
+        res.status(404).send();
         return;
     });
-}).listen(PORT, () => {
+})
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
     console.log('API Gateway came online on port', PORT);
 });

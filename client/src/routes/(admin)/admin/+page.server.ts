@@ -1,6 +1,6 @@
-import type {ServerLoad} from "@sveltejs/kit";
+import type {PageServerLoad} from "./$types";
 import {redirect} from "@sveltejs/kit";
 
-export const load: ServerLoad = () => {
+export const load: PageServerLoad = () => {
     throw redirect(302, '/admin/dashboard');
 }

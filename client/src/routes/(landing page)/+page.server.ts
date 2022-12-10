@@ -93,6 +93,7 @@ export const actions: Actions = {
 				body: loginData
 			};
 
+			console.log("Login:", "Sending request to", PUBLIC_API_URL + '/auth/login');
 			const response = await fetch(PUBLIC_API_URL + '/auth/login', fetchOptions);
 			const res = await response.json();
 
@@ -107,7 +108,7 @@ export const actions: Actions = {
 		} catch (err) {
 			console.log('-------------------SERVER ERROR--------------------');
 			console.log(err);
-			return invalid(400, { invalid: true });
+			return invalid(400, { invalid: true, login: true, message: "Something went wrong. We are Sorry" });
 		}
 		throw redirect(302, '/user/' +  userID );
 	},

@@ -23,14 +23,14 @@ export const verifyJwt = async (token: string | undefined) => {
 }
 
 export const renewJwt = async (event: RequestEvent): Promise<LoginResponse | null> => {
-    try {
-        return await event.fetch(PUBLIC_API_URL + '/auth/renew', {
-            method: 'POST',
-        })
-            .then(res => res.json())
-            .then(data => data);
-    } catch (err) {
-        console.log(err);
+    const response = await event.fetch(PUBLIC_API_URL + '/auth/renew', {
+        method: 'POST',
+    });
+
+    if (!response.ok) {
+        console.log("Renew idToken Error", response);
         return null;
     }
+
+    return await response.json();
 }

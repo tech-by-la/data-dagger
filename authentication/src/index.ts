@@ -31,10 +31,11 @@ const server = express();
 
 if (process.env.ENVIRONMENT === 'development') {
     Logger.warn("WARNING:", "CORS is enabled");
-    server.options('/api/auth', cors())
+    server.options('/api/auth', cors());
     server.use(cors({
         credentials: true,
         origin: (origin, callback) => {
+
             callback(null, true);
         }
     }));

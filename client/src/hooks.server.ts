@@ -10,10 +10,11 @@ export const handle: Handle = async ({ event, resolve }) => {
     // renew idToken using the refreshToken
     if (!user && refreshToken) {
         const response: LoginResponse | null = await renewJwt(event);
+        console.log("Handle Renew idToken", response);
         if (response) {
-            event.cookies.set('idToken', response.idToken, { maxAge: response.expiresIn, path: '/' });
-            event.cookies.set('refreshToken', response.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/' });
             user = await verifyJwt(response.idToken);
+            event.cookies.set('idToken', response.idToken, { maxAge: 900, path: '/', httpOnly: true, secure: false });
+            event.cookies.set('refreshToken', response.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true, secure: false });
         } else {
             event.cookies.delete('idToken');
             event.cookies.delete('refreshToken');

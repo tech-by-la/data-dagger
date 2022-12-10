@@ -21,11 +21,11 @@ class PublicKey {
 
         this.jwtKey = Buffer.from(
             await response.text().catch(err => {
-                console.log('Public Key Reponse Decode Error:', err);
+                console.log('Public Key Response Decode Error:', err);
                 return ''
             })
         );
-        
+
         return this.jwtKey;
     }
 }
