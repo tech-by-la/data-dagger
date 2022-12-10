@@ -97,7 +97,7 @@ router.post('/logout', filterAuthCookies, async (req, res) => {
     let refreshToken = req.cookies[Cookies.REFRESH_TOKEN];
 
     if (refreshToken) {
-        refreshToken = await db.refreshTokenRepo.findRefreshTokenByToken(refreshToken)
+        await db.refreshTokenRepo.findRefreshTokenByToken(refreshToken)
             .then(token => {
                 if (token) {
                     db.refreshTokenRepo.deleteRefreshTokensByUserAndFamily(token.user_id, token.family);
@@ -106,7 +106,6 @@ router.post('/logout', filterAuthCookies, async (req, res) => {
             });
     }
 
-    Logger.log("AuthRouter:", "User with id", refreshToken.user_id, "logged out");
     expireCookies(res, Cookies.ID_TOKEN, Cookies.REFRESH_TOKEN);
     res.status(StatusCode.NO_CONTENT).send();
 });
