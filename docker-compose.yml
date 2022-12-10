@@ -26,7 +26,7 @@ services:
     expose:
       - ${INT_PORT}
     ports:
-      - ${INT_PORT}:${INT_PORT}
+      - ${EXT_PORT}:${INT_PORT}
 
   authentication:
     container_name: authentication
