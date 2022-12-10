@@ -14,6 +14,9 @@ export const handle: Handle = async ({ event, resolve }) => {
             event.cookies.set('idToken', response.idToken, { maxAge: response.expiresIn, path: '/' });
             event.cookies.set('refreshToken', response.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/' });
             user = await verifyJwt(response.idToken);
+        } else {
+            event.cookies.delete('idToken');
+            event.cookies.delete('refreshToken');
         }
     }
 
