@@ -9,7 +9,7 @@ services:
     networks:
       - dd-net
     ports:
-      - ${EXT_PORT}:${INT_PORT}
+      - ${INT_PORT}:${INT_PORT}
     environment:
       PORT: ${INT_PORT}
       CLIENT: http://client:${INT_PORT}
@@ -25,6 +25,8 @@ services:
       - dd-net
     expose:
       - ${INT_PORT}
+    ports:
+      - ${INT_PORT}:${INT_PORT}
 
   authentication:
     container_name: authentication
