@@ -20,7 +20,7 @@
 
 {#if pagePromptController}
     <Prompt toggle={toggleThePrompt}>
-        <InputForm formFunction="?/register" formName="Register" />
+        <InputForm formFunction="/register" formName="Register" />
         <Button btnClick={toggleThePrompt} btnTitle={"Close"}></Button>
     </Prompt>
 {/if}

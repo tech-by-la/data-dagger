@@ -61,7 +61,7 @@
 
 {#if loginPromptController}
     <Prompt toggle={toggleTheLoginPrompt} >
-       <InputForm formFunction="?/login" formName="Login" />
+       <InputForm formFunction="/login" formName="Login" />
        <Button btnClick={toggleTheLoginPrompt} btnTitle={"Close"}></Button>
     </Prompt>
 
@@ -69,12 +69,12 @@
 {#if logoutPromptController}
     <Prompt toggle={toggleTheLogoutPrompt} >
        <InputForm formFunction="/logout" formName="Logout" />
-<!--        <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Close"}></Button> -->
+       <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Close"}></Button>
     </Prompt>
 {/if}
 {#if registerPromptController}
     <Prompt toggle={toggleTheRegisterPrompt}>
-        <InputForm formFunction="?/register" formName="Register" />
+        <InputForm formFunction="/register" formName="Register" />
         <Button btnClick={toggleTheRegisterPrompt} btnTitle={"Close"}></Button>
     </Prompt>
 {/if}
