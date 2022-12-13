@@ -6,6 +6,7 @@ export interface IOrgRepo {
     findOrgById(id: string): Promise<Organization | null>;
     findOrgByName(name: string): Promise<Organization | null>;
     findManyOrgsByIds(ids: string[]): Promise<Organization[]>;
+    findManyOrgsByUser_id(id: string): Promise<Organization[]>;
     createOrg(creator_id: string, name: string, contact_email: string, contact_phone?: string): Promise<Organization | null>;
     updateOrg(org: Organization): Promise<Organization | null>;
     upsertOrgUser(organization_id: string, user_id: string): Promise<OrgUser | null>;
@@ -43,6 +44,12 @@ export default class OrgRepo implements IOrgRepo {
         return await this.db.organization.findMany({
             where: { id: { in: ids } }
         });
+    }
+
+    public async findManyOrgsByUser_id(id: string) {
+        return await this.db.organization.findMany({
+            where: { members: { some: { user_id: id } } }
+        })
     }
 
     // Creates a new organization and grants the user role of Owner

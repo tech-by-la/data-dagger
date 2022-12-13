@@ -14,8 +14,7 @@ const router = Router();
 router.get('/', async (req, res) => {
     Logger.log('OrgRouter:', "Fetching logged-in user's organization");
 
-    const orgIds = req.user.orgs.map(org => org.org_id);
-    const orgs = await db.orgRepo.findManyOrgsByIds(orgIds);
+    const orgs = await db.orgRepo.findManyOrgsByUser_id(req.user.id);
     res.send(orgs);
 });
 
