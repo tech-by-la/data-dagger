@@ -17,7 +17,7 @@
     const handleAddInput = () => setTimeout(() => emails = [...emails, '']);
     const handleRemoveInput = (index:number) => { emails.splice(index, 1); emails = emails};
     const handleReset = () => emails = [''];
-    const focus = e => e.focus();
+    const focus = (e: HTMLInputElement) => e.focus();
 
     const handleSubmit = async () => {
         if (emails.includes('')) return;

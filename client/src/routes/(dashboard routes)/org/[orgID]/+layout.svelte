@@ -11,9 +11,10 @@
     <div class="con-1">{organization.name}</div>
     <div class="con-2">
       <div class="con-2-1">
-<!--        <Button btnClick= {() => goto(`/user/${organization.id}/projects`)} btnTitle="Projects" width = "100%"></Button>-->
         <Button btnClick= {() => goto(`/org/${organization.id}/invite`)} btnTitle="Invite Members" width = "100%"></Button>
         <Button btnClick= {() => goto(`/org/${organization.id}/invite/pending`)} btnTitle="Pending Invites" width = "100%"></Button>
+        <Button btnClick= {() => goto(`/user/${user.sub}/orgs`)} btnTitle="Organizations" width = "100%"></Button>
+        <Button btnClick= {() => goto(`/user/${user.sub}/projects`)} btnTitle="Projects" width = "100%"></Button>
       </div>
       <div class="con-2-2">
         <slot></slot>
