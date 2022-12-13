@@ -16,6 +16,8 @@ router.get('/:page', async (req, res) => {
     const locale = req.query.locale as string || 'en';
 
     let translations: {[key: string]: string} = {};
+
+    // remap translations
     for (const result of results) {
         if (result.translations && typeof result.key === "string") {
             const tl = result.translations as {[key:string]: string}

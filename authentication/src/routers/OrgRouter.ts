@@ -26,15 +26,15 @@ router.get('/:org_id', async (req, res) => {
 
     const org_id = req.params.org_id;
 
+    const org = await db.orgRepo.findOrgById(org_id);
+
     // verify user is member of org
-    const isMember = req.user.orgs.find(o => o.org_id === org_id);
+    const isMember = org?.members.find(m => m.user_id === req.user.id);
     if (!isMember) {
         Logger.log("OrgRouter:", "Error - user is not a member of the organization");
         respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.UNAUTHORIZED);
         return;
     }
-
-    const org = await db.orgRepo.findOrgById(org_id);
 
     res.send({ data: org });
 });

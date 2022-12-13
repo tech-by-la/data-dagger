@@ -7,13 +7,15 @@ info:
 
 tags:
   - "Authentication"
+  - "Authentication | Users"
   - "Authentication | Keys"
   - "Authentication | Organizations"
   - "Authentication | Invites"
   - "Authentication | Admin"
+  - "Translations"
 
 paths:
-  # /api/auth
+  # AUTHENTICATION SERVICE
 
   # /
   /api/auth/login:
@@ -122,6 +124,20 @@ paths:
         '404':
           description: "Not Found: No users found"
         # /keys
+
+  /api/auth/users/self:
+    get:
+      tags:
+        - "Authentication | Users"
+      summary: "Get user data for a logged-in user"
+      description: "Returns user data with roles and organizations for a logged-in user"
+      responses:
+        '200':
+          description: "Ok"
+        '401':
+          description: "Unauthorized: User could not be authenticated."
+
+  # /keys
   /api/auth/keys/publickey:
     get:
       tags:
@@ -143,6 +159,17 @@ paths:
 
   # /orgs
   /api/auth/orgs:
+    get:
+      tags:
+        - "Authentication | Organizations"
+      summary: "Get all organizations for a logged-in user"
+      description: "Return a list of all organizations for a logged-in user"
+      responses:
+        '200':
+          description: "A list of invites"
+        '401':
+          description: "Unauthorized: User could not be authenticated."
+
     post:
       tags:
         - "Authentication | Organizations"
@@ -172,32 +199,32 @@ paths:
         '409':
           description: "Conflict: The organization name is unavailable."
 
+  /api/auth/{org_id}:
+    get:
+      tags:
+        - "Authentication | Organizations"
+      summary: "Get organization data for a certain organization"
+      description: "Returns an organization's data if the logged-in user is authorized as a member of the requested organization"
+      responses:
+        '200':
+          description: "Organization data"
+        '401':
+          description: "Unauthorized: User could not be authenticated or authorized as a member or the requested organization."
+
+
   # /invite
-  /api/auth/invite/{org_id}:
+  /api/auth/invite:
     get:
       tags:
         - "Authentication | Invites"
-      summary: "Get invitations"
-      description: "Returns all pending inviations for a given organization. (NOTE: only an org OWNER or MODERATOR can access this information)"
-      parameters:
-        - in: path
-          name: org_id
-          description: "the id for an organization"
+      summary: "Get logged-in user's invites"
+      description: "Return a list of all invites for a logged-in user"
       responses:
         '200':
-          description: "A list of invites"
-          content:
-            application/json:
-              schema:
-                type: array
-                example:
-                  { data: [{ organization_id: "1234", email: "bob@johnson.com" }, { organization_id: "1234", email: "john@bobson.com" }]}
+          description: "Ok"
         '401':
           description: "Unauthorized: User could not be authenticated."
-        '403':
-          description: "Forbidden: The user that made the request is not OWNER or MODERATOR in the organization."
 
-  /api/auth/invite:
     post:
       tags:
         - "Authentication | Invites"
@@ -228,17 +255,17 @@ paths:
                   invalid: "An array of invalid email addresses"
                   alreadyJoined: "An array of emails by users that have already joined the organization"
                   tooEarly: "An array of emails that have active invitations sent less than 24 hours ago"
-
         '400':
           description: "Bad Request: The request includes illegal properties (not 'org_id' or 'emails'), 'org_id' or 'email' was not provided, properties are not of the correct type, or there are duplicate emails in the request"
         '401':
           description: "Unauthorized: User could not be authenticated."
         '403':
           description: "Forbidden: The user that made the request is not OWNER or MODERATOR in the organization."
+
     delete:
       tags:
         - "Authentication | Invites"
-      summary: "Delete an invitation"
+      summary: "Delete multiple invitations"
       description: "Endpoint for organization owners and moderators to delete pending invitations"
       parameters:
         - in: body
@@ -247,17 +274,41 @@ paths:
             type: object
             required:
               - org_id
-              - email
+              - emails
             properties:
               org_id:
                 type: string
-              email:
-                type: string
+              emails:
+                type: object
       responses:
         '204':
           description: "No Content: The request was processed successfully"
         '400':
           description: "Bad Request: the request body did not include the correct fields or types."
+        '401':
+          description: "Unauthorized: User could not be authenticated."
+        '403':
+          description: "Forbidden: The user that made the request is not OWNER or MODERATOR in the organization."
+
+  /api/auth/invite/{org_id}:
+    get:
+      tags:
+        - "Authentication | Invites"
+      summary: "Get invitations"
+      description: "Returns all pending inviations for a given organization. (NOTE: only an org OWNER or MODERATOR can access this information)"
+      parameters:
+        - in: path
+          name: org_id
+          description: "the id for an organization"
+      responses:
+        '200':
+          description: "A list of invites"
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                  { data: [ { organization_id: "1234", email: "bob@johnson.com" }, { organization_id: "1234", email: "john@bobson.com" } ] }
         '401':
           description: "Unauthorized: User could not be authenticated."
         '403':
@@ -389,3 +440,84 @@ paths:
           description: "Forbidden: Invalid role name or it was attempted to remove the USER role"
         '404':
           description: "Not Found: No user found with that id."
+
+  # TRANSLATION SERVICE
+  /api/tl:
+    get:
+      tags:
+        - "Translations"
+      summary: "Get all translations in the database"
+      description: "Returns all translations in the database if the user is super admin"
+      responses:
+        '200':
+          description: "Ok"
+        '401':
+          description: "Unauthorized: User could not be authenticated or authorized."
+    put:
+      tags:
+        - "Translations"
+      summary: "Create or update a translation"
+      description: "Endpoint for a super admin to update (or create if doesn't exist) a translation"
+      parameters:
+        - in: body
+          name: "request body"
+          schema:
+            type: object
+            required:
+              - page
+              - key
+              - translations
+            properties:
+              page:
+                type: string
+              key:
+                type: string
+              translations:
+                type: object
+      responses:
+        '200':
+          description: "Ok: translation created/updated"
+        '400':
+          description: "Bad Request: request body had faulty data"
+        '401':
+          description: "Unauthorized: User could not be authenticated or authorized."
+    delete:
+      tags:
+        - "Translations"
+      summary: "Delete translations"
+      description: "Deletes multiple translations from the database if the logged-in user is super admin"
+      parameters:
+        - in: body
+          name: "request body"
+          schema:
+            required:
+              - ids
+            properties:
+              ids:
+                type: object
+      responses:
+        '204':
+          description: "No Content: successfully deleted translations"
+        '400':
+          description: "Bad Request: Request body did not container required properties or they were an invalid type"
+        '401':
+          description: "Unauthorized: User could not be authenticated or authorized."
+
+  /api/tl/{page}:
+    get:
+      tags:
+        - "Translations"
+      summary: "Get translations for a certain page"
+      description: "Returns all translations belonging to a specific page"
+      parameters:
+        - in: query
+          name: "locale"
+          description: "A locale (returns 'en' by default if not specified)"
+          schema:
+            properties:
+              locale:
+                type: string
+      responses:
+        '200':
+          description: "Ok: A list (possibly empty) for the requested page"
+
