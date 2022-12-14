@@ -1,12 +1,9 @@
-import {PUBLIC_API_URL} from "$env/static/public";
 import type {PageServerLoad} from "./$types";
+import db from "$lib/server/database/DatabaseGateway";
 
-export const load: PageServerLoad = ({fetch}) => {
+export const load: PageServerLoad = () => {
     const fetchUsers = async () => {
-        return await fetch(PUBLIC_API_URL + '/auth/users')
-            .then(res => res.json())
-            .then(data => data.users)
-            .catch(() => []);
+        return await db.userRepo.getAll();
     }
 
     return {

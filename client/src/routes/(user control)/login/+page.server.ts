@@ -1,7 +1,11 @@
 import type { PageServerLoad } from './$types';
-import { invalid, redirect, type Actions } from '@sveltejs/kit';
-import { PUBLIC_API_URL } from '$env/static/public';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
+import bcrypt from "bcrypt";
 import { z } from 'zod';
+
+import db from '$lib/server/database/DatabaseGateway';
+import Logger from "$lib/server/util/Logger";
+import Jwt from "$lib/server/security/jwt";
 
 const loginSchema = z.object({
 	email: z.string().min(1, { message: 'Email cannot be empty' }).email(),
@@ -13,50 +17,53 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, fetch, cookies }) => {
+	default: async ({ request, cookies }) => {
 		const userInfo = await request.formData();
 		const data = Object.fromEntries(userInfo);
-		let userID = ""
+
 		try {
-			const result = loginSchema.parse(data);
+			loginSchema.parse(data);
 		} catch (err: any) {
 			console.log('-------------------Parse Form Error--------------------');
 			console.log(err);
 			const error = err.issues[0];
-			return invalid(400, { invalid: true, login: true, message: error.message || '' });
+			return fail(400, { invalid: true, login: true, message: error.message || '' });
 		}
-		try {
-			const loginData = JSON.stringify({
-				email: data.email,
-				password: data.password
-			});
 
-			const fetchOptions = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					accept: 'application/json'
-				},
-				body: loginData
-			};
+		const email = userInfo.get('email');
+		const password = userInfo.get('password');
 
-			console.log("Login:", "Sending request to", PUBLIC_API_URL + '/auth/login');
-			const response = await fetch(PUBLIC_API_URL + '/auth/login', fetchOptions);
-			const res = await response.json();
-
-			if (!response.ok) {
-				console.log(res);
-				return invalid(res.code, { invalid: true, login: true, message: res.message });
-			}
-
-			userID = res.id
-			cookies.set('idToken', res.idToken, { maxAge: 900, path: '/', httpOnly: true, secure: false });
-			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true, secure: false });
-		} catch (err) {
-			console.log('-------------------SERVER ERROR--------------------');
-			console.log(err);
-			return invalid(400, { invalid: true, login: true, message: "Something went wrong. We are Sorry" });
+		if (!email || !password || typeof email !== "string" || typeof password !== "string") {
+			return fail(400, { invalid: true, message: "invalid credentials" });
 		}
-		throw redirect(302, '/user/' +  userID );
+
+		const user = await db.userRepo.findUserByEmail(email);
+		const isCorrectPassword = user && await bcrypt.compare(password, user.password_hash)
+
+		// Email or password is incorrect
+		if (!user || !isCorrectPassword) {
+			Logger.log("Login:", "Email or password incorrect on login -", email);
+			return fail(400, { invalid: true, message: "wrong credentials" });
+		}
+
+		// User is banned/disabled
+		if (!user.enabled) {
+			Logger.log("Login:", "User account disabled on login -", email);
+			return fail(400, { disabled: true, message: "Account has been disabled" });
+		}
+
+		const idToken = await Jwt.signIdToken(user);
+		const refreshToken = await Jwt.signNewRefreshTokenFamily(user.id);
+
+		// User is banned/disabled
+		if (!idToken || !refreshToken) {
+			Logger.log("Login:", "Error signing jwt tokens");
+			return fail(400, { error: true, message: "An unknown error has occurred" });
+		}
+
+		cookies.set('idToken', idToken, { maxAge: 900, path: '/', httpOnly: true, secure: false });
+		cookies.set('refreshToken', refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true, secure: false });
+
+		throw redirect(302, '/user/' +  user.id );
 	},
 };

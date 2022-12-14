@@ -1,35 +1,53 @@
-import type {Handle, HandleFetch} from "@sveltejs/kit";
-import {renewJwt, verifyJwt} from "$lib/server/security/jwt";
-import {PUBLIC_API_URL} from "$env/static/public";
-import type {LoginResponse} from "$lib/server/interfaces/interfaces";
+import type {Handle} from "@sveltejs/kit";
+import Jwt from "$lib/server/security/jwt";
+import {Cookies} from "$lib/server/util/enums";
 
-export const handle: Handle = async ({ event, resolve }) => {
-    const refreshToken = event.cookies.get('refreshToken');
-    let user = await verifyJwt(event.cookies.get('idToken'));
+export const handle: Handle = (async ({ event, resolve }) => {
 
     // renew idToken using the refreshToken
-    if (!user && refreshToken) {
-        const response: LoginResponse | null = await renewJwt(event);
-        console.log("Handle Renew idToken", response);
-        if (response) {
-            user = await verifyJwt(response.idToken);
-            event.cookies.set('idToken', response.idToken, { maxAge: 900, path: '/', httpOnly: true, secure: false });
-            event.cookies.set('refreshToken', response.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true, secure: false });
-        } else {
-            event.cookies.delete('idToken');
-            event.cookies.delete('refreshToken');
+    const verifyUser = async () => {
+        const idToken = event.cookies.get(Cookies.ID_TOKEN);
+        const refreshToken = event.cookies.get(Cookies.REFRESH_TOKEN);
+
+        let user;
+        if (idToken) user = await Jwt.verifyIdToken(idToken);
+
+        if (!user && refreshToken) {
+
+            const verified = await Jwt.validateRefreshToken(refreshToken);
+
+            if (!verified) {
+                event.cookies.delete(Cookies.ID_TOKEN);
+                event.cookies.delete(Cookies.REFRESH_TOKEN);
+                return;
+            }
+
+            const { user: verifiedUser, newToken: newRefreshToken } = verified;
+
+            const newIdToken = await Jwt.signIdToken(verifiedUser);
+
+            if (!newIdToken || !newRefreshToken) {
+                event.cookies.delete(Cookies.ID_TOKEN);
+                event.cookies.delete(Cookies.REFRESH_TOKEN);
+                return;
+            }
+
+            user = Jwt.verifyIdToken(newIdToken);
+            event.cookies.set(Cookies.ID_TOKEN, newIdToken, { maxAge: 900, path: '/', httpOnly: true, secure: false });
+            event.cookies.set(Cookies.REFRESH_TOKEN, newRefreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true, secure: false });
+            return user;
         }
     }
 
-    event.locals.user = user;
+    event.locals.user = await verifyUser();
     return resolve(event);
-}
+}) satisfies Handle;
 
-export const handleFetch: HandleFetch = ({ event, request, fetch }) => {
-    if (request.url.startsWith(PUBLIC_API_URL)) {
-        request.headers.set('cookie', event.request.headers.get('cookie') || '');
-    }
-
-    return fetch(request);
-}
+// export const handleFetch: HandleFetch = ({ event, request, fetch }) => {
+//     if (request.url.startsWith(PUBLIC_API_URL)) {
+//         request.headers.set('cookie', event.request.headers.get('cookie') || '');
+//     }
+//
+//     return fetch(request);
+// }
 

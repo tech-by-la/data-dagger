@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("AU_DATABASE_URL")
+}
+
+enum EUserRole {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
+
+enum EOrgRole {
+  OWNER
+  MODERATOR
+  MEMBER
+}
+
+model UserRole {
+  name EUserRole @id
+  users User[]
+}
+
+model OrgRole {
+  name EOrgRole @id
+  users OrgUser[]
+}
+
+model User {
+  id                String @id
+  email             String @unique
+  password_hash     String
+  first_name        String?
+  last_name         String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  enabled           Boolean @default(true)
+  orgs              OrgUser[]
+  roles             UserRole[]
+  refresh_tokens    RefreshToken[]
+}
+
+model RefreshToken {
+  id        Int    @id @default(autoincrement())
+  token     String @unique
+  user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id   String
+  family    Int
+  iteration Int
+  valid     Boolean
+  expires   BigInt
+}
+
+model Organization {
+  id            String @id
+  name          String @unique
+  enabled       Boolean @default(true)
+  contact_email String
+  contact_phone String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  members       OrgUser[]
+  invites       Invite[]
+}
+
+model OrgUser {
+  @@id([user_id, organization_id])
+
+  user              User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id           String
+  organization      Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+  organization_id   String
+  org_role          OrgRole @relation(fields: [org_role_id], references: [name])
+  org_role_id       EOrgRole
+}
+
+model Invite {
+  @@id([organization_id, email])
+  organization      Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+  organization_id   String
+  email             String
+  sent_at           DateTime @default(now())
+}

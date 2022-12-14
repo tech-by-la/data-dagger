@@ -8,7 +8,7 @@
 
     import {safeFetch} from "$lib/utils/helpers";
 
-    const invites = $page.data.invites;
+    const { invites } = $page.data;
 
     let selected = [];
     $: allSelected = invites.length > 0 && selected.length === invites.length;

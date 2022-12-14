@@ -1,18 +1,10 @@
 import type {PageServerLoad} from "./$types";
-import {PUBLIC_API_URL} from "$env/static/public";
-import {error} from "@sveltejs/kit";
+import db from '$lib/server/database/DatabaseGateway';
 
 export const load: PageServerLoad = ({params, fetch}) => {
 
     const fetchInvites = async () => {
-        const response = await fetch(PUBLIC_API_URL + `/auth/invite/${params.orgID}`);
-        const data = await response.json().catch();
-        if (!response.ok) {
-            console.log("===== Fetch error! =====");
-            console.log(await response.json().catch());
-            throw error(response.status);
-        }
-        return await data.data;
+        return await db.inviteRepo.findManyInvitesByOrg_id(params.orgID);
     }
 
     return {

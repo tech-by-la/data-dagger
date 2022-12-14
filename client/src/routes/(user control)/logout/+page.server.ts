@@ -1,25 +1,28 @@
 import type {PageServerLoad} from "./$types";
-import { PUBLIC_API_URL } from '$env/static/public';
 import { redirect, type Actions } from '@sveltejs/kit';
+import {Cookies} from "$lib/server/util/enums";
+import db from '$lib/server/database/DatabaseGateway';
 
-export const load: PageServerLoad = async ({}) => {
-	
-return {}
+export const load: PageServerLoad = async () => {
+
+	return {}
 }
+
 export const actions: Actions = {
-    default: async ({fetch, cookies}) => {
+    default: async ({cookies}) => {
 
-		const fetchOptions = {
-			method: 'POST',
-		};
+		const refreshToken = cookies.get(Cookies.REFRESH_TOKEN);
 
-		await fetch(PUBLIC_API_URL + '/auth/logout', fetchOptions)
-			.then(res => console.log('Logout response:', res.status, res.statusText))
-			.catch(err => console.log('Logout error:', err));
+		if (refreshToken) {
+			const token = await db.refreshTokenRepo.findRefreshTokenByToken(refreshToken);
+			if (token) {
+				db.refreshTokenRepo.deleteRefreshTokensByUserAndFamily(token.user_id, token.family);
+				return token;
+			}
+		}
 
 		cookies.delete('idToken');
 		cookies.delete('refreshToken');
-		console.log("You were logged out")
 		throw redirect(302, '/');
 	}
 };

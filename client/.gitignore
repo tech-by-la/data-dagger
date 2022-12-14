@@ -6,3 +6,9 @@ node_modules
 .env
 .env.*
 !.env.example
+
+*.pem
+!example.private-jwt.pem
+!example.private-ref.pem
+!example.public-jwt.pem
+!example.public-ref.pem

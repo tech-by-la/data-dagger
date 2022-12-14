@@ -1,7 +1,10 @@
 import type { PageServerLoad } from './$types';
-import { invalid, redirect, type Actions } from '@sveltejs/kit';
-import { PUBLIC_API_URL } from '$env/static/public';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { z } from 'zod';
+
+import Logger from "$lib/server/util/Logger";
+import db from '$lib/server/database/DatabaseGateway';
+import Jwt from "$lib/server/security/jwt";
 
 const registerSchema = z
 	.object({
@@ -45,48 +48,59 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, fetch, cookies }) => {
+	default: async ({ request, cookies }) => {
 		const userInfo = await request.formData();
 		const data = Object.fromEntries(userInfo);
-		let userID = ""
+
 		try {
-			const result = registerSchema.parse(data);
+			registerSchema.parse(data);
 		} catch (err: any) {
 			console.log('-------------------Parse Form Error--------------------');
 			console.log(err);
-			return invalid(400, { invalid: true, register: true, message: err.issues[0].message });
+			return fail(400, { invalid: true, register: true, message: err.issues[0].message });
 		}
-		try {
-			const loginData = JSON.stringify({
-				first_name: data.first_name,
-				last_name: data.last_name,
-				email: data.email,
-				password: data.password
-			});
 
-			const fetchOptions = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					accept: 'application/json'
-				},
-				body: loginData
-			};
+		const email = userInfo.get('email');
+		const password = userInfo.get('password');
+		const first_name = userInfo.get('first_name');
+		const last_name = userInfo.get('last_name');
 
-			const response = await fetch(PUBLIC_API_URL + '/auth/register', fetchOptions);
-			const res = await response.json();
-
-			if (!response.ok) {
-				return invalid(401, { invalid: true, register: true, message: res.message });
-			}
-			userID = res.id
-			cookies.set('idToken', res.idToken, { maxAge: 900, path: '/', httpOnly: true });
-			cookies.set('refreshToken', res.refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true });
-		} catch (err) {
-			console.log('-------------------SERVER ERROR--------------------');
-			console.log(err);
-			return invalid(400, { invalid: true });
+		if (
+			!email || !password || !first_name || !last_name ||
+			typeof email !== "string" || typeof password !== "string" ||
+			typeof first_name !== "string" || typeof last_name !== "string"
+		) {
+			return fail(400, { invalid: true, message: "invalid credentials" });
 		}
-		throw redirect(302, '/user/' + userID);
+
+		// Email already in use
+		if (await db.userRepo.findUserByEmail(email)) {
+			Logger.log("Registration:", "Failed - Attempted to created account with email already in use");
+			return fail(400, { conflict: true, message: "Email already in use" });
+		}
+
+		const user = await db.userRepo.createUser(email, password, first_name, last_name);
+
+		// Error occurred when creating the user in the database
+		if (!user) {
+			Logger.error("Registration:", "Error - Failed to create user when querying database");
+			return fail(400, { error: true, message: "An unknown error has occurred" });
+		}
+
+		Logger.log("Registration:", "Create new user with id", user.id);
+
+		const idToken = await Jwt.signIdToken(user);
+		const refreshToken = await Jwt.signNewRefreshTokenFamily(user.id);
+
+		// User is banned/disabled
+		if (!idToken || !refreshToken) {
+			Logger.log("Registration:", "Error signing jwt tokens");
+			return fail(400, { error: true, message: "An unknown error has occurred" });
+		}
+
+		cookies.set('idToken', idToken, { maxAge: 900, path: '/', httpOnly: true, secure: false });
+		cookies.set('refreshToken', refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true, secure: false });
+
+		throw redirect(302, '/user/' + user.id);
 	},
 }
