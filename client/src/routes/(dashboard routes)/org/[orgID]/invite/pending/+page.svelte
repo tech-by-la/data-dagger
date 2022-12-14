@@ -8,7 +8,7 @@
 
     import {safeFetch} from "$lib/utils/helpers";
 
-    const invites = $page.data.invites.data;
+    const invites = $page.data.invites;
 
     let selected = [];
     $: allSelected = invites.length > 0 && selected.length === invites.length;
@@ -56,6 +56,8 @@
     }
 
 </script>
+
+<h1>Pending Invites</h1>
 
 <div class="content">
     {#if invites.length < 1}
@@ -141,6 +143,10 @@
 {/if}
 
 <style>
+    h1 {
+        text-align: center;
+    }
+
     .content {
         display: grid;
         grid-template-columns: 30px auto auto  40px;

@@ -12,7 +12,7 @@ export const load: PageServerLoad = ({params, fetch}) => {
             console.log(await response.json().catch());
             throw error(response.status);
         }
-        return await data;
+        return await data.data;
     }
 
     return {

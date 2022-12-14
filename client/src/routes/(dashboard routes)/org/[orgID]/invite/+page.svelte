@@ -4,7 +4,6 @@
     import {IconButton, ProgressRing} from "fluent-svelte";
     import FaPlus from "svelte-icons/fa/FaPlus.svelte";
     import FaMinus from "svelte-icons/fa/FaMinus.svelte";
-    import {PUBLIC_API_URL} from "$env/static/public";
     import {safeFetch} from "$lib/utils/helpers";
 
     let error = false;
@@ -25,7 +24,7 @@
         const start = new Date();
         loading = true;
 
-        const body = { org_id: $page.data.organization.data.id, emails }
+        const body = { org_id: $page.data.organization.id, emails }
         const response = await safeFetch('/auth/invite', body, 'POST');
 
         const data = await response.json().catch();
@@ -35,7 +34,7 @@
             errorCount = 10;
             setInterval(() => {
                 if (errorCount > 0) errorCount--;
-                // else window.location.reload()
+                else window.location.reload()
             }, 1000);
             return;
         }
