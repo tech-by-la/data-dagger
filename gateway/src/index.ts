@@ -11,6 +11,7 @@ const targets = {
     CLIENT: process.env.CLIENT,
     AUTH: process.env.AUTH,
     SWAGGER: process.env.SWAGGER,
+    PROJECTS: process.env.PROJECTS,
     TRANSLATIONS: process.env.TRANSLATIONS
 }
 
@@ -30,6 +31,9 @@ server.use((req, res) => {
                 return;
             case Path.SWAGGER:
                 proxy.web(req, res, { target: targets.SWAGGER });
+                return;
+            case Path.PROJECTS:
+                proxy.web(req, res, { target: targets.PROJECTS });
                 return;
             case Path.TRANSLATIONS:
                 proxy.web(req, res, { target: targets.TRANSLATIONS });
