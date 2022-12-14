@@ -14,6 +14,7 @@ services:
       PORT: ${INT_PORT}
       CLIENT: http://client:${INT_PORT}
       AUTH: http://authentication:${INT_PORT}
+      PROJECTS: http://projects:${INT_PORT}
       SWAGGER: http://swagger:${INT_PORT}
       TRANSLATIONS: http://translations:${INT_PORT}
 
@@ -54,6 +55,24 @@ services:
     depends_on:
       - translation_db
 
+  projects:
+    container_name: projects
+    image: teamcity-dd-projects:latest
+    restart: unless-stopped
+    networks:
+      - dd-net
+    expose:
+      - ${INT_PORT}
+    environment:
+      PORT: ${INT_PORT}
+      DATABASE_URL: ${PR_DATABASE_URL}
+      KEY_API: ${KEY_API}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      ENVIRONMENT: ${ENVIRONMENT}
+    depends_on:
+      - projects_db
+
   swagger:
     container_name: swagger
     image: teamcity-dd-swagger:latest
@@ -82,6 +101,20 @@ services:
       MYSQL_DATABASE: auth
       MYSQL_TCP_PORT: ${MYSQL_PORT}
 
+  projects_db:
+    container_name: projects_db
+    image: mongo:4.4.18
+    restart: always
+    networks:
+      - dd-net
+    volumes:
+      - "projects_data:/data/db"
+      - "projects_config:/data/configdb"
+    expose:
+      - ${MONGO_PORT}
+    environment:
+      MONGO_INITDB_DATABASE: projects
+
   translation_db:
     container_name: translation_db
     image: mongo:4.4.18
@@ -101,6 +134,8 @@ volumes:
   authentication_config:
   translations_data:
   translations_config:
+  projects_data:
+  projects_config:
 
 networks:
   dd-net:
