@@ -41,8 +41,11 @@
 		"@svelteuidev/core": "^0.7.5",
 		"@svelteuidev/dates": "^0.7.5",
 		"@svelteuidev/motion": "^0.7.5",
+		"@types/openlayers": "^4.6.18",
 		"dayjs": "^1.11.6",
 		"jsonwebtoken": "^8.5.1",
+		"ol": "^7.1.0",
+		"proj4": "^2.8.0",
 		"radix-icons-svelte": "^1.2.1",
 		"svelte-icons": "^2.1.0",
 		"zod": "^3.19.1"
