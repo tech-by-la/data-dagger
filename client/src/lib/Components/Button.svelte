@@ -21,7 +21,7 @@
         font-size: 20px;
         line-height: 20px;
         padding: 10px;
-        border-radius: 10px;
+        /* border-radius: 10px; */
         font-family: 'Oswald';
         font-weight: normal;
         font-style: normal;

@@ -1,7 +1,9 @@
 <script lang="ts">
     import type { PageData } from './$types';
+    import Map from '$lib/Components/Map.svelte';
   
     export let data: PageData;
+    let map: Map;
   </script>
   
   <!-- <h1>{data.post.title}</h1>
@@ -12,7 +14,8 @@
     <div class="con-1">Project con-1</div>
     <div class="con-2">
       <div class="con-2-1">Layer controlling con-2-1</div>
-      <div class="con-2-2">The Map will be Here con-2-2</div>
+      <div class="con-2-2">
+      <Map {map}></Map></div>
       <div class="con-2-3">Buttons to manipulate data  con-2-3</div>
     </div>
     <div class="con-3">Bottom pannel con-3</div>
