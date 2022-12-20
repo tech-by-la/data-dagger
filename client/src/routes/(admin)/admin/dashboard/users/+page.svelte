@@ -1,7 +1,9 @@
 <script lang="ts">
     import { page } from '$app/stores';
+    import { goto } from '$app/navigation';
     import { InfoBadge, IconButton, Flyout, Checkbox, ProgressRing } from "fluent-svelte";
     import FaChevronDown from 'svelte-icons/fa/FaChevronDown.svelte'
+    import FaChevronLeft from 'svelte-icons/fa/FaChevronLeft.svelte';
 
     const { users, user: loggedInUser } = $page.data;
 
@@ -49,17 +51,32 @@
     }
 
     tr:nth-child(odd) {
-        background-color: #144E75;
+        background-color: #ffffff12;
     }
 
     .enabled {
         text-align: center;
     }
 
+    .flex-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 20px 20px 20px;
+    }
+
+    a {
+        color: white;
+    }
+
 </style>
 
 <div class="container">
-
+    <div class="flex-row">
+        <IconButton on:click={() => goto('../')}><FaChevronLeft/></IconButton>
+        <h1>Users</h1>
+        <span></span>
+    </div>
     <table>
         <thead>
             <tr>

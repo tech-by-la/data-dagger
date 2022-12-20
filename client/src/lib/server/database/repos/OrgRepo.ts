@@ -4,6 +4,7 @@ import {OrgRoles} from "../../util/enums.js";
 
 export interface IOrgRepo {
     getAll(): Promise<Organization[]>;
+    count(): Promise<number>;
     findOrgById(id: string): Promise<Organization | null>;
     findOrgByName(name: string): Promise<Organization | null>;
     findManyOrgsByIds(ids: string[]): Promise<Organization[]>;
@@ -11,6 +12,7 @@ export interface IOrgRepo {
     createOrg(creator_id: string, name: string, contact_email: string, contact_phone?: string): Promise<Organization | null>;
     updateOrg(org: Organization): Promise<Organization | null>;
     upsertOrgUser(organization_id: string, user_id: string): Promise<OrgUser | null>;
+    kickMember(organization_id: string, user_id: string): Promise<boolean>;
 }
 
 export default class OrgRepo implements IOrgRepo {
@@ -22,6 +24,10 @@ export default class OrgRepo implements IOrgRepo {
 
     public async getAll() {
         return await this.db.organization.findMany();
+    }
+
+    public async count(): Promise<number> {
+        return await this.db.organization.count();
     }
 
     public async findOrgById(id: string) {
@@ -95,5 +101,14 @@ export default class OrgRepo implements IOrgRepo {
                 org_role: { connect: { name: OrgRoles.MEMBER }}
             }
         }).catch(() => null);
+    }
+
+    public async kickMember(organization_id: string, user_id: string): Promise<boolean> {
+        return await this.db.organization.update({
+            where: { id: organization_id },
+            data: {
+                members: { disconnect: { user_id_organization_id: { organization_id, user_id } } }
+            }
+        }).then(() => true).catch(() => false);
     }
 }

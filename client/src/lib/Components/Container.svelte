@@ -1,5 +1,8 @@
+<script>
+    export let width = 'auto';
+</script>
 
-<div class="con-div">
+<div class="con-div" style="max-width: {width} !important">
     <slot />
 </div>
 <style>

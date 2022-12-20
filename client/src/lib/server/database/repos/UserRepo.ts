@@ -9,6 +9,7 @@ import {excludeKey, excludeKeys} from "$lib/server/util/helpers";
 export interface IUserRepo {
 
     getAll(): Promise<UserInfo[]>;
+    count(): Promise<number>;
     findUserById(id: string): Promise<UserInfo | null>;
     findManyUsersById(ids: string[]): Promise<UserInfo[]>;
     findUserByEmail(email: string): Promise<UserInfo | null>;
@@ -31,6 +32,10 @@ export default class UserRepo implements IUserRepo {
         })
             .then(users => excludeKeys(users, ['password_hash']))
             .catch(() => []);
+    }
+
+    public async count(): Promise<number> {
+        return await this.db.user.count();
     }
 
     public async findUserById(id: string) {

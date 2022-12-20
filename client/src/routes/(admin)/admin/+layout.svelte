@@ -14,6 +14,6 @@
 </style>
 
 <div class="container">
-    <AdminSideMenu menuItems={data.menuItems}/>
+<!--    <AdminSideMenu menuItems={data.menuItems}/>-->
     <slot/>
 </div>

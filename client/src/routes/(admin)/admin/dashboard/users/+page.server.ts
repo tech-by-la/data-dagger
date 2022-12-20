@@ -64,7 +64,6 @@ export const actions: Actions = {
 
         user.enabled = enabled === 'true';
         const success = await db.userRepo.updateUser(user).catch();
-        console.log(enabled);
         if (!success) {
             Logger.error("AdminRouter:", "Internal error - could not update user when querying database");
             return fail(StatusCode.INTERNAL_SERVER_ERROR, { message: StatusMessage.INTERNAL_SERVER_ERROR });
