@@ -10,9 +10,7 @@ const config = {
 		csrf: { checkOrigin: process.env.ENVIRONMENT !== 'development' }
 	},
 	preprocess: [
-		preprocess({
-			postcss: false,
-		}),
+		preprocess({postcss: false}),
 	],
 };
 

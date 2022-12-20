@@ -7,10 +7,8 @@
     console.log(projects);
 </script>
 
-<h1>
-    This will be a list of projects
+<h1>This will be a list of projects</h1>
 
-    {#each projects as project}
-        <Button on:click={() => goto(`/project/${project.id}`)}>{project.name}</Button>
-    {/each}
-</h1>
+{#each projects as project}
+    <Button on:click={() => goto(`/project/${project.id}`)}>{project.name}</Button>
+{/each}

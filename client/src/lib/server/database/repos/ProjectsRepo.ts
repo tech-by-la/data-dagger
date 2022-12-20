@@ -43,7 +43,8 @@ export default class ProjectsRepo {
     }
 
     public async findEnabledById(_id: string) {
-        return await this.model.findOne({ _id, enabled: true });
+        return await this.model.findOne({ _id, enabled: true })
+            .then(project => project?.toObject() as Project);
     }
 
     public async count() {
@@ -98,20 +99,12 @@ export default class ProjectsRepo {
         }
     }
 
-    public async join(project_id: string, user: AuthUser) {
-        const orgs = user.orgs.map(o => o.org_id);
-        try {
-            return await this.model.findOneAndUpdate({
-                $and: [
-                    {organization_id: {$in: orgs}},
-                    { _id: project_id }
-                ]
-            }, {
-                $push: { members: user.id }
-            });
-        } catch (err) {
-            Logger.error("JoinProjectsError:", err);
-        }
+    public async join(_id: string, user_id: string) {
+        return await this.model.updateOne({ _id }, { $push: { members: user_id }});
+    }
+
+    public async leave(_id: string, user_id: string) {
+        return await this.model.updateOne({ _id }, { $pull: { members: user_id }});
     }
 
     public async delete(project_id: string, owner_orgs: string[]) {

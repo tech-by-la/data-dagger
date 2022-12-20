@@ -44,7 +44,7 @@ const registerSchema = z
 
 
 export const load: PageServerLoad = async () => {
-	return {};
+	throw redirect(302, '/');
 };
 
 export const actions: Actions = {

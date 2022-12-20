@@ -66,7 +66,7 @@ export interface AssignRolesRequestBody {
 // ===== DB Interfaces ===== //
 
 export interface Project {
-    id?: string;
+    id: string;
     organization_id: string;
     name: string;
     description: string;
