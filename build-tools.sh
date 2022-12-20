@@ -3,7 +3,6 @@
 action=$1; shift
 services=($@)
 
-#all=("authentication" "client" "gateway" "swagger" "translations" "projects")
 all=("client")
 
 echo ""
@@ -37,10 +36,19 @@ case ${action} in
     echo "Running Docker Compose..."
     if (( ${#services[@]} == 0 ))
     then
-      docker compose up -d
+      docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
     else
-      docker compose up -d ${services[@]}
+      docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d ${services[@]}
     fi
+  ;;
+  run:prod)
+    echo "Running Docker Compose..."
+        if (( ${#services[@]} == 0 ))
+        then
+          docker compose up -d
+        else
+          docker compose up -d ${services[@]}
+        fi
   ;;
   --help)
     echo " ./build-tools.sh build ...args  - build docker images"

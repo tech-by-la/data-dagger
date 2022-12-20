@@ -7,7 +7,7 @@ const config = {
 	// for more information about preprocessors
 	kit: {
 		adapter: adapter(),
-		csrf: { checkOrigin: process.env.ENVIRONMENT === 'development' }
+		csrf: { checkOrigin: process.env.ENVIRONMENT !== 'development' }
 	},
 	preprocess: [
 		preprocess({

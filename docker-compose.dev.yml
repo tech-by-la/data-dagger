@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+
+  # === Databases === #
+  authentication_db:
+    ports:
+      - "3307:3306"
+
+  projects_db:
+    ports:
+      - "27018:27017"
