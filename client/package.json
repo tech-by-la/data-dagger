@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "npx dotenv-cli -e .env.development -- vite dev --mode development",
 		"build": "vite build",
 		"build:prod": "npx prisma generate && vite build",
 		"preview": "vite preview",
@@ -47,8 +47,8 @@
 		"@svelteuidev/core": "^0.7.5",
 		"@svelteuidev/dates": "^0.7.5",
 		"@svelteuidev/motion": "^0.7.5",
-		"bcrypt": "^5.1.0",
 		"@types/openlayers": "^4.6.18",
+		"bcrypt": "^5.1.0",
 		"dayjs": "^1.11.6",
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^6.8.0",
