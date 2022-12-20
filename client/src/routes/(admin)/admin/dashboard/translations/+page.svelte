@@ -5,7 +5,6 @@
     import {IconButton, Expander} from "fluent-svelte";
     import FaPlus from "svelte-icons/fa/FaPlus.svelte";
     import FaMinus from "svelte-icons/fa/FaMinus.svelte";
-    import {PUBLIC_API_URL} from "$env/static/public";
 
     let { translations } = $page.data;
 
@@ -54,29 +53,6 @@
 
         disabled = true;
 
-        const response = await fetch(PUBLIC_API_URL + '/tl', {
-        // const response = await fetch('http://localhost:3001/api' + '/tl', {
-            method: 'PUT',
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify(body),
-        });
-
-        if (response.ok) {
-            await fetchTranslations();
-            resetForm();
-        }
-        else disabled = false;
-    }
-
-    const fetchTranslations = async () => {
-        // const response = await fetch('http://localhost:3001/api' + '/tl', { credentials: 'include' });
-        const response = await fetch(PUBLIC_API_URL + '/tl', { credentials: 'include' });
-        if (response.ok) {
-            translations = await response.json();
-            promptOpen = !promptOpen;
-            console.log(translations);
-        }
         disabled = false;
     }
 

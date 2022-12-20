@@ -1,56 +1,5 @@
-import {Response} from "express";
-import {Cookies, HttpErrMsg, StatusCode} from "./enums.js";
-import {AuthUser, UserInfo} from "./interfaces.js";
-import Jwt from "../security/jwt.js";
-import db from '../database/DatabaseGateway.js';
-import Logger from "./Logger.js";
-
-export const respondError = (res: Response, code: StatusCode, message: string) => {
-    const error = StatusCode[code].replaceAll("_", " ");
-
-    Logger.log("Responding with error:", code, error, message);
-    res.status(code).send({
-        code,
-        error,
-        message,
-    });
-}
-
-export const login = async (res: Response, user: UserInfo | null, refreshToken: string | null) => {
-    const jwt = await Jwt.signLoginJwt(user);
-
-    if (!jwt || !refreshToken || !user) {
-        Logger.error("LoginHelper:", "Error - idToken, refreshToken or user is null");
-        respondError(res, StatusCode.INTERNAL_SERVER_ERROR, HttpErrMsg.INTERNAL_ERROR);
-        return false;
-    }
-
-    Logger.log("LoginHelper:", "Logging in user with email", user.email);
-
-    res.cookie(Cookies.ID_TOKEN, jwt, {
-        maxAge: 1000 * 60 * 15, // 15 minutes
-        httpOnly: true,
-        sameSite: 'strict',
-        path: '/',
-        secure: false, // TODO: use secure cookie
-    });
-
-    res.cookie(Cookies.REFRESH_TOKEN, refreshToken, {
-        maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
-        httpOnly: true,
-        sameSite: 'strict',
-        path: '/',
-        secure: false, // TODO: use secure cookie
-    });
-
-    res.send({
-        id: user.id,
-        email: user.email,
-        idToken: jwt,
-        expiresIn: 900, // seconds
-        refreshToken: refreshToken,
-    });
-}
+import Jwt from "../security/jwt";
+import db from '../database/DatabaseGateway';
 
 /**
  * Verifies token validity, then invalidates token and renews it
@@ -65,7 +14,7 @@ export const validateRefreshToken = async (jwt: string) => {
     const refreshToken = await db.refreshTokenRepo.findRefreshTokenByToken(token);
     if (!refreshToken) return;
 
-    // If user doesn't exist, delete all related
+    // If user doesn't exist or is banned, delete all related refresh tokens
     const user = await db.userRepo.findUserById(refreshToken.user_id);
     if (!user || !user.enabled) {
         db.refreshTokenRepo.deleteRefreshTokensByUser(refreshToken.user_id);
@@ -82,39 +31,16 @@ export const validateRefreshToken = async (jwt: string) => {
     return { user, newToken }
 }
 
-export const expireCookies = (res: Response, ...cookies: string[]) => {
-    for (const cookie of cookies) {
-        res.cookie(cookie, '', {
-            expires: new Date(0)
-        });
-    }
-}
-
 export const partitionEmails = (emails: string[]) => {
-    const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    let valid: string[], invalid: string[] = [];
-    valid = emails.filter(email => {
+    const invalid: string[] = [];
+    const valid = emails.filter(email => {
         if (pattern.test(String(email).toLowerCase())) return true;
         else invalid.push(email);
     });
 
     return {valid, invalid}
-}
-
-export const authorizeOrgModerator = async (res: Response, user: AuthUser, org_id: string) => {
-
-    const orgRole = user.orgs.find(o => o.org_id === org_id)?.role;
-
-    // verify role
-    if ((orgRole !== "OWNER" && orgRole !== "MODERATOR")) {
-        Logger.log("Authorization:", "Could not authorize", user.email, "as OWNER or MODERATOR in org with id", org_id);
-        respondError(res, StatusCode.UNAUTHORIZED, HttpErrMsg.PERMISSION_DENIED);
-        return;
-    }
-
-    Logger.log("Authorization:", "Authorized user", user.email, "as", orgRole, "in org with id", org_id);
-    return true;
 }
 
 export const excludeKey = <T, K extends keyof T>(object: T, keys: K[]): T => {

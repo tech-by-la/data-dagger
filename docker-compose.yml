@@ -2,21 +2,21 @@ version: '3'
 
 services:
 
-  gateway:
-    container_name: gateway
-    image: teamcity-dd-gateway:latest
-    restart: unless-stopped
-    networks:
-      - dd-net
-    ports:
-      - ${EXT_PORT}:${INT_PORT}
-    environment:
-      PORT: ${INT_PORT}
-      CLIENT: http://client:${INT_PORT}
-      AUTH: http://authentication:${INT_PORT}
-      PROJECTS: http://projects:${INT_PORT}
-      SWAGGER: http://swagger:${INT_PORT}
-      TRANSLATIONS: http://translations:${INT_PORT}
+#  gateway:
+#    container_name: gateway
+#    image: teamcity-dd-gateway:latest
+#    restart: unless-stopped
+#    networks:
+#      - dd-net
+#    ports:
+#      - ${EXT_PORT}:${INT_PORT}
+#    environment:
+#      PORT: ${INT_PORT}
+#      CLIENT: http://client:${INT_PORT}
+#      AUTH: http://authentication:${INT_PORT}
+#      PROJECTS: http://projects:${INT_PORT}
+#      SWAGGER: http://swagger:${INT_PORT}
+#      TRANSLATIONS: http://translations:${INT_PORT}
 
   client:
     container_name: client
@@ -24,65 +24,68 @@ services:
     restart: unless-stopped
     networks:
       - dd-net
-    expose:
-      - ${INT_PORT}
-
-  authentication:
-    container_name: authentication
-    image: teamcity-dd-authentication:latest
-    restart: unless-stopped
-    networks:
-      - dd-net
-    expose:
-      - ${INT_PORT}
+    ports:
+      - ${EXT_PORT}:${INT_PORT}
     depends_on:
       - authentication_db
-
-  translations:
-    container_name: translations
-    image: teamcity-dd-translations:latest
-    restart: unless-stopped
-    networks:
-      - dd-net
-    expose:
-      - ${INT_PORT}
-    environment:
-      PORT: ${INT_PORT}
-      DATABASE_URL: ${TL_DATABASE_URL}
-      KEY_API: ${KEY_API}
-      JWT_ISSUER: ${JWT_ISSUER}
-      JWT_ALGORITHM: ${JWT_ALGORITHM}
-    depends_on:
-      - translation_db
-
-  projects:
-    container_name: projects
-    image: teamcity-dd-projects:latest
-    restart: unless-stopped
-    networks:
-      - dd-net
-    expose:
-      - ${INT_PORT}
-    environment:
-      PORT: ${INT_PORT}
-      DATABASE_URL: ${PR_DATABASE_URL}
-      KEY_API: ${KEY_API}
-      JWT_ISSUER: ${JWT_ISSUER}
-      JWT_ALGORITHM: ${JWT_ALGORITHM}
-      ENVIRONMENT: ${ENVIRONMENT}
-    depends_on:
       - projects_db
 
-  swagger:
-    container_name: swagger
-    image: teamcity-dd-swagger:latest
-    restart: unless-stopped
-    networks:
-      - dd-net
-    expose:
-      - ${INT_PORT}
-    environment:
-      - PORT=${INT_PORT}
+#  authentication:
+#    container_name: authentication
+#    image: teamcity-dd-authentication:latest
+#    restart: unless-stopped
+#    networks:
+#      - dd-net
+#    expose:
+#      - ${INT_PORT}
+#    depends_on:
+#      - authentication_db
+
+#  translations:
+#    container_name: translations
+#    image: teamcity-dd-translations:latest
+#    restart: unless-stopped
+#    networks:
+#      - dd-net
+#    expose:
+#      - ${INT_PORT}
+#    environment:
+#      PORT: ${INT_PORT}
+#      DATABASE_URL: ${TL_DATABASE_URL}
+#      KEY_API: ${KEY_API}
+#      JWT_ISSUER: ${JWT_ISSUER}
+#      JWT_ALGORITHM: ${JWT_ALGORITHM}
+#    depends_on:
+#      - translation_db
+
+#  projects:
+#    container_name: projects
+#    image: teamcity-dd-projects:latest
+#    restart: unless-stopped
+#    networks:
+#      - dd-net
+#    expose:
+#      - ${INT_PORT}
+#    environment:
+#      PORT: ${INT_PORT}
+#      DATABASE_URL: ${PR_DATABASE_URL}
+#      KEY_API: ${KEY_API}
+#      JWT_ISSUER: ${JWT_ISSUER}
+#      JWT_ALGORITHM: ${JWT_ALGORITHM}
+#      ENVIRONMENT: ${ENVIRONMENT}
+#    depends_on:
+#      - projects_db
+
+#  swagger:
+#    container_name: swagger
+#    image: teamcity-dd-swagger:latest
+#    restart: unless-stopped
+#    networks:
+#      - dd-net
+#    expose:
+#      - ${INT_PORT}
+#    environment:
+#      - PORT=${INT_PORT}
 
   # === Databases === #
   authentication_db:
@@ -96,6 +99,8 @@ services:
       - "authentication_data:/var/lib/mysql:rw"
     expose:
       - ${MYSQL_PORT}
+    ports:
+      - "3307:3306"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
       MYSQL_DATABASE: auth
@@ -112,22 +117,24 @@ services:
       - "projects_config:/data/configdb"
     expose:
       - ${MONGO_PORT}
+    ports:
+      - "27018:27017"
     environment:
       MONGO_INITDB_DATABASE: projects
 
-  translation_db:
-    container_name: translation_db
-    image: mongo:4.4.18
-    restart: always
-    networks:
-      - dd-net
-    volumes:
-      - "translations_data:/data/db"
-      - "translations_config:/data/configdb"
-    expose:
-      - ${MONGO_PORT}
-    environment:
-      MONGO_INITDB_DATABASE: translations
+#  translation_db:
+#    container_name: translation_db
+#    image: mongo:4.4.18
+#    restart: always
+#    networks:
+#      - dd-net
+#    volumes:
+#      - "translations_data:/data/db"
+#      - "translations_config:/data/configdb"
+#    expose:
+#      - ${MONGO_PORT}
+#    environment:
+#      MONGO_INITDB_DATABASE: translations
 
 volumes:
   authentication_data:

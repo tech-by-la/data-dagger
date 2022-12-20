@@ -1,107 +1,77 @@
 <script lang="ts">
-    import { page } from "$app/stores";
-
     import {IconButton, ProgressRing} from "fluent-svelte";
     import FaPlus from "svelte-icons/fa/FaPlus.svelte";
     import FaMinus from "svelte-icons/fa/FaMinus.svelte";
-    import {safeFetch} from "$lib/utils/helpers";
+    import { slide } from 'svelte/transition';
+    import {page} from "$app/stores";
 
-    let error = false;
-    let errorMsg = '';
-    let errorCount = 10;
+    let nextId = 0;
 
     let loading = false;
-    let emails = [''];
+    let selector = [{id: nextId++, email: '', error: null}];
+    $: emails = selector.map(s => s.email);
 
-    const handleAddInput = () => setTimeout(() => emails = [...emails, '']);
-    const handleRemoveInput = (index:number) => { emails.splice(index, 1); emails = emails};
-    const handleReset = () => emails = [''];
-    const focus = (e: HTMLInputElement) => e.focus();
+    let response;
+    if ($page.form) response = $page.form.response;
 
-    const handleSubmit = async () => {
-        if (emails.includes('')) return;
-
-        const start = new Date();
-        loading = true;
-
-        const body = { org_id: $page.data.organization.id, emails }
-        const response = await safeFetch('/auth/invite', body, 'POST');
-
-        const data = await response.json().catch();
-        if (!response.ok) {
-            error = true;
-            errorMsg = data.message;
-            errorCount = 10;
-            setInterval(() => {
-                if (errorCount > 0) errorCount--;
-                else window.location.reload()
-            }, 1000);
-            return;
-        }
-
-        const end = new Date();
-        setTimeout(() => {
-            emails = [''];
-            loading = false;
-        }, 1000 - (end.getTime() - start.getTime()));
+    if (response && response.invalid) {
+        selector = [...response.invalid.map(i => { return {id: nextId++, email: i, error: 'invalid'} })];
     }
+
+    const handleAddInput = () => setTimeout(() => selector = [...selector, {id: nextId++, email: '', error: null}]);
+    const handleRemoveInput = (index:number) => { selector.splice(index, 1); selector = selector};
+    const handleReset = () => selector = [{id: nextId++, email: '', error: null}];
+    const focus = (e: HTMLInputElement) => e.focus();
 </script>
 
 <div class="form-wrapper">
-    <form on:submit|preventDefault={handleSubmit}>
-        <h1>Invite Members</h1>
 
-        {#each emails as email, index}
+    <h1>Invite Members</h1>
+
+    {#each selector as email, index (email.id)}
+        <div transition:slide|local>
 
             <div class="input-wrapper">
-                <IconButton type="reset" on:click={() => handleRemoveInput(index)}>
+                <IconButton on:click={() => handleRemoveInput(index)}>
                     <div class="minus-icon"><FaMinus /></div>
                 </IconButton>
-                <input class="input-name" type="email" placeholder="E-mail address" bind:value={email}  use:focus>
+                <input class="input-name" type="email" placeholder="E-mail address" bind:value={email.email}  use:focus>
             </div>
-        {/each}
+            {#if email.error === 'invalid'}
+                <div class="error">Invalid email</div>
+            {/if}
+        </div>
+    {/each}
 
-        <IconButton type="reset" on:click={handleAddInput}>
-            <FaPlus/>
-        </IconButton>
+    <IconButton on:click={handleAddInput}>
+        <FaPlus/>
+    </IconButton>
 
+    <form method="post">
         <div class="input-wrapper">
-            <button class="btn" type="reset" on:click={handleReset}>Reset</button>
-            <button class="btn" type="submit">Submit</button>
+                <input name="emails" type="hidden" bind:value={emails}>
+                <button class="btn" type="reset" on:click={handleReset}>Reset</button>
+                <button class="btn" type="submit" on:click={() => loading = true}>Submit</button>
         </div>
     </form>
 
     {#if loading}
         <div class="loading-wrapper">
-
-            {#if error}
-                <div class="error-wrapper">
-                    <h1>Error!</h1>
-                    <h2>{errorMsg}</h2>
-                    <h1>Reloading page in {errorCount} seconds!</h1>
-                </div>
-            {:else}
-                <ProgressRing size={60}/>
-            {/if}
+            <ProgressRing size={60}/>
         </div>
     {/if}
 </div>
 
 <style>
-    .error-wrapper {
-        color: #c40606;
-        text-align: center;
-    }
-
     .loading-wrapper {
-        position: absolute;
+        position: fixed;
         display: flex;
         justify-content: center;
         align-items: center;
-        top: -10px;
-        bottom: -10px;
-        left: -10px;
-        right: -10px;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
         background-color: #000000B3;
     }
 
@@ -145,6 +115,7 @@
         width: 100%;
         border: 2px solid #798AC5;
     }
+
     input:focus{
         background: #798AC5;
         outline: 3px solid #252e62;
@@ -170,7 +141,11 @@
     h1 {
         text-align: center;
         margin-top: 0;
+    }
 
+    .error {
+        margin: 0 0 20px 40px;
+        color: red;
     }
 
 </style>

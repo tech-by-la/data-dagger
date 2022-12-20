@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-slim
 
 RUN mkdir -p /usr/src/
 
@@ -6,7 +6,7 @@ WORKDIR /usr/src/
 
 COPY client/ /usr/src/
 
-RUN npm install
-RUN npm run build
+RUN npm ci
+RUN npm run build:prod
 CMD ["npm", "start"]
 

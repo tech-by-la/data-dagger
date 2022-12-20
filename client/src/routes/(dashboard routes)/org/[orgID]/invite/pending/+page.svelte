@@ -6,8 +6,6 @@
     import Trash from 'svelte-icons/fa/FaTrash.svelte';
     import {Button, IconButton, ProgressRing} from "fluent-svelte";
 
-    import {safeFetch} from "$lib/utils/helpers";
-
     const { invites } = $page.data;
 
     let selected = [];
@@ -16,45 +14,29 @@
     let promptOpen = false;
     let hover = false;
     let loading = false;
-
-    let deleteOne = '';
-
-    const handleSubmit = async () => {
-        const emailsToUninvite = deleteOne ? [deleteOne] : selected.map(s => s.email);
-        if (emailsToUninvite.length < 1) return;
-
-        loading = true;
-        const start = new Date().getTime();
-
-        const body = { org_id: $page.data.org_id, emails: emailsToUninvite }
-        const response = await safeFetch('/auth/invite', body, 'DELETE');
-
-        setTimeout(() => {
-            if (response.ok) window.location.reload();
-            else {
-                promptOpen = false;
-                loading = false;
-            }
-        }, 666 - (new Date().getTime() - start));
-    }
+    let oneSelected = '';
 
     const handleClickInvite = (invite) => {
-        selected = selected.includes(invite)
-            ? selected.filter(s => s !== invite)
-            : selected = [...selected, invite];
+        selected = selected.includes(invite.email)
+            ? selected.filter(s => s !== invite.email)
+            : selected = [...selected, invite.email];
     }
 
     const handleSelectAll = () => {
         selected = selected.length === invites.length
             ? []
-            : invites
+            : invites.map(i => i.email);
     }
 
-    const handlePrompt = (email = '') => {
-        deleteOne = promptOpen ? deleteOne = '' : deleteOne = email
-        promptOpen = !promptOpen;
+    const handleTrash = (email: string) => {
+        oneSelected = email;
+        promptOpen = true;
     }
 
+    const handleClosePrompt = () => {
+        oneSelected = '';
+        promptOpen = false;
+    }
 </script>
 
 <h1>Pending Invites</h1>
@@ -78,7 +60,7 @@
 
         <!--  Delete All Button  -->
         {#if selected.length > 0}
-            <div class="grid-right" style="padding-right: 2px;" on:click={() => handlePrompt()}>
+            <div class="grid-right" style="padding-right: 2px;" on:click={promptOpen = !promptOpen}>
                 <IconButton
                     variant="accent"
                     style="background-color: {hover ? '#c30000' : 'red'}; color: white; font-weight: bold; position: absolute; cursor: pointer;"
@@ -98,9 +80,9 @@
         <div class="grid-row">
 
             <!--  Dynamic Check Icon  -->
-            <div class="grid-left {selected.includes(invite) ? 'selected' : ''}" on:click={() => handleClickInvite(invite, index)}>
+            <div class="grid-left {selected.includes(invite.email) ? 'selected' : ''}" on:click={() => handleClickInvite(invite, index)}>
                 <div class="list-icon" >
-                    {#if selected.includes(invite)}
+                    {#if selected.includes(invite.email)}
                             <CheckSquare/>
                     {:else}
                             <Square/>
@@ -108,9 +90,15 @@
                 </div>
             </div>
 
-            <div class="invite-email grid-left-center {selected.includes(invite) ? 'selected' : ''}">{invite.email}</div>
-            <div class="invite-date grid-right-center {selected.includes(invite) ? 'selected' : ''}">{invite.sent_at}</div>
-            <div class="grid-right {selected.includes(invite) ? 'selected' : ''}" on:click={() => handlePrompt(invite.email)}>
+            <div class="invite-email grid-left-center {selected.includes(invite.email) ? 'selected' : ''}">
+                {invite.email}
+            </div>
+            <div class="invite-date grid-right-center {selected.includes(invite.email) ? 'selected' : ''}">
+                {invite.sent_at.toLocaleDateString()}
+            </div>
+
+            <!--  Trash Icon  -->
+            <div class="grid-right {selected.includes(invite.email) ? 'selected' : ''}" on:click={() => handleTrash(invite.email)}>
                 <div class="list-icon"><Trash/></div>
             </div>
         </div>
@@ -119,24 +107,32 @@
 </div>
 
 {#if promptOpen}
-    <span class="confirmation-background" on:click={() => promptOpen = false} transition:fade={{duration: 200}}></span>
+    <span class="confirmation-background" on:click={handleClosePrompt} transition:fade={{duration: 200}}></span>
 
     {#if loading}
         <div class="loading-spinner"><ProgressRing size={50}/></div>
     {:else}
         <div class="confirmation-wrapper" transition:fade={{duration: 200}}>
-            <h3>Confirm Uninvite {deleteOne ? deleteOne : allSelected ? "All" : "Selected"}</h3>
+            <h3>Confirm Uninvite {allSelected ? "All" : "Selected"}</h3>
             <div class="flex-row">
-                <Button style="cursor: pointer;" on:click={() => promptOpen = false}>Cancel</Button>
-                <Button
-                    variant="accent"
-                    style="background-color: {hover ? '#c30000' : 'red'}; color: white; font-weight: bold; cursor: pointer;"
-                    on:mouseenter={() => hover = true}
-                    on:mouseleave={() => hover = false}
-                    on:click={handleSubmit}
-                >
-                    Delete
-                </Button>
+                <Button style="cursor: pointer;" on:click={handleClosePrompt}>Cancel</Button>
+                <form method="post" on:submit>
+                    <Button
+                        variant="accent"
+                        type="submit"
+                        style="background-color: {hover ? '#c30000' : 'red'}; color: white; font-weight: bold; cursor: pointer;"
+                        on:mouseenter={() => hover = true}
+                        on:mouseleave={() => hover = false}
+                        on:click={() => loading = true}
+                    >
+                        Delete
+                    </Button>
+                    {#if oneSelected}
+                        <input name="selected" type="hidden" bind:value={oneSelected}>
+                    {:else}
+                        <input name="selected" type="hidden" bind:value={selected}>
+                    {/if}
+                </form>
             </div>
         </div>
     {/if}
@@ -235,11 +231,11 @@
     }
 
     .confirmation-background {
-        position: absolute;
+        position: fixed;
         background-color: rgba(0, 0, 0, 0.5);
         top: 0;
-        bottom: 0;
         left: 0;
+        bottom: 0;
         right: 0;
     }
 

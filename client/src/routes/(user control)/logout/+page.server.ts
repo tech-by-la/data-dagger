@@ -21,8 +21,8 @@ export const actions: Actions = {
 			}
 		}
 
-		cookies.delete('idToken');
-		cookies.delete('refreshToken');
+		cookies.delete('idToken', { path: '/' });
+		cookies.delete('refreshToken', { path: '/' });
 		throw redirect(302, '/');
 	}
 };

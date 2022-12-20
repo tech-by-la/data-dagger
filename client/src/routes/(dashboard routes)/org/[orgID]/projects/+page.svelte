@@ -8,7 +8,7 @@
 
     const formatDate = (unix: number) => {
         let date = new Date(unix);
-        if (isNaN(date.getTime())) return 'Not set';
+        if (!unix || isNaN(date.getTime())) return 'Not set';
         return date.toLocaleDateString();
     }
 </script>
@@ -41,7 +41,7 @@
 
     <!--  List of Invites  -->
     {#each projects as project, index}
-        <div class="grid-row" on:click={() => goto(`/project/${project._id}`)}>
+        <div class="grid-row" on:click={() => goto(`/project/${project.id}`)}>
             <div class="grid-cell grid-1">{project.name}</div>
             <div class="grid-cell grid-2">{project.description}</div>
             <div class="grid-cell grid-3">{project.status}</div>
@@ -117,47 +117,6 @@
         background-color: white;
         margin-top: 10px;
         padding: 0;
-    }
-
-    .list-icon {
-        display: flex;
-        align-self: center;
-        height: 18px;
-    }
-
-    .flex-row {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        margin-top: 20px;
-    }
-
-    .confirmation-wrapper {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        top: 40%;
-        left: calc(50% - 125px);
-        min-width: 250px;
-        padding: 10px;
-        background-color: #494949;
-        border-radius: 8px;
-    }
-
-    .confirmation-background {
-        position: absolute;
-        background-color: rgba(0, 0, 0, 0.5);
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-
-    .loading-spinner {
-        position: absolute;
-        top: calc(50% - 25px);
-        left: calc(50% - 25px);
     }
 
 </style>

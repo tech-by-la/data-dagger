@@ -1,5 +1,4 @@
 import type {PageServerLoad} from "./$types";
-import {PUBLIC_API_URL} from "$env/static/public";
 import db from '$lib/server/database/DatabaseGateway';
 
 export const load: PageServerLoad = () => {

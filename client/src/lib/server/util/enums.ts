@@ -44,6 +44,19 @@ export enum StatusCode {
     INTERNAL_SERVER_ERROR = 500
 }
 
+export enum StatusMessage {
+    OK = 'Ok',
+    CREATED = 'Created',
+    NO_CONTENT = 'No Content',
+    FOUND = 'Found',
+    BAD_REQUEST = 'Bad Request',
+    UNAUTHORIZED = 'Unauthorized',
+    FORBIDDEN = 'Forbidden',
+    NOT_FOUND = 'Not Found',
+    CONFLICT = 'Conflict',
+    INTERNAL_SERVER_ERROR = 'Internal Server Error'
+}
+
 export enum HttpErrMsg {
     DUPLICATE_ENTRIES = "Duplicate entries not allowed",
     BAD_CREDENTIALS = "Email or password is incorrect.",

@@ -16,7 +16,6 @@ interface IJwtUtil {
     renewRefreshToken(user_id: string, token: RefreshToken): Promise<string | null>;
     verifyIdToken(token: string): Promise<JwtPayload | null>;
     verifyRefreshToken(token: string): Promise<JwtPayload | null>;
-    validateRefreshToken(token: string): Promise<{ user: UserInfo, newToken: string | null } | null>;
 }
 
 class JwtUtil implements IJwtUtil {
@@ -102,10 +101,6 @@ class JwtUtil implements IJwtUtil {
         }
     }
 
-    public getPublicJwtKey() {
-        return this.publicJwtKey;
-    }
-
     public signIdToken(user: UserInfo | null) {
         return new Promise<string | null>((accept) => {
             if (!user || !user.id || !user.email || !user.roles || !user.orgs) return accept(null);
@@ -142,7 +137,7 @@ class JwtUtil implements IJwtUtil {
         const payload: RefreshTokenPayload = { token: Snowflakes.nextHexId() }
 
         return new Promise<string | null>((accept) => {
-            jwt.sign(payload, this.privateRefKey, { ...this.jwtSignOptions, subject: user_id}, async (error, encoded) => {
+            jwt.sign(payload, this.privateRefKey, { ...this.refreshTokenSignOptions, subject: user_id}, async (error, encoded) => {
                 if (error || !encoded) accept(null);
                 else {
                     await db.refreshTokenRepo.renewRefreshToken(old_token, payload.token);
@@ -177,12 +172,18 @@ class JwtUtil implements IJwtUtil {
                 }
                 else {
                     const { sub, token } = decoded as JwtPayload;
-                    if (!sub || !token) return;
+                    if (!sub || !token) {
+                        accept(null);
+                        return;
+                    }
 
                     const user = await db.userRepo.findUserById(sub);
                     const tokenObj = await db.refreshTokenRepo.findRefreshTokenByToken(token);
 
-                    if (!tokenObj || !tokenObj.expires) return;
+                    if (!tokenObj || !tokenObj.expires) {
+                        accept(null);
+                        return;
+                    };
                     const expired = new Date(Number.parseInt(tokenObj.expires.toString())).getTime() < Date.now();
                     if (
                         !user || !user.enabled ||
@@ -200,31 +201,6 @@ class JwtUtil implements IJwtUtil {
                 }
             });
         });
-    }
-
-    public async validateRefreshToken (jwt: string) {
-        const verified = await this.verifyRefreshToken(jwt);
-        if (!verified) return null;
-
-        const { token } = verified;
-        const refreshToken = await db.refreshTokenRepo.findRefreshTokenByToken(token);
-        if (!refreshToken) return null;
-
-        // If user doesn't exist, delete all related
-        const user = await db.userRepo.findUserById(refreshToken.user_id);
-        if (!user || !user.enabled) {
-            db.refreshTokenRepo.deleteRefreshTokensByUser(refreshToken.user_id);
-            return null;
-        }
-
-        // If token is expired or someone used an invalid token, delete token family
-        if (!refreshToken.valid || refreshToken.expires < Date.now()) {
-            db.refreshTokenRepo.deleteRefreshTokensByUserAndFamily(refreshToken.user_id, refreshToken.family);
-            return null;
-        }
-
-        const newToken = await this.renewRefreshToken(refreshToken.user_id, refreshToken);
-        return { user, newToken }
     }
 }
 

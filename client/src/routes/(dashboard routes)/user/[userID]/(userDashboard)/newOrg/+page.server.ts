@@ -1,7 +1,8 @@
-import { invalid, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { PUBLIC_API_URL } from '$env/static/public';
 import { z } from 'zod';
+import db from '$lib/server/database/DatabaseGateway';
+import {StatusMessage} from "$lib/server/util/enums";
 
 
 const createOrgSchema = z.object({
@@ -20,12 +21,12 @@ const createOrgSchema = z.object({
 });
 
 export const load: PageServerLoad = async () => {
-	
+
 	return {};
 };
 
 export const actions: Actions = {
-	newOrg: async ({ request, fetch, locals }) => {
+	newOrg: async ({ request, locals }) => {
 		const orgInfo = await request.formData();
 		const data = Object.fromEntries(orgInfo);
 		try {
@@ -33,36 +34,28 @@ export const actions: Actions = {
 		} catch (err) {
 			console.log('-------------------Parse Form Error--------------------');
 			console.log(err);
-			return invalid(400, { invalid: true });
+			return fail(400, { invalid: true });
 		}
-		try {
-			const loginData = JSON.stringify({
-				name: data.name,
-				contact_phone: data.contact_phone,
-				contact_email: data.contact_email,
-				
-			});
 
-			const fetchOptions = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					accept: 'application/json'
-				},
-				body: loginData
-			};
+		const name = orgInfo.get('name');
+		const contact_email = orgInfo.get('contact_email');
+		const contact_phone = orgInfo.get('contact_phone');
 
-			const response = await fetch(PUBLIC_API_URL + '/auth/orgs', fetchOptions);
-			console.log(response.status);
-
-		} catch (err) {
-			console.log('-------------------SERVER ERROR--------------------');
-			console.log(err);
-			return invalid(400, { invalid: true });
+		if (
+			!name 		   || typeof name !== "string" ||
+			!contact_email || typeof contact_email !== "string" ||
+			!contact_phone || typeof contact_phone !== "string"
+		) {
+			return fail(400, { message: StatusMessage.BAD_REQUEST });
 		}
-		console.log("Org Created: " + data.name);
-		
-		throw redirect(302, '/user/' + locals.user.sub  );
+
+		const org = await db.orgRepo.createOrg(locals.user.sub, name, contact_email, contact_phone);
+
+		if (!org) {
+			return fail(500, { message: StatusMessage.INTERNAL_SERVER_ERROR });
+		}
+
+		throw redirect(302, '/org/' + org.id);
 	},
-	
+
 };

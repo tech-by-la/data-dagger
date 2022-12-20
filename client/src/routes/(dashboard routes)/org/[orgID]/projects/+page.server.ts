@@ -1,17 +1,9 @@
 import type {PageServerLoad} from "./$types";
-import {PUBLIC_API_URL} from "$env/static/public";
-import {error} from "@sveltejs/kit";
+import db from '$lib/server/database/DatabaseGateway';
 
-export const load: PageServerLoad = ({params, fetch}) => {
-
-    const fetchProjects = async () => {
-        const response = await fetch(PUBLIC_API_URL + `/projects/org/${params.orgID}`);
-        if (!response.ok) throw error(response.status);
-        const data = await response.json();
-        return data.data;
-    }
+export const load: PageServerLoad = ({params}) => {
 
     return {
-        projects: fetchProjects(),
+        projects: db.projectRepo.findAllByOrg_id(params.orgID),
     }
 }

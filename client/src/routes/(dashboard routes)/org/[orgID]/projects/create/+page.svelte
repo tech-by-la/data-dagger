@@ -1,14 +1,9 @@
 <script>
+    import { page } from '$app/stores';
     import {ProgressRing, Checkbox, CalendarView} from "fluent-svelte";
     import { slide } from 'svelte/transition';
-    import { goto } from '$app/navigation';
-    import {safeFetch} from "$lib/utils/helpers";
-    import {page} from "$app/stores";
 
     let loading = false;
-    let error = false;
-    let errorMsg = '';
-    let errorCount = '';
 
     let showDates = false;
 
@@ -23,49 +18,6 @@
     let minStartDate = new Date(new Date(start_date).setDate(new Date().getDate() - 1));
     $: endMinDate = new Date(start_date).setDate(start_date.getDate()+1);
 
-    const handleSubmit = async () => {
-        const start = new Date();
-        loading = true;
-
-        const body = {
-            name,
-            description,
-            status: "undefined", // TODO: define project status. Do we need it here?
-            type: "undefined", // TODO: define project types
-            organization_id: $page.data.organization.id,
-            start_date: showDates ? start_date.getTime() : null,
-            end_date: showDates ? end_date.getTime() : null
-        }
-
-        console.log(body);
-
-        let data;
-        let response;
-        try {
-            response = await safeFetch('/projects', body, 'POST');
-            data = await response.json();
-        } catch (err) {
-            response = {ok: false}
-            data = { message: 'An unknown error occurred' }
-        }
-        if (!response.ok) {
-            error = true;
-            errorMsg = data.message;
-            errorCount = 10;
-            setInterval(() => {
-                if (errorCount > 0) errorCount--;
-                else window.location.reload();
-            }, 1000);
-            return;
-        }
-
-        const end = new Date();
-        setTimeout(() => {
-            goto('../projects');
-        }, 1000 - (end.getTime() - start.getTime()));
-
-    }
-
     const handleReset = () => {
         name = '';
         description = '';
@@ -76,9 +28,12 @@
 </script>
 
 <div class="form-wrapper">
-    <form on:submit|preventDefault={handleSubmit}>
+    <form method="post">
         <h1>Invite Members</h1>
 
+        <input name="organization_id" type="hidden" bind:value={$page.data.organization.id}>
+        <input name="status" type="hidden" value="PENDING">
+        <input name="type" type="hidden" value="GeoProject">
         <div class="input-wrapper">
             <div >Project Name</div>
             <input name="name" type="text" placeholder="Project Name" bind:value={name}>
@@ -98,6 +53,7 @@
                         <div >{start_date ? start_date.toLocaleDateString() : "unset"}</div>
                         <div>
                             <CalendarView min={minStartDate} bind:value={start_date}/>
+                            <input name="start_date" type="hidden" bind:value={start_date}>
                         </div>
                     </div>
                     <div class="date-inner-wrapper">
@@ -105,6 +61,7 @@
                         <div>{end_date ? end_date.toLocaleDateString() : "unset"}</div>
                         <div >
                             <CalendarView min={endMinDate} bind:value={end_date}/>
+                            <input name="end_date" type="hidden" bind:value={end_date}>
                         </div>
                     </div>
                 </div>
@@ -112,7 +69,7 @@
 
             <div class="flex-box">
                 <button class="btn" type="reset" on:click|preventDefault={handleReset}>Reset</button>
-                <button class="btn" type="submit">Submit</button>
+                <button class="btn" type="submit" on:submit={() => loading = true}>Submit</button>
             </div>
 
         </div>
@@ -122,26 +79,12 @@
 
     {#if loading}
         <div class="loading-wrapper">
-
-            {#if error}
-                <div class="error-wrapper">
-                    <h1>Error!</h1>
-                    <h2>{errorMsg}</h2>
-                    <h1>Reloading page in {errorCount} seconds!</h1>
-                </div>
-            {:else}
-                <ProgressRing size={60}/>
-            {/if}
+            <ProgressRing size={60}/>
         </div>
     {/if}
 </div>
 
 <style>
-    .error-wrapper {
-        color: #c40606;
-        text-align: center;
-    }
-
     .loading-wrapper {
         position: absolute;
         display: flex;
