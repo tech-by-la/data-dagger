@@ -139,8 +139,8 @@ services:
 volumes:
   authentication_data:
   authentication_config:
-  translations_data:
-  translations_config:
+#  translations_data:
+#  translations_config:
   projects_data:
   projects_config:
 
