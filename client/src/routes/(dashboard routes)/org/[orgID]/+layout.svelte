@@ -2,6 +2,7 @@
     import { page } from "$app/stores";
     import { goto } from '$app/navigation';
     import Button from '$lib/Components/Button.svelte';
+    import Container from "$lib/Components/Container.svelte";
 
     const { organization } = $page.data;
 </script>
@@ -13,7 +14,7 @@
         </span>
     </div>
     <div class="con-2">
-      <div class="con-2-1">
+      <Container>
         <Button
             btnClick={() => goto(`/org/${organization.id}/invite`)}
             btnTitle="Invite Members"
@@ -32,6 +33,9 @@
             width="100%"
             active={$page.url.pathname.endsWith(`/org/${organization.id}/projects`)}
         />
+      </Container>
+      <div class="con-2-1">
+        
       </div>
       <div class="con-2-2">
         <slot></slot>
@@ -43,7 +47,7 @@
 
 <style>
     div {
-      border: 5px #1e18444b solid;
+      border: 5px #ffffff solid;
       padding: 10px;
       margin: 0 10px;
     }

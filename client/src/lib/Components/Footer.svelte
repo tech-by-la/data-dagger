@@ -19,7 +19,8 @@
     display: flex;
     justify-content: space-evenly;
     margin-top: 10px;
-    background: #1e184453;
+    background: #060a1d77;
+    backdrop-filter: blur(5px);
     text-align: center;
     align-items: center;
     height: 30px

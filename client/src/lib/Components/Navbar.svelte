@@ -85,10 +85,11 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border: 5px #1e184453 ;
+    /* border: 5px #1a1a1a ; */
     border-radius: 0px;
     margin: 0 0;
-    background: #1e184453;
+    background: #060a1d77;
+    backdrop-filter: blur(5px)
 
 }
 .navbar-wrapper div{

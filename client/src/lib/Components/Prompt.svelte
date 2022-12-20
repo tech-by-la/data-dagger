@@ -1,8 +1,10 @@
 <script>
     import {fly, fade} from 'svelte/transition'
     import { page } from "$app/stores";
-
-    export let toggle;
+    /**
+	 * @type {any}
+	 */
+     export let toggle;
 </script>
 
 <div class="prompt-div">
