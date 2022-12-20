@@ -1,11 +1,11 @@
 import type { LayoutServerLoad } from './$types';
-import {redirect} from "@sveltejs/kit";
+import {error} from "@sveltejs/kit";
+import {StatusCode, StatusMessage} from "$lib/server/util/enums";
 
 export const load: LayoutServerLoad = async ({ locals, params}) => {
 	const userID = locals.user.sub
 
 	if(userID !== params.userID ) {
-		throw redirect(302, "/Please-Log-in");
+		throw error(StatusCode.UNAUTHORIZED, { message: StatusMessage.UNAUTHORIZED });
 	}
-	return {};
 };

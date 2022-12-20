@@ -5,7 +5,9 @@ import Logger from "$lib/server/util/Logger";
 import {fail} from "@sveltejs/kit";
 import {StatusCode, StatusMessage, UserRoles} from "$lib/server/util/enums";
 
-export const load: PageServerLoad = ({locals}) => {
+export const load: PageServerLoad = async ({locals, parent}) => {
+    await parent();
+
     const fetchUsers = async () => {
         const users = await db.userRepo.getAll();
 

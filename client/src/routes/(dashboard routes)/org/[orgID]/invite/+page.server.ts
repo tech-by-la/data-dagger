@@ -1,9 +1,16 @@
+import type {PageServerLoad} from "./$types";
 import type {Actions} from "@sveltejs/kit";
-import db from '$lib/server/database/DatabaseGateway';
+import type {InviteResponseBody} from "$lib/server/util/interfaces";
+
 import {fail} from "@sveltejs/kit";
+
+import db from '$lib/server/database/DatabaseGateway';
 import {OrgRoles, StatusMessage} from "$lib/server/util/enums";
 import {partitionEmails} from "$lib/server/util/helpers";
-import type {InviteResponseBody} from "$lib/server/util/interfaces";
+
+export const load: PageServerLoad = async ({parent}) => {
+    await parent();
+}
 
 export const actions: Actions = {
     default: async ({request, locals, params}) => {

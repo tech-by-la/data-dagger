@@ -38,9 +38,8 @@ export default class ProjectsRepo {
     }
 
     public async findAllByUser_id(user_id: string) {
-        return await this.model.find({
-            members: user_id
-        })
+        return await this.model.find({ members: user_id })
+            .then(result => result.map(p => p.toObject()));
     }
 
     public async findAllByOrg_id(organization_id: string) {

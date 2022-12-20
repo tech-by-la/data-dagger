@@ -4,6 +4,9 @@ import { z } from 'zod';
 import db from '$lib/server/database/DatabaseGateway';
 import {StatusMessage} from "$lib/server/util/enums";
 
+export const load: PageServerLoad = async ({parent}) => {
+	await parent();
+};
 
 const createOrgSchema = z.object({
 	name: z
@@ -19,11 +22,6 @@ const createOrgSchema = z.object({
 	contact_email: z.string().min(1).max(64).email(),
 	terms: z.enum(['on'])
 });
-
-export const load: PageServerLoad = async () => {
-
-	return {};
-};
 
 export const actions: Actions = {
 	newOrg: async ({ request, locals }) => {

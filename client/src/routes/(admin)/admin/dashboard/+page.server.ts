@@ -1,7 +1,11 @@
 import type {PageServerLoad} from "./$types";
 import db from '$lib/server/database/DatabaseGateway';
+import Logger from "$lib/server/util/Logger";
 
-export const load: PageServerLoad = () => {
+export const load: PageServerLoad = async ({parent}) => {
+    await parent();
+
+    Logger.log('bob');
 
     const getUsers = async () => {
         return await db.userRepo.getAll();
