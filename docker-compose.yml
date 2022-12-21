@@ -14,6 +14,17 @@ services:
       - authentication_db
       - projects_db
 
+  geoserver:
+    container_name: geoserver
+    image: docker.osgeo.org/geoserver:2.21.1
+    restart: unless-stopped
+    networks:
+      - dd-net
+    expose:
+      - ${GEO_PORT}
+    volumes:
+      - "geoserver_data:/opt/geoserver_data/:Z"
+
   # === Databases === #
   authentication_db:
     container_name: authentication_db
@@ -24,6 +35,8 @@ services:
     volumes:
       - "authentication_config:/etc/mysql/conf.d/config-file.cnf"
       - "authentication_data:/var/lib/mysql:rw"
+    expose:
+      - ${MYSQL_PORT}
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
       MYSQL_DATABASE: auth
@@ -42,6 +55,21 @@ services:
       - ${MONGO_PORT}
     environment:
       MONGO_INITDB_DATABASE: projects
+
+  geoserver_db:
+    container_name: geoserver_db
+    image: postgis/postgis:15-3.3
+    restart: always
+    networks:
+      - dd-net
+    volumes:
+      - "postgis_data:/var/lib/postgresql/data"
+      - "postgis_config:/etc/postgresql/postgresql.conf"
+    expose:
+      - ${POSTGIS_PORT}
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PW}
+      POSTGRES_DB: geodata
 
 #  translation_db:
 #    container_name: translation_db
@@ -62,6 +90,9 @@ volumes:
   authentication_config:
   projects_data:
   projects_config:
+  postgis_data:
+  postgis_config:
+  geoserver_data:
 
 networks:
   dd-net:

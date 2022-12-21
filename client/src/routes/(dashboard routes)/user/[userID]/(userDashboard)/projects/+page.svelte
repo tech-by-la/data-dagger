@@ -1,9 +1,14 @@
 <script lang="ts">
-    import type { PageData } from './$types';
-    
-    export let data: PageData;
+    import { page } from '$app/stores';
+    import {Button} from "fluent-svelte";
+    import { goto } from '$app/navigation';
+
+    const { projects } = $page.data;
+    console.log(projects);
 </script>
 
-<h1>
-    This will be a list of projects
-</h1>
+<h1>This will be a list of projects</h1>
+
+{#each projects as project}
+    <Button on:click={() => goto(`/project/${project.id}`)}>{project.name}</Button>
+{/each}

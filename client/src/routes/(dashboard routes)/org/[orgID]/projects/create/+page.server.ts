@@ -1,8 +1,14 @@
+import type {PageServerLoad} from "./$types";
 import type {Actions} from "@sveltejs/kit";
+import type {Project} from "$lib/server/util/interfaces";
+
 import {fail, redirect} from "@sveltejs/kit";
 import {OrgRoles, StatusMessage} from "$lib/server/util/enums";
 import db from '$lib/server/database/DatabaseGateway';
-import type {Project} from "$lib/server/util/interfaces";
+
+export const load: PageServerLoad = async ({parent}) => {
+    await parent();
+}
 
 export const actions: Actions = {
     default: async ({request, params, locals}) => {

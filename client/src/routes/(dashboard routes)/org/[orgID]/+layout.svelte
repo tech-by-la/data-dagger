@@ -4,7 +4,9 @@
     import Button from '$lib/Components/Button.svelte';
     import Container from "$lib/Components/Container.svelte";
 
-    const { organization } = $page.data;
+    const { organization, isMod, isOwner } = $page.data;
+    const hasAccess = isOwner || isMod;
+
 </script>
 
 <div class="org-page-wrapper">
@@ -14,19 +16,27 @@
         </span>
     </div>
     <div class="con-2">
-      <Container>
-        <Button
-            btnClick={() => goto(`/org/${organization.id}/invite`)}
-            btnTitle="Invite Members"
-            width ="100%"
-            active={$page.url.pathname.endsWith(`/org/${organization.id}/invite`)}
-        />
-        <Button
-            btnClick={() => goto(`/org/${organization.id}/invite/pending`)}
-            btnTitle="Pending Invites"
-            width="100%"
-            active={$page.url.pathname.endsWith(`/org/${organization.id}/invite/pending`)}
-        />
+      <Container width="250px">
+        {#if hasAccess}
+            <Button
+                btnClick={() => goto(`/org/${organization.id}/members`)}
+                btnTitle="Members"
+                width="100%"
+                active={$page.url.pathname.endsWith(`/org/${organization.id}/members`)}
+            />
+            <Button
+                btnClick={() => goto(`/org/${organization.id}/invite`)}
+                btnTitle="Invite Members"
+                width="100%"
+                active={$page.url.pathname.endsWith(`/org/${organization.id}/invite`)}
+            />
+            <Button
+                btnClick={() => goto(`/org/${organization.id}/invite/pending`)}
+                btnTitle="Pending Invites"
+                width="100%"
+                active={$page.url.pathname.endsWith(`/org/${organization.id}/invite/pending`)}
+            />
+        {/if}
         <Button
             btnClick={() => goto(`/org/${organization.id}/projects`)}
             btnTitle="Projects"
@@ -35,7 +45,7 @@
         />
       </Container>
       <div class="con-2-1">
-        
+
       </div>
       <div class="con-2-2">
         <slot></slot>

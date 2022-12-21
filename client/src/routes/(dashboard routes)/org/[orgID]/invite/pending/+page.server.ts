@@ -6,7 +6,8 @@ import db from '$lib/server/database/DatabaseGateway';
 import {fail} from "@sveltejs/kit";
 import {OrgRoles, StatusMessage} from "$lib/server/util/enums";
 
-export const load: PageServerLoad = ({params}) => {
+export const load: PageServerLoad = async ({params, parent}) => {
+    await parent();
 
     const fetchInvites = async () => {
         return await db.inviteRepo.findManyInvitesByOrg_id(params.orgID);

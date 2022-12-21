@@ -24,27 +24,40 @@ export default class ProjectsRepo {
             }
         });
 
-        // ProjectSchema.set('toObject', { virtuals: true });
-        // ProjectSchema.virtual('id')
-        //     .get(function() {
-        //     return this._id.toHexString()
-        // });
-
         this.model = this.db.model('Project', ProjectSchema);
     }
 
+    /*
+     * ADMIN FUNCTION ONLY!
+     */
+    public async all() {
+        return await this.model.find()
+            .then(result => result.map(p => p.toObject()));
+    }
+
+    /*
+     * ADMIN FUNCTION ONLY! Use findEnabledById instead
+     */
     public async findById(_id: string) {
         return await this.model.findOne({ _id });
     }
 
+    public async findEnabledById(_id: string) {
+        return await this.model.findOne({ _id, enabled: true })
+            .then(project => project?.toObject() as Project);
+    }
+
+    public async count() {
+        return await this.model.count();
+    }
+
     public async findAllByUser_id(user_id: string) {
-        return await this.model.find({
-            members: user_id
-        })
+        return await this.model.find({ members: user_id, enabled: true })
+            .then(result => result.map(p => p.toObject()));
     }
 
     public async findAllByOrg_id(organization_id: string) {
-        return await this.model.find({ organization_id })
+        return await this.model.find({ organization_id, enabled: true })
             .then(result => result.map(p => p.toObject()));
     }
 
@@ -68,12 +81,13 @@ export default class ProjectsRepo {
 
     public async update(data: typeof projectsDefinition) {
         try {
-            return await this.model.update({ organization_id: data.organization_id }, {
+            return await this.model.updateOne({ _id: data.id }, {
                 $set: {
                     name: data.name,
                     description: data.description,
                     type: data.type,
                     status: data.status,
+                    enabled: data.enabled,
                     start_date: data.start_date,
                     project_data: data.project_data,
                     end_date: data.end_date,
@@ -85,22 +99,12 @@ export default class ProjectsRepo {
         }
     }
 
-    public async join(project_id: string, user: AuthUser) {
-        const orgs = user.orgs.map(o => o.org_id);
+    public async join(_id: string, user_id: string) {
+        return await this.model.updateOne({ _id }, { $push: { members: user_id }});
+    }
 
-        try {
-
-            return await this.model.findOneAndUpdate({
-                $and: [
-                    {organization_id: {$in: orgs}},
-                    { _id: project_id }
-                ]
-            }, {
-                $push: { members: user.id }
-            });
-        } catch (err) {
-            Logger.error("JoinProjectsError:", err);
-        }
+    public async leave(_id: string, user_id: string) {
+        return await this.model.updateOne({ _id }, { $pull: { members: user_id }});
     }
 
     public async delete(project_id: string, owner_orgs: string[]) {
@@ -126,6 +130,7 @@ const projectsDefinition: SchemaDefinition<SchemaDefinitionType<Project>> = {
     created_at:         Number,
     updated_at:         Number,
     status:             "String",
+    enabled:            { type: Boolean, default: true },
     start_date:         { type: Number, default: Date.now },
     end_date:           Number,
     members:            ["String"]

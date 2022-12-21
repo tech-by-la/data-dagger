@@ -5,7 +5,9 @@ import Logger from "$lib/server/util/Logger";
 import {fail} from "@sveltejs/kit";
 import {StatusCode, StatusMessage, UserRoles} from "$lib/server/util/enums";
 
-export const load: PageServerLoad = ({locals}) => {
+export const load: PageServerLoad = async ({locals, parent}) => {
+    await parent();
+
     const fetchUsers = async () => {
         const users = await db.userRepo.getAll();
 
@@ -62,7 +64,6 @@ export const actions: Actions = {
 
         user.enabled = enabled === 'true';
         const success = await db.userRepo.updateUser(user).catch();
-        console.log(enabled);
         if (!success) {
             Logger.error("AdminRouter:", "Internal error - could not update user when querying database");
             return fail(StatusCode.INTERNAL_SERVER_ERROR, { message: StatusMessage.INTERNAL_SERVER_ERROR });

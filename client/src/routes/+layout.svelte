@@ -2,7 +2,6 @@
     import "fluent-svelte/theme.css";
     import Navbar from "$lib/Components/Navbar.svelte";
     import Footer from "$lib/Components/Footer.svelte"
-    import background from "$lib/assets/img/back.jpg"
     import "@fontsource/oswald";
     import Transition from "$lib/Components/Transition.svelte";
     import { page } from '$app/stores'
@@ -19,12 +18,11 @@
         background-blend-mode:soft-light;
         background-size: 100% 100%;
         background-attachment: fixed;
-        font-family: 'Oswald';
+        font-family: Oswald;
         color: rgb(255, 255, 255);
         /* width: 100%; */
         /* height: 100%; */
-       
-        }
+    }
 
     main {
         margin: 0;
@@ -32,12 +30,10 @@
         flex-direction: column;
         backdrop-filter: blur(5px);
         min-height: 100vh;
-        
     }
 
     .slot {
         flex: 1;
-
     }
 
 </style>
@@ -49,7 +45,7 @@
         <div class="navbar">
             <Navbar />
         </div>
-        
+
         <div class="slot">
             {#if ready}
             <Transition url = {$page.url}>
@@ -57,7 +53,7 @@
             </Transition>
             {/if}
         </div>
-        
+
         <div class="footer">
             <Footer />
         </div>

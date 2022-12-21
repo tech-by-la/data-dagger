@@ -66,7 +66,7 @@ export interface AssignRolesRequestBody {
 // ===== DB Interfaces ===== //
 
 export interface Project {
-    id?: string;
+    id: string;
     organization_id: string;
     name: string;
     description: string;
@@ -75,6 +75,7 @@ export interface Project {
     created_at?: number;
     updated_at?: number;
     status: string; // TODO: Define project status
+    enabled: boolean;
     start_date?: number;
     end_date?: number;
     members?: string[]

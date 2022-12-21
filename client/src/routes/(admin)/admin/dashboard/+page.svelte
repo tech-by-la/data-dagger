@@ -39,28 +39,28 @@
 
     <div class="cards">
         <div class="card" on:click={() => goto('/admin/dashboard/users')}>
-            <Card radius="15" padding="20" border="1px solid #bdbdbd" bgColor="#303030">
+            <Card radius="15" padding="20" border="1px solid #bdbdbd" bgColor="#30303080">
                 <div class="card-container">
                     <span>Total Users:</span>
-                    <span>{allUsers.length}</span>
+                    <span>{allUsers}</span>
                 </div>
             </Card>
         </div>
         <Separator w="20"/>
         <div class="card" on:click={() => goto('/admin/dashboard/organizations')}>
-            <Card radius="15" padding="20" border="1px solid #bdbdbd" bgColor="#303030">
+            <Card radius="15" padding="20" border="1px solid #bdbdbd" bgColor="#30303080">
                 <div class="card-container">
                     <span>Total Organizations:</span>
-                    <span>{allOrganizations.length}</span>
+                    <span>{allOrganizations}</span>
                 </div>
             </Card>
         </div>
         <Separator w="20"/>
         <div class="card" on:click={() => goto('/admin/dashboard/projects')}>
-            <Card radius="15" padding="20" border="1px solid #bdbdbd" bgColor="#303030">
+            <Card radius="15" padding="20" border="1px solid #bdbdbd" bgColor="#30303080">
                 <div class="card-container">
                     <span>Total Projects:</span>
-                    <span>{allProjects.length}</span>
+                    <span>{allProjects}</span>
                 </div>
             </Card>
         </div>

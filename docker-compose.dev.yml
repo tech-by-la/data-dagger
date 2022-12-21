@@ -10,3 +10,7 @@ services:
   projects_db:
     ports:
       - "27018:27017"
+
+  geoserver:
+    ports:
+      - "8080:8080"

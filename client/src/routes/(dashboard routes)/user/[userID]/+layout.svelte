@@ -2,7 +2,7 @@
     import type { LayoutData } from './$types';
     import Button from '$lib/Components/Button.svelte';
     import { goto } from '$app/navigation';
-    
+
     export let data: LayoutData
 </script>
 
@@ -12,6 +12,7 @@
       <div class="con-2-1">
         <Button btnClick= {() => goto(`/user/${data.user.sub}/orgs`)} btnTitle="Organizations" width = "100%"></Button>
         <Button btnClick= {() => goto(`/user/${data.user.sub}/projects`)} btnTitle="Projects" width = "100%"></Button>
+        <Button btnClick= {() => goto(`/user/${data.user.sub}/settings`)} btnTitle="Settings" width = "100%"></Button>
       </div>
       <div class="con-2-2">
         <slot></slot>
@@ -23,7 +24,7 @@
 
   <style>
     div {
-      border: 5px #1e18444b solid; 
+      border: 5px #1e18444b solid;
       padding: 10px;
       margin: 0px 10px;
     }
