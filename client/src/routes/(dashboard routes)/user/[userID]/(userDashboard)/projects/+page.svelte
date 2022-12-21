@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     import { page } from '$app/stores';
     import {Button} from "fluent-svelte";
     import { goto } from '$app/navigation';
@@ -11,4 +11,4 @@
 
 {#each projects as project}
     <Button on:click={() => goto(`/project/${project.id}`)}>{project.name}</Button>
-{/each}
+{/each} -->

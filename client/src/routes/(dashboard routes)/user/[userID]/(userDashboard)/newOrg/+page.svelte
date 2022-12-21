@@ -14,7 +14,7 @@
             <input class="input-email" name="contact_email" type="text"  placeholder="Email tlf nr.">
             <div class="checkbox-div">
                 <input class="checkbox" type="checkbox" name="terms">
-                <label for="terms"> I sell my Soul</label>
+                <label for="terms"> I agree to terms and conditions</label>
             </div>
              
             <div class="inner-btn-div">
@@ -56,14 +56,14 @@
     }
 
     input {
-    background:#1e184453;
+    background:#1e1844ab;
     margin: 5px;
     width: auto;
     border: 2px solid #798AC5; 
     }
     input:focus{
         background: #798AC5; 
-        outline: 3px solid #252e62;
+        outline: 5px solid #1e1844ab;
         color: #ffffff
     }
 
@@ -72,7 +72,7 @@
     margin: 5px;
     width: 50%;
     border: 3px solid #798AC5; 
-    border-radius: 10px;
+    
     }
 
     .btn:hover {

@@ -1,10 +1,10 @@
-import type { PageServerLoad } from './$types';
-import db from '$lib/server/database/DatabaseGateway';
+// import type { PageServerLoad } from './$types';
+// import db from '$lib/server/database/DatabaseGateway';
 
-export const load: PageServerLoad = async ({parent, locals}) => {
-	await parent();
+// export const load: PageServerLoad = async ({parent, locals}) => {
+// 	await parent();
 
-	return {
-		projects: db.projectRepo.findAllByUser_id(locals.user.sub),
-	}
-};
+// 	return {
+// 		projects: db.projectRepo.findAllByUser_id(locals.user.sub),
+// 	}
+// };

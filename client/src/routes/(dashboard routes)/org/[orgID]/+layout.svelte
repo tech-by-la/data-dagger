@@ -10,11 +10,11 @@
 </script>
 
 <div class="org-page-wrapper">
-    <div on:click={() => goto(`/org/${organization.id}`)} class="con-1">
+    <!-- <div on:click={() => goto(`/org/${organization.id}`)} class="con-1"> -->
         <span id="org-title">
             {organization.name}
         </span>
-    </div>
+    <!-- </div> -->
     <div class="con-2">
       <Container width="250px">
         {#if hasAccess}

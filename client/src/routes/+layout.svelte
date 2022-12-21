@@ -2,7 +2,7 @@
     import "fluent-svelte/theme.css";
     import Navbar from "$lib/Components/Navbar.svelte";
     import Footer from "$lib/Components/Footer.svelte"
-    import "@fontsource/oswald";
+    import "@fontsource/oswald/300.css";
     import Transition from "$lib/Components/Transition.svelte";
     import { page } from '$app/stores'
     import { onMount } from 'svelte';
@@ -18,7 +18,8 @@
         background-blend-mode:soft-light;
         background-size: 100% 100%;
         background-attachment: fixed;
-        font-family: Oswald;
+        font-family: "Oswald", sans-serif;
+        /* font-weight: 400; */
         color: rgb(255, 255, 255);
         /* width: 100%; */
         /* height: 100%; */

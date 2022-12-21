@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     import type { PageData } from './$types';
     import Button from '$lib/Components/Button.svelte';
     import { goto } from '$app/navigation';
@@ -33,4 +33,4 @@
       padding: 10px;
       margin: 0px 10px;
     }
-</style>
+</style> -->

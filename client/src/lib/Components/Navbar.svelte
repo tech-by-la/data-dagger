@@ -29,7 +29,9 @@
 
     <div class="logo-name-container">
         <a href="/"><img class="logo" src={logo} alt="goose-logo" width="60px"></a>
-        <div class="title-name">Data Dagger</div>
+        <div class="title-name">
+          <h1>Data Dagger</h1>  
+        </div>
     </div>
 
     <div class="links-container">
@@ -112,7 +114,7 @@
 }
 
 .title-name {
-    font-size: xx-large;
+    font-size: 20px;
     margin-left: 20px;
 }
 a {
