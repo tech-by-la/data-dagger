@@ -61,21 +61,22 @@
 
 {#if loginPromptController}
     <Prompt toggle={toggleTheLoginPrompt} >
+        <Button btnClick={toggleTheLoginPrompt} btnTitle={"X"}></Button>
        <InputForm formFunction="/login" formName="Login" />
-       <Button btnClick={toggleTheLoginPrompt} btnTitle={"Close"}></Button>
+       <!-- <Button btnClick={toggleTheLoginPrompt} btnTitle={"Close"}></Button> -->
     </Prompt>
 
 {/if}
 {#if logoutPromptController}
     <Prompt toggle={toggleTheLogoutPrompt} >
        <InputForm formFunction="/logout" formName="Logout" />
-       <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Close"}></Button>
+       <!-- <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Close"}></Button> -->
     </Prompt>
 {/if}
 {#if registerPromptController}
     <Prompt toggle={toggleTheRegisterPrompt}>
         <InputForm formFunction="/register" formName="Register" />
-        <Button btnClick={toggleTheRegisterPrompt} btnTitle={"Close"}></Button>
+        <!-- <Button btnClick={toggleTheRegisterPrompt} btnTitle={"Close"}></Button> -->
     </Prompt>
 {/if}
 

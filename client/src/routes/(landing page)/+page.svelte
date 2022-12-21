@@ -23,37 +23,17 @@
     }
     function hello(){console.log("Hello");} // placeholder function
     let map: Map;
-  
-
-    // // Setting a danish projecyion
-    // var mapSrs = "EPSG:25832"
-    // proj4.defs(mapSrs,"+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs");
-    // register(proj4);
-    // const dkProjection = getProjection(mapSrs);
-    
-    // // Map setup variables
-    // let target = "map";
-    // let x = 607933;
-    // let y = 6189255;
-    // let view = new View({ center: [x, y], projection: dkProjection, zoom: 7 });
-    // let osmMapLayer = new TileLayer({ source: new OSM() });
-    // let layers = [osmMapLayer];
-
-    // onMount( () => {
-    //     let map = new Map({
-    //     layers: layers,
-    //     target: target,
-    //     view: view,
-    //     });
-    // });
 
 
 </script>
 
 {#if pagePromptController}
     <Prompt toggle={toggleThePrompt}>
+        <div class="xBtn">
+        <Button btnClick={toggleThePrompt} btnTitle={"X"}></Button>
+        </div>
         <InputForm formFunction="/register" formName="Register" />
-        <Button btnClick={toggleThePrompt} btnTitle={"Close"}></Button>
+        
     </Prompt>
 {/if}
 

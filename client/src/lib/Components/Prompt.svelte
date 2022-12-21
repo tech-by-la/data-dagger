@@ -1,6 +1,7 @@
 <script>
     import {fly, fade} from 'svelte/transition'
     import { page } from "$app/stores";
+    import Container from './Container.svelte';
     /**
 	 * @type {any}
 	 */
@@ -9,15 +10,19 @@
 
 <div class="prompt-div">
     <div class="shader" transition:fade on:click={toggle} on:keypress={toggle}/>
-    <div class="prompt-box" transition:fly={{y: -500}}>
-        <slot></slot>
+    
+    <div class="prompt-box" transition:fly={{y: -500, duration: 500}}>
+        <Container>
+            <slot></slot>
+        </Container>
         <div class="error-wrapper">
             {#if $page.form?.invalid}
                 <div class="error">
                     {$page.form?.message}
                 </div>
-            {/if}
+                {/if}
         </div>
+        
     </div>
 </div>
 
@@ -25,27 +30,23 @@
     .shader {
         position: fixed;
         top: 0;
-        left: 0;
-        height: 100vh;
-        width: 100vw;
-        background-color: rgba(0, 0, 0, 0.7);
+        height: 100%;
+        width: 100%;
+        background-color: rgba(6, 8, 19, 0.747);
         z-index: 2;
+        backdrop-filter: blur(5px);
+      
+      
     }
     .prompt-box {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: auto;
-        left: 40%;
+        position: fixed;
+        left: 30%;
         margin: auto auto;
-        height: auto;
-        width: 30%;
+        width: 40%;
         color: white;
-        padding: 20px;
-        background-color: #283871;
-        border: solid 5px #798AC5;
         z-index: 3;
     }
+
 
     .error-wrapper {
         display: flex;
