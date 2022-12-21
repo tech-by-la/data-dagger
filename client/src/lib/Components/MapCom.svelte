@@ -8,6 +8,8 @@ import {get as getProjection, Projection} from 'ol/proj';
 import TileLayer from "ol/layer/Tile";
 import { onMount } from "svelte";
 import type { ProjectionLike } from "openlayers";
+	import ImageLayer from "ol/layer/Image";
+    import ImageWMS from 'ol/source/ImageWMS';
 
 export let map;
  // Setting a danish projecyion
@@ -17,12 +19,22 @@ export let map;
     const dkProjection = getProjection(mapSrs);
     
     // Map setup variables
+    var ortofoto = new ImageLayer({
+      source: new ImageWMS({
+        url: 'https://services.datafordeler.dk/GeoDanmarkOrto/orto_foraar/1.0.0/Wms?servicename=orto_foraar&username=CAVCEPWVSC&password=JOB2020adgang!',
+        params: {
+            LAYERS: 'orto_foraar_12_5',
+            TRANSPARENT: "TRUE",
+            FORMAT: 'image/jpeg',
+        }
+      })
+    });
     const target = "map";
     let x = 607933;
     let y = 6189255;
     let view = new View({ center: [x, y], projection: <any> dkProjection, zoom: 7 });
     let osmMapLayer = new TileLayer({ source: new OSM() });
-    let layers = [osmMapLayer];
+    let layers = [osmMapLayer, ortofoto];
 
     onMount( () => {
         map = new Map({

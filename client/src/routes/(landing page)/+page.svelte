@@ -5,14 +5,22 @@
     import Prompt from "$lib/Components/Prompt.svelte";
     import InputForm from "$lib/Components/InputForm.svelte";
     import { page } from "$app/stores";
-    // import { Map, Tile, View } from "ol";
+    import type { Map } from "ol";
     import OSM from "ol/source/OSM";
     import proj4 from 'proj4';
     import {register} from 'ol/proj/proj4';
     import {get as getProjection, Projection} from 'ol/proj';
     import TileLayer from "ol/layer/Tile";
 	import { onMount } from "svelte";
-    import Map from "$lib/Components/Map.svelte";
+    import MapCom from "$lib/Components/MapCom.svelte";
+	import ImageLayer from "ol/layer/Image";
+    import ImageWMS from 'ol/source/ImageWMS';
+	import VectorSource from "ol/source/Vector";
+    import GeoJSON from "ol/format/GeoJSON";
+	import VectorLayer from "ol/layer/Vector";
+    import {bbox as bboxStrategy} from 'ol/loadingstrategy';
+    import TileWMS from 'ol/source/TileWMS';
+
 
     const pageText = $page.data.text
 
@@ -22,7 +30,68 @@
         pagePromptController ? pagePromptController=false : pagePromptController=true
     }
     function hello(){console.log("Hello");} // placeholder function
+
     let map: Map;
+
+    var serverPort = "localhost:8080";
+    var geoserverWorkspace = "qqc";
+    var geoserverWmsUrl = 'http://' + serverPort + '/geoserver/' + geoserverWorkspace + '/wms'
+    var kmTilesLayerName = "qqc_km_tiles"
+
+
+
+    var kmTileWmsSource = new TileWMS({
+        url: geoserverWmsUrl,
+        params: { 'LAYERS': geoserverWorkspace + ':' + kmTilesLayerName, 'TILED': true },
+        serverType: 'geoserver',
+        visible: false
+    })
+
+    var kmTileWmsLayer = new TileLayer({
+        title: "1 km Tiles",
+        source: kmTileWmsSource
+    });
+
+    let kmTileWfsSource = new VectorSource({
+        format: new GeoJSON(),
+        url: function (extent) {
+        return (
+        'http://localhost:8080/geoserver/qqc/ows?service=WFS&' +
+        'version=2.0.0&request=GetFeature&typename=qqc:qqc_km_tiles&' +
+        'outputFormat=application/json&srsname=EPSG:25832&' +
+        'bbox=' +
+        extent.join(',') +
+        ',EPSG:25832' + 
+        "&id=" + 8000
+    );
+    },
+  strategy: bboxStrategy,
+});
+
+
+let kmTileWfsLayer = new VectorLayer({
+  source: kmTileWfsSource,
+  style: {
+    'stroke-width': 0.75,
+    'stroke-color': 'white',
+    'fill-color': 'rgba(100,100,100,0.25)',
+  },
+});
+
+    const addTiles = () => {
+        map.addLayer(kmTileWfsLayer)
+        console.log("Hello");
+        
+    }
+    const addTile2 = () => {
+        map.addLayer(kmTileWmsLayer)
+        console.log("Hello");
+        
+    }
+    // onMount(()=> {
+    //     map.addLayer(kmTileWfsLayer)
+    // }
+    //  ) 
 
 
 </script>
@@ -63,15 +132,15 @@
             <div class="map-con">
             
                 <div class="map-left-panel">
-                    <Button btnClick ={hello} btnTitle="Layer 1"></Button>
-                    <Button btnClick ={hello} btnTitle="layer 2"></Button>
+                    <Button btnClick ={addTiles} btnTitle="Layer 1"></Button>
+                    <Button btnClick ={addTile2} btnTitle="layer 2"></Button>
                     <Button btnClick ={hello} btnTitle="layer 3"></Button>
                     <Button btnClick ={hello} btnTitle="Next Point"></Button>
                     <Button btnClick ={hello} btnTitle="Skip Point"></Button>
                     <Button btnClick ={hello} btnTitle="Go Back"></Button>
                 </div>
                  <div id="map-wraper">
-                    <Map {map} />
+                    <MapCom bind:map = {map}/>
                  </div>
                  <div class="map-right-panel">
                     <Button btnClick ={hello} btnTitle="Class 1"></Button>
