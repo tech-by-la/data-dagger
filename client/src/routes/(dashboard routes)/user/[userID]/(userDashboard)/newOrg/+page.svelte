@@ -1,11 +1,14 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
     import { page } from '$app/stores';
+    import Button from '$lib/Components/Button.svelte';
 
     const { user } = $page.data;
     let userEmail = user.email
 </script>
 
 <div class="form-wrapper">
+    <Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="X" width = "15%"></Button>
     <form class="form-form" method="POST" action="?/newOrg">
             <h1> Create New Organization</h1>
             <input class="input-name" name="name" type="text" placeholder="Organization Name">

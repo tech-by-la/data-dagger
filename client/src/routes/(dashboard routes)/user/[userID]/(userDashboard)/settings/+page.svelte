@@ -1,5 +1,12 @@
-
+<script>
+    import Button from "$lib/Components/Button.svelte";
+    import { page } from "$app/stores"
+	import { goto } from "$app/navigation";
+    const  { user } = $page.data
+</script>
+<Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="X" width = "15%"></Button>
 <div class="content">
+    
     <form method="post" action="?/logoutEverywhere">
         <button class="btn" type="submit">Logout Everywhere</button>
     </form>
