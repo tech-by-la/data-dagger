@@ -35,6 +35,14 @@ export default class ProjectsRepo {
             .then(result => result.map(p => p.toObject()));
     }
 
+    public async count() {
+        return await this.model.count();
+    }
+
+    public async countbyOrg(organization_id: string) {
+        return await this.model.count({ organization_id, enabled: true });
+    }
+
     /*
      * ADMIN FUNCTION ONLY! Use findEnabledById instead
      */
@@ -45,10 +53,6 @@ export default class ProjectsRepo {
     public async findEnabledById(_id: string) {
         return await this.model.findOne({ _id, enabled: true })
             .then(project => project?.toObject() as Project);
-    }
-
-    public async count() {
-        return await this.model.count();
     }
 
     public async findAllByUser_id(user_id: string) {
@@ -122,8 +126,8 @@ export default class ProjectsRepo {
 }
 
 const projectsDefinition: SchemaDefinition<SchemaDefinitionType<Project>> = {
-    organization_id:    "String",
-    name:               "String",
+    organization_id:    { type: String, unique: true, required: true, dropDups: true},
+    name:               { type: String, unique: true, required: true, dropDups: true},
     description:        "String",
     type:               "String",
     project_data:       "String",

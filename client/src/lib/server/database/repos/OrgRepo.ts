@@ -59,7 +59,8 @@ export default class OrgRepo implements IOrgRepo {
 
     public async findManyOrgsByUser_id(id: string) {
         return await this.db.organization.findMany({
-            where: { members: { some: { user_id: id } } }
+            where: { members: { some: { user_id: id } } },
+            include: { members: true }
         })
     }
 

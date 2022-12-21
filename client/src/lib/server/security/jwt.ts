@@ -192,6 +192,7 @@ class JwtUtil implements IJwtUtil {
                     ) {
                         Logger.log("RefreshToken", "Failed!");
                         Logger.log("RefreshToken", "Expired -", expired.valueOf());
+                        Logger.log("RefreshToken", "Decoded Token Sub -", sub);
                         Logger.log("RefreshToken", "User Enabled -", user?.enabled);
                         Logger.log("RefreshToken", "Token Valid -", tokenObj.valid);
                         accept(null);
