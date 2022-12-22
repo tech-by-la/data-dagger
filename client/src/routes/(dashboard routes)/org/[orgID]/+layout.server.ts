@@ -21,7 +21,7 @@ export const load: LayoutServerLoad = async ({params, locals, parent}) => {
 		const isOwner = !!org.members.find(m => m.user_id === locals.user.sub && m.org_role_id === OrgRoles.OWNER);
 		const isMod   = !!org.members.find(m => m.user_id === locals.user.sub && m.org_role_id === OrgRoles.MODERATOR);
 
-		return {organization: org, isOwner, isMod};
+		return {organization: org, isOwner, isMod, projects: db.projectRepo.findAllByOrg_id(params.orgID),};
 	}
 
 	return fetchOrg()
