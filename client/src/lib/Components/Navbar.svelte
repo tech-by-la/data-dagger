@@ -4,6 +4,7 @@
     import InputForm from "$lib/Components/InputForm.svelte";
     import Button from "$lib/Components/Button.svelte";
     import { page } from '$app/stores';
+    import MdClose from 'svelte-icons/md/MdClose.svelte';
 
     let registerPromptController = ($page.form?.invalid && $page.form?.register) || false
     function toggleTheRegisterPrompt() {
@@ -30,7 +31,7 @@
     <div class="logo-name-container">
         <a href="/"><img class="logo" src={logo} alt="goose-logo" width="60px"></a>
         <div class="title-name">
-          <h1>Data Dagger</h1>  
+          <h1>Data Dagger</h1>
         </div>
     </div>
 
@@ -63,7 +64,7 @@
 
 {#if loginPromptController}
     <Prompt toggle={toggleTheLoginPrompt} >
-        <Button btnClick={toggleTheLoginPrompt} btnTitle={"X"}></Button>
+        <Button btnClick={toggleTheLoginPrompt} btnTitle={""}><li class="icon"><MdClose/></li></Button>
        <InputForm formFunction="/login" formName="Login" />
        <!-- <Button btnClick={toggleTheLoginPrompt} btnTitle={"Close"}></Button> -->
     </Prompt>
@@ -83,6 +84,12 @@
 {/if}
 
 <style>
+    .icon {
+        list-style-type: none;
+        height: 35px;
+        margin: -8px;
+    }
+
 .navbar-wrapper {
     height: 80px;
     display: flex;

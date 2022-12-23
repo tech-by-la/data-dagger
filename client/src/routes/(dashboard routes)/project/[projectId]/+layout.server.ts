@@ -19,10 +19,11 @@ export const load: LayoutServerLoad = async ({locals, parent, params}) => {
             throw error(StatusCode.UNAUTHORIZED, { message: StatusMessage.UNAUTHORIZED });
         }
 
-        return project;
+        // hide other member information client side
+        org.members = org.members.filter(m => m.user_id === locals.user.sub);
+
+        return { project, org };
     }
 
-    return {
-        project: fetchProject()
-    }
+    return fetchProject();
 }

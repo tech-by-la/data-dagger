@@ -1,8 +1,5 @@
 import type { PageServerLoad } from './$types';
 
-
-;
-
 const text = {
 	introText: "Welcome to Data Dager",
 	aboutText1:"Data Dagger is a platform to streamline production of and/or Quality assurance of certain datasets.",
@@ -17,8 +14,7 @@ const text = {
 	demoText3:"It’s a basic machine learning classification model production project, click around and see what happens!",
 }
 
-
-export const load: PageServerLoad = async ({ }) => {
+export const load: PageServerLoad = async (	) => {
 	return {
 		text: text,
 	};

@@ -13,7 +13,7 @@
     export let active = false;
 </script>
 
-<button class="btn {active ? 'active' : ''}" style="width:{width};" on:click={btnClick} >{btnTitle}</button>
+<button class="btn {active ? 'active' : ''}" style="width:{width};" on:click={btnClick} >{btnTitle}<slot/></button>
 
 <style>
     .btn {

@@ -35,32 +35,11 @@ export interface OrgRequestBody {
     contact_phone?: string;
 }
 
-export interface InviteRequestBody {
-    org_id: string;
-    emails: string[];
-}
-
-export interface InviteDeleteRequestBody {
-    org_id: string;
-    emails: string[];
-}
-
 export interface InviteResponseBody {
     alreadyJoined?: string[];
     invalid?: string[];
     invited?: string[];
     tooEarly?: string[];
-}
-
-export interface InviteAnswerRequestBody {
-    org_id: string;
-    answer: boolean;
-}
-
-export interface AssignRolesRequestBody {
-    user_id: string;
-    role: UserRole["name"];
-    remove: boolean;
 }
 
 // ===== DB Interfaces ===== //
@@ -91,4 +70,23 @@ export interface JwtUserPayload extends JwtPayload{
 
 export interface RefreshTokenPayload extends JwtPayload {
     token: string; // should be unique
+}
+
+// ===== WFS/XML/GEOJSON ===== //
+
+export interface Feature {
+    properties: {
+        project_id: string;
+        id: number;
+        ogc_fid: number;
+        ogr_fid: number;
+        navn?: string;
+        name?: string;
+        checked: boolean;
+        result?: string;
+    };
+    geometry: {
+        type: string;
+        coordinates: [ [number, number][] ],
+    }
 }

@@ -87,3 +87,14 @@ export enum Warnings {
     MISSING_PRIVATE_REF_KEY = "Warning: No keyfile found for private-ref.pem",
     MISSING_PUBLIC_REF_KEY = "Warning: No keyfile found for public-ref.pem",
 }
+
+export enum GeoServerProps {
+    Workspace = "datadagger",
+    DataStore = "bobcat",
+    Layer     = "poly3",
+    EPSG      =  3857
+}
+
+export enum Geometries {
+    Polygon = "Polygon"
+}

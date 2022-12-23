@@ -55,18 +55,18 @@
     let kmTileWfsSource = new VectorSource({
         format: new GeoJSON(),
         url: function (extent) {
-        return (
-        'http://localhost:8080/geoserver/qqc/ows?service=WFS&' +
-        'version=2.0.0&request=GetFeature&typename=qqc:qqc_km_tiles&' +
-        'outputFormat=application/json&srsname=EPSG:25832&' +
-        'bbox=' +
-        extent.join(',') +
-        ',EPSG:25832' + 
-        "&id=" + 8000
-    );
-    },
-  strategy: bboxStrategy,
-});
+            return ( "http://localhost:9090/geoserver/datadagger/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=poly3&outputFormat=json"
+                // 'http://localhost:8080/geoserver/qqc/ows?service=WFS&' +
+                // 'version=2.0.0&request=GetFeature&typename=qqc:qqc_km_tiles&' +
+                // 'outputFormat=application/json&srsname=EPSG:25832&' +
+                // 'bbox=' +
+                // extent.join(',') +
+                // ',EPSG:25832' +
+                // "&id=" + 8000
+            );
+        },
+      strategy: bboxStrategy,
+    });
 
 
 let kmTileWfsLayer = new VectorLayer({
@@ -81,17 +81,17 @@ let kmTileWfsLayer = new VectorLayer({
     const addTiles = () => {
         map.addLayer(kmTileWfsLayer)
         console.log("Hello");
-        
+
     }
     const addTile2 = () => {
         map.addLayer(kmTileWmsLayer)
         console.log("Hello");
-        
+
     }
     // onMount(()=> {
     //     map.addLayer(kmTileWfsLayer)
     // }
-    //  ) 
+    //  )
 
 
 </script>
@@ -102,7 +102,7 @@ let kmTileWfsLayer = new VectorLayer({
         <Button btnClick={toggleThePrompt} btnTitle={"X"}></Button>
         </div>
         <InputForm formFunction="/register" formName="Register" />
-        
+
     </Prompt>
 {/if}
 
@@ -115,7 +115,7 @@ let kmTileWfsLayer = new VectorLayer({
             <p>{pageText.aboutText2}</p>
             <p>{pageText.aboutText3}</p>
         </Container>
-            
+
         <Container>
             <h1>{pageText.howToText1}</h1>
             <p>{pageText.howToText2}</p>
@@ -130,7 +130,7 @@ let kmTileWfsLayer = new VectorLayer({
         </Container>
         <Container>
             <div class="map-con">
-            
+
                 <div class="map-left-panel">
                     <Button btnClick ={addTiles} btnTitle="Layer 1"></Button>
                     <Button btnClick ={addTile2} btnTitle="layer 2"></Button>
@@ -152,10 +152,10 @@ let kmTileWfsLayer = new VectorLayer({
                  </div>
             </div>
         </Container>
-        
-        
-        
-        
+
+
+
+
     </div>
 
     <div class="side-con">
@@ -175,7 +175,7 @@ let kmTileWfsLayer = new VectorLayer({
 
 
 <style>
-    
+
     .button-con{
         margin: 10px 10px 0px 10px;
         padding: 10px;
@@ -206,9 +206,9 @@ let kmTileWfsLayer = new VectorLayer({
         display: flex;
         justify-content: space-around;
         flex-direction: column;
-        
 
-    } 
+
+    }
     #map-wraper {
         margin: 0px;
         border: 0;

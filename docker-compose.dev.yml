@@ -2,6 +2,10 @@ version: '3'
 
 services:
 
+  geoserver:
+    ports:
+      - "9090:8080"
+
   # === Databases === #
   authentication_db:
     ports:
@@ -11,6 +15,8 @@ services:
     ports:
       - "27018:27017"
 
-  geoserver:
+  geoserver_db:
     ports:
-      - "9090:8080"
+      - "5432:5432"
+
+

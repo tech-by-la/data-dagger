@@ -1,6 +1,12 @@
-import { type SchemaDefinition, type SchemaDefinitionType, type Connection, Schema } from "mongoose";
+import mongoose, {
+    type SchemaDefinition,
+    type SchemaDefinitionType,
+    type Connection, Schema
+} from "mongoose";
 import Logger from "$lib/server/util/Logger";
 import type {AuthUser, Project} from "$lib/server/util/interfaces";
+
+const {Types: {ObjectId}} = mongoose;
 
 export default class ProjectsRepo {
 
@@ -47,12 +53,15 @@ export default class ProjectsRepo {
      * ADMIN FUNCTION ONLY! Use findEnabledById instead
      */
     public async findById(_id: string) {
+        if (!ObjectId.isValid(_id)) return
         return await this.model.findOne({ _id });
     }
 
     public async findEnabledById(_id: string) {
+        if (!ObjectId.isValid(_id)) return
         return await this.model.findOne({ _id, enabled: true })
-            .then(project => project?.toObject() as Project);
+            .then(project => project?.toObject() as Project)
+            .catch();
     }
 
     public async findAllByUser_id(user_id: string) {
@@ -104,10 +113,12 @@ export default class ProjectsRepo {
     }
 
     public async join(_id: string, user_id: string) {
+        if (!ObjectId.isValid(_id)) return
         return await this.model.updateOne({ _id }, { $push: { members: user_id }});
     }
 
     public async leave(_id: string, user_id: string) {
+        if (!ObjectId.isValid(_id)) return
         return await this.model.updateOne({ _id }, { $pull: { members: user_id }});
     }
 
