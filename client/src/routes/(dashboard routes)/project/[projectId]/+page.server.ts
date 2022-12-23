@@ -101,7 +101,6 @@ export const actions: Actions = {
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
 
-        const res = await WFS.deleteProjectData(project_id);
-        console.log(await res.text());
+        await WFS.deleteProjectData(project_id);
     }
 }
