@@ -2,6 +2,10 @@ import type {Handle} from "@sveltejs/kit";
 import Jwt from "$lib/server/security/jwt";
 import {Cookies} from "$lib/server/util/enums";
 import {validateRefreshToken} from "$lib/server/util/helpers";
+import db from '$lib/server/database/DatabaseGateway';
+
+await db.initDb();
+
 
 export const handle = (async ({ event, resolve }) => {
 

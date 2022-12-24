@@ -90,11 +90,17 @@ export enum Warnings {
 
 export enum GeoServerProps {
     Workspace = "datadagger",
-    DataStore = "bobcat",
-    Layer     = "poly3",
+    DataStore = "geodata",
+    Layer     = "poly",
     EPSG      =  3857
 }
 
 export enum Geometries {
     Polygon = "Polygon"
+}
+
+export enum TileStatus {
+    ready = 'ready',
+    ok    = 'ok',
+    fail  = 'fail',
 }

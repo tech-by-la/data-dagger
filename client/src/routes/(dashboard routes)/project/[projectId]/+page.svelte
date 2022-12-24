@@ -16,7 +16,7 @@
     const approvedFeatures = features.filter(f => f.properties.result === 'APPROVED').length;
     const failedFeatures = features.filter(f => f.properties.result === 'FAILED').length;
 
-    console.log(features);
+    let demoSize = 30;
 </script>
 
 <div class="content">
@@ -56,10 +56,18 @@
             <p class="grid-span">You can upload a .geojson or generate a demo project</p>
             <div class="button"><Button disabled>Upload</Button></div>
             <form method="post" action="?/startDemo">
-                <Button disabled={disableDemo} on:click={() => disableDemo = true}>
-                    Use Demo
-                </Button>
+                <div class="longbutton">
+                    <Button disabled={disableDemo} on:click={() => disableDemo = true}>
+                        Use Demo
+                    </Button>
+                </div>
+                <div class="slider-con">
+                    <label for="size">Size:</label>
+                    <input name="size" type="range" min="10" max="100" bind:value={demoSize} class="slider">
+                    <span>{demoSize}</span>
+                </div>
                 <input name="project_id" type="hidden" value={project.id}>
+
             </form>
         {/if}
 
@@ -125,6 +133,11 @@
         position: absolute;
         top: 10px;
         right: 10px;
+    }
+
+    .slider {
+        width: 50px;
+        margin-top: 10px;
     }
 </style>
 

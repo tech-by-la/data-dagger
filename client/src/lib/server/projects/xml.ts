@@ -1,5 +1,5 @@
 import type {Feature} from "$lib/server/util/interfaces";
-import {Geometries, GeoServerProps} from "$lib/server/util/enums";
+import {Geometries, GeoServerProps, TileStatus} from "$lib/server/util/enums";
 import {GEOSERVER_HOST} from "$env/static/private";
 
 /*
@@ -41,12 +41,12 @@ export const generateWfsInsertRequest = (tileData: Feature[], project_id: string
 
         // Insert primitive properties
         insert += `
-            <${GeoServerProps.Workspace}:project_id>${project_id}</${GeoServerProps.Workspace}:project_id>
-            <${GeoServerProps.Workspace}:id>${properties.id}</${GeoServerProps.Workspace}:id>
-            <${GeoServerProps.Workspace}:ogc_fid>${properties.ogc_fid}</${GeoServerProps.Workspace}:ogc_fid>
-            <${GeoServerProps.Workspace}:ogr_fid>${properties.ogr_fid}</${GeoServerProps.Workspace}:ogr_fid>
-            <${GeoServerProps.Workspace}:checked>${false}</${GeoServerProps.Workspace}:checked>
-            <${GeoServerProps.Workspace}:name>${properties.name || properties.navn}</${GeoServerProps.Workspace}:name>
+            <project_id>${project_id}</project_id>
+            <id>${properties.id}</id>
+            <ogc_fid>${properties.ogc_fid}</ogc_fid>
+            <ogr_fid>${properties.ogr_fid}</ogr_fid>
+            <name>${properties.name || properties.navn}</name>
+            <status>${TileStatus.ready}</status>
         `;
 
         insert += featureCloseTag;
@@ -66,10 +66,10 @@ export const generateWfsInsertRequest = (tileData: Feature[], project_id: string
 export const generateWfsDeleteRequest = (project_id: string) => {
     return `
         ${transactionOpenTag}
-            <wfs:Delete typeName="${GeoServerProps.Workspace}:${GeoServerProps.Layer}">
+            <wfs:Delete typeName="${GeoServerProps.Layer}">
                 <ogc:Filter>
                     <ogc:PropertyIsEqualTo>
-                        <ogc:PropertyName>${GeoServerProps.Workspace}:project_id</ogc:PropertyName>
+                        <ogc:PropertyName>project_id</ogc:PropertyName>
                         <ogc:Literal>${project_id}</ogc:Literal>
                     </ogc:PropertyIsEqualTo>
                 </ogc:Filter>
@@ -86,8 +86,7 @@ const transactionOpenTag = `
         outputFormat="application/json"
         xmlns:wfs="http://www.opengis.net/wfs" 
         xmlns:gml="http://www.opengis.net/gml" 
-        xmlns:ogc="http://www.opengis.net/ogc"
-        xmlns:datadagger="${GEOSERVER_HOST}/datadagger" 
+        xmlns:ogc="http://www.opengis.net/ogc" 
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
         xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd ${GEOSERVER_HOST}/wfs/DescribeFeatureType?typename=${GeoServerProps.Layer}"
     >
@@ -98,11 +97,11 @@ const transactionCloseTag = `</wfs:Transaction>`;
 const insertOpenTag   = `<wfs:Insert>`;
 const insertCloseTag  = `</wfs:Insert>`;
 
-const featureOpenTag  = `<${GeoServerProps.Workspace}:${GeoServerProps.Layer}>`
-const featureCloseTag = `</${GeoServerProps.Workspace}:${GeoServerProps.Layer}>`
+const featureOpenTag  = `<${GeoServerProps.Layer}>`
+const featureCloseTag = `</${GeoServerProps.Layer}>`
 
 const geomOpenTags = `
-    <${GeoServerProps.Workspace}:the_geom>
+    <the_geom>
     <gml:Polygon srsName="EPSG:${GeoServerProps.EPSG}">
     <gml:exterior>
     <gml:LinearRing>
@@ -114,5 +113,5 @@ const geomCloseTags = `
     </gml:LinearRing>
     </gml:exterior>
     </gml:Polygon>
-    </${GeoServerProps.Workspace}:the_geom>
+    </the_geom>
 `;

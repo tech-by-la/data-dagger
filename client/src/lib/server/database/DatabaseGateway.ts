@@ -43,7 +43,7 @@ class DatabaseGateway implements IDatabaseGateway {
 	 * This will only run once per server reboot since it is called in the constructor and this is a singleton class
 	 */
     public async initDb() {
-        Logger.log('Database Initializing');
+        Logger.log('Prisma Database Initializing');
 
         if (!process.env.DEFAULT_ADMIN_PASS) {
             throw new Error(ErrMsg.MISSING_ENV + " DEFAULT_ADMIN_PASS");

@@ -63,9 +63,12 @@ export const actions: Actions = {
     startDemo: async ({request, locals}) => {
         const form = await request.formData();
         const project_id = form.get('project_id');
-
+        const size = form.get('size');
         // check request data
-        if (!project_id || typeof project_id !== "string") {
+        if (
+            !project_id || typeof project_id !== "string" ||
+            !size || typeof size !== "string" || isNaN(Number.parseInt(size))
+        ) {
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
 
@@ -81,7 +84,7 @@ export const actions: Actions = {
             return fail(StatusCode.FORBIDDEN, { message: StatusMessage.FORBIDDEN });
         }
 
-        const features = Demo.generateDemo();
+        const features = Demo.generateDemo(Number.parseInt(size));
         const response = await WFS.insertProjectTiles(features, project.id);
         if (!response) {
             // this only happens if the geojson is formatted badly
