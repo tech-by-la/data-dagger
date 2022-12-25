@@ -67,7 +67,7 @@
 
     <div class="add-button">
         <IconButton
-            on:click={() => goto('projects/create')}
+            on:click={() => goto(`/org/${organization.id}/projects/create`)}
             style="cursor: pointer"
         >
             <FaPlus/>
