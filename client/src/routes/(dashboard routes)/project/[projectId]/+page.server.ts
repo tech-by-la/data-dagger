@@ -1,16 +1,25 @@
 import type {PageServerLoad} from "./$types";
-import {type Actions, error, fail} from "@sveltejs/kit";
+import {type Actions, fail} from "@sveltejs/kit";
 import type {Project} from "$lib/server/util/interfaces";
 
 import {GeoServerProps, OrgRoles, StatusCode, StatusMessage} from "$lib/server/util/enums";
 import db from "$lib/server/database/DatabaseGateway";
-import WFS from "$lib/server/projects/WFS";
-import Demo from "$lib/server/projects/Demo";
+import WFS from "$lib/server/geoserver/WFS";
+import Demo from "$lib/server/geoserver/Demo";
 import {GEOSERVER_HOST} from "$env/static/private";
 import Logger from "$lib/server/util/Logger";
+import GSRest from "$lib/server/geoserver/GSRest";
 
 export const load: PageServerLoad = async ({parent, params, fetch}) => {
     await parent();
+
+    const upsertFeatureType = async () => {
+        const featureTypeResponse = await GSRest.getFeatureType('poly');
+        if (!featureTypeResponse.ok) {
+            // TODO: feature type def is hardcoded, it shouldn't be.
+            await GSRest.createFeatureType();
+        }
+    }
 
     const fetchProjectData = async () => {
         const URL = `${GEOSERVER_HOST}/datadagger/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json
@@ -30,6 +39,7 @@ export const load: PageServerLoad = async ({parent, params, fetch}) => {
         return data?.features;
     }
 
+    upsertFeatureType();
     return {
         features: fetchProjectData(),
     }
