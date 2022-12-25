@@ -65,8 +65,8 @@ services:
     networks:
       - dd-net
     volumes:
-      - "./volumes/postgis/postgis_data:/var/lib/postgresql/data"
-      - "./volumes/postgis/postgis_config:/etc/postgresql/postgresql.conf"
+      - "postgis_data:/var/lib/postgresql/data"
+      - "postgis_config:/etc/postgresql/postgresql.conf"
     expose:
       - ${POSTGIS_PORT}
     environment:
@@ -92,6 +92,8 @@ volumes:
   authentication_config:
   projects_data:
   projects_config:
+  postgis_data:
+  postgis_config:
 
 networks:
   dd-net:
