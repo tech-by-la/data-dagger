@@ -1,4 +1,4 @@
-import {GEOSERVER_HOST} from "$env/static/private";
+import {GEOSERVER_HOST, GEOSERVER_PASS, GEOSERVER_USER} from "$env/static/private";
 import {generateWfsDeleteRequest, generateWfsInsertRequest} from "$lib/server/geoserver/xml";
 import type {Feature} from "$lib/server/util/interfaces";
 
@@ -12,9 +12,12 @@ interface IWFS {
 
 class WFS implements IWFS {
 
+    private readonly headers = { "Authorization": `Basic ${btoa(`${GEOSERVER_USER}:${GEOSERVER_PASS}`)}`};
+
     private async sendRequest(xml: string): Promise<Response> {
         return await fetch(`${GEOSERVER_HOST}/wfs`, {
             method: "POST",
+            headers: this.headers,
             body: xml,
         });
     }

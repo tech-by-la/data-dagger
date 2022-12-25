@@ -1,6 +1,6 @@
 import type {Feature} from "$lib/server/util/interfaces";
 import {Geometries, GeoServerProps, TileStatus} from "$lib/server/util/enums";
-import {GEOSERVER_HOST} from "$env/static/private";
+import {GEOSERVER_HOST, POSTGIS_USER, POSTGIS_PASS} from "$env/static/private";
 
 /*
  * Converts geojson features to XML and prepares the request.
@@ -76,6 +76,100 @@ export const generateWfsDeleteRequest = (project_id: string) => {
             </wfs:Delete>
         ${transactionCloseTag}
     `;
+}
+
+export const generateWorkspaceDefinitionXML = (workspace: string) => {
+    return `
+        <workspace>
+            <name>${workspace}</name>
+        </workspace>
+    `;
+}
+
+export const generateWfsSettingsXML = () => {
+    return `
+        <wfs>
+            <id>WFSInfoImpl-4d51626d:1854b3ff29f:-7f82</id>
+
+            <enabled>true</enabled>
+            <name>WFS</name>
+            <title>GeoServer Web Feature Service</title>
+            <maintainer>http://geoserver.org/comm</maintainer>
+            <abstrct>This is the reference implementation of WFS 1.0.0 and WFS 1.1.0, supports all WFS operations including Transaction.</abstrct>
+            <accessConstraints>NONE</accessConstraints>
+            <fees>NONE</fees>
+            <versions>
+            <org.geotools.util.Version>
+                <version>1.0.0</version>
+            </org.geotools.util.Version>
+            <org.geotools.util.Version>
+            <version>1.1.0</version>
+            </org.geotools.util.Version>
+            <org.geotools.util.Version>
+            <version>2.0.0</version>
+            </org.geotools.util.Version>
+            </versions>
+            <keywords>
+            <string>WFS</string>
+            <string>WMS</string>
+            <string>GEOSERVER</string>
+            </keywords>
+            <metadataLink/>
+            <citeCompliant>false</citeCompliant>
+            <onlineResource>http://geoserver.org</onlineResource>
+            <schemaBaseURL>http://schemas.opengis.net</schemaBaseURL>
+            <verbose>false</verbose>
+            <gml>
+            <entry>
+                <version>V_10</version>
+            <gml>
+            <srsNameStyle>XML</srsNameStyle>
+            <overrideGMLAttributes>true</overrideGMLAttributes>
+            </gml>
+            </entry>
+            <entry>
+            <version>V_20</version>
+            <gml>
+            <srsNameStyle>URN2</srsNameStyle>
+            <overrideGMLAttributes>false</overrideGMLAttributes>
+            </gml>
+            </entry>
+            <entry>
+            <version>V_11</version>
+            <gml>
+            <srsNameStyle>URN</srsNameStyle>
+            <overrideGMLAttributes>false</overrideGMLAttributes>
+            </gml>
+            </entry>
+            </gml>
+            <serviceLevel>COMPLETE</serviceLevel>
+            <maxFeatures>1000000</maxFeatures>
+            <featureBounding>false</featureBounding>
+            <canonicalSchemaLocation>false</canonicalSchemaLocation>
+            <encodeFeatureMember>false</encodeFeatureMember>
+            <hitsIgnoreMaxFeatures>false</hitsIgnoreMaxFeatures>
+            <includeWFSRequestDumpFile>false</includeWFSRequestDumpFile>
+            <allowGlobalQueries>true</allowGlobalQueries>
+            <simpleConversionEnabled>false</simpleConversionEnabled>
+        </wfs>
+    `;
+}
+
+export const generateDatastoreDefinitionXML = (storeName: string) => {
+    return `
+        <dataStore>
+          <name>${storeName}</name>
+          <connectionParameters>
+            <host>geoserver_db</host>
+            <port>5432</port>
+            <database>geodata</database>
+            <user>${POSTGIS_USER}</user>
+            <passwd>${POSTGIS_PASS}</passwd>
+            <dbtype>postgis</dbtype>
+            <schema>public</schema>
+          </connectionParameters>
+        </dataStore>
+    `
 }
 
 export const getFeatureTypeDefinitionXML = () => {
@@ -182,7 +276,7 @@ const transactionOpenTag = `
         xmlns:gml="http://www.opengis.net/gml" 
         xmlns:ogc="http://www.opengis.net/ogc" 
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-        xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd ${GEOSERVER_HOST}/wfs/DescribeFeatureType?typename=${GeoServerProps.Layer}"
+        xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
     >
 `;
 

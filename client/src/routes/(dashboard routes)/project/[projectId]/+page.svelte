@@ -108,7 +108,7 @@
         grid-template-columns: auto auto;
     }
 
-    .mod-console h1, h2, h3, h4, h5, h6 {
+    .mod-console h1, h2, h3 {
         margin: 10px;
         grid-column: 1 / span 2;
         text-align: center;

@@ -1,5 +1,5 @@
 import type {PageServerLoad} from "./$types";
-import {type Actions, fail} from "@sveltejs/kit";
+import {type Actions, error, fail} from "@sveltejs/kit";
 import type {Project} from "$lib/server/util/interfaces";
 
 import {GeoServerProps, OrgRoles, StatusCode, StatusMessage} from "$lib/server/util/enums";
@@ -13,16 +13,25 @@ import GSRest from "$lib/server/geoserver/GSRest";
 export const load: PageServerLoad = async ({parent, params, fetch}) => {
     await parent();
 
-    const upsertFeatureType = async () => {
-        const featureTypeResponse = await GSRest.getFeatureType('poly');
-        if (!featureTypeResponse.ok) {
-            // TODO: feature type def is hardcoded, it shouldn't be.
-            await GSRest.createFeatureType();
-        }
+    /*
+     * Ensure workspace, datastore, feature-type and WFS settings are configured.
+     * Waterfall cannot be circumvented because of interdependency.
+     */
+    const upsertGeoserver = async () => {
+        const wsResponse = await GSRest.getWorkspace(GeoServerProps.Workspace);
+        if (!wsResponse.ok) await GSRest.createWorkspace(GeoServerProps.Workspace);
+        const dsResponse = await GSRest.getDatastore(GeoServerProps.DataStore);
+        if (!dsResponse.ok) await GSRest.createDatastore(GeoServerProps.DataStore);
+        const ftResponse = await GSRest.getFeatureType('poly');
+        if (!ftResponse.ok) await GSRest.createFeatureType(); // TODO: feature type def is hardcoded, it shouldn't be.
+        // const wfsResponse = await GSRest.getWfsSettings(GeoServerProps.Workspace);
+        // if (!wfsResponse.ok) await GSRest.setWfsSettings(GeoServerProps.Workspace);
     }
 
     const fetchProjectData = async () => {
-        const URL = `${GEOSERVER_HOST}/datadagger/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json
+        await upsertGeoserver();
+
+        const URL = `${GEOSERVER_HOST}/${GeoServerProps.Workspace}/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json
             &typeNames=${GeoServerProps.Layer}
             &Filter=<Filter><PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>${params.projectId}</Literal></PropertyIsEqualTo></Filter>
         `;
@@ -31,15 +40,14 @@ export const load: PageServerLoad = async ({parent, params, fetch}) => {
 
         if (!response.ok) {
             Logger.error(await response.text().catch());
-            return [];
-            // throw error(StatusCode.INTERNAL_SERVER_ERROR, {message: StatusMessage.INTERNAL_SERVER_ERROR});
+            // return [];
+            throw error(StatusCode.INTERNAL_SERVER_ERROR, {message: StatusMessage.INTERNAL_SERVER_ERROR});
         }
 
         const data = await response.json();
         return data?.features;
     }
 
-    upsertFeatureType();
     return {
         features: fetchProjectData(),
     }
@@ -96,13 +104,13 @@ export const actions: Actions = {
 
         const features = Demo.generateDemo(Number.parseInt(size));
         const response = await WFS.insertProjectTiles(features, project.id);
+        // console.log(response);
         if (!response) {
             // this only happens if the geojson is formatted badly
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
 
-        const data = await response.text();
-        console.log(data);
+        console.log(await response.text());
     },
 
     // Dev action
