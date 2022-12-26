@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "npx dotenv-cli -e .env.development -- vite dev --mode development",
-		"build": "vite build",
+		"buiNld": "vite build",
 		"build:prod": "npx prisma generate && vite build",
 		"preview": "vite preview",
 		"test": "playwright test",
@@ -53,6 +53,7 @@
 		"jsonwebtoken": "^9.0.0",
 		"mongoose": "^6.8.0",
 		"ol": "^7.1.0",
+		"playwright": "^1.29.1",
 		"proj4": "^2.8.0",
 		"radix-icons-svelte": "^1.2.1",
 		"snowflakify": "^1.0.5",

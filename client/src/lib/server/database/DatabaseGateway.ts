@@ -30,21 +30,21 @@ class DatabaseGateway implements IDatabaseGateway {
     public readonly projectRepo: ProjectsRepo;
 
     constructor() {
-        Logger.log('DatabaseGateway Initializing');
+        Logger.log('Initializing Databases');
+
+        // mongoose
         const url = process.env.PR_DATABASE_URL;
         if (!url) throw Error('DATABASE_URL is missing in environment');
-
         this.projDb = mongoose.createConnection(url);
         this.projectRepo = new ProjectsRepo(this.projDb);
+        Logger.log('Projects Database Initialized');
     }
 
     /*
-	 * Populate database with default data if it doesn't exist
+	 * Populate prisma database with default data if it doesn't exist
 	 * This will only run once per server reboot since it is called in the constructor and this is a singleton class
 	 */
     public async initDb() {
-        Logger.log('Prisma Database Initializing');
-
         if (!process.env.DEFAULT_ADMIN_PASS) {
             throw new Error(ErrMsg.MISSING_ENV + " DEFAULT_ADMIN_PASS");
         }
@@ -104,6 +104,8 @@ class DatabaseGateway implements IDatabaseGateway {
                 },
             },
         });
+
+        Logger.log('Authentication Database Initialized');
     }
 }
 

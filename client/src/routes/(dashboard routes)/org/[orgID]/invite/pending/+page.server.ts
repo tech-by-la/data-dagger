@@ -1,5 +1,4 @@
 import type {PageServerLoad} from "./$types";
-import type {Invite} from "@prisma/client";
 import type {Actions} from "@sveltejs/kit";
 
 import db from '$lib/server/database/DatabaseGateway';

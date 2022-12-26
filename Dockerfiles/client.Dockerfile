@@ -8,5 +8,6 @@ COPY client/ /usr/src/
 
 RUN npm ci
 RUN npm run build:prod
+RUN npx playwright install-deps
 CMD ["npm", "start"]
 

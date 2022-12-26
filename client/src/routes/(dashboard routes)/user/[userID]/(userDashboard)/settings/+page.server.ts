@@ -1,5 +1,4 @@
 import type {Actions} from "@sveltejs/kit";
-import {Cookies} from "$lib/server/util/enums";
 import db from "$lib/server/database/DatabaseGateway";
 import {redirect} from "@sveltejs/kit";
 

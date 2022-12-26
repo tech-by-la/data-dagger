@@ -8,28 +8,11 @@ import WFS from "$lib/server/geoserver/WFS";
 import Demo from "$lib/server/geoserver/Demo";
 import {GEOSERVER_HOST} from "$env/static/private";
 import Logger from "$lib/server/util/Logger";
-import GSRest from "$lib/server/geoserver/GSRest";
 
 export const load: PageServerLoad = async ({parent, params, fetch}) => {
     await parent();
 
-    /*
-     * Ensure workspace, datastore, feature-type and WFS settings are configured.
-     * Waterfall cannot be circumvented because of interdependency.
-     */
-    const upsertGeoserver = async () => {
-        const wsResponse = await GSRest.getWorkspace(GeoServerProps.Workspace);
-        if (!wsResponse.ok) await GSRest.createWorkspace(GeoServerProps.Workspace);
-        const dsResponse = await GSRest.getDatastore(GeoServerProps.DataStore);
-        if (!dsResponse.ok) await GSRest.createDatastore(GeoServerProps.DataStore);
-        const ftResponse = await GSRest.getFeatureType('poly');
-        if (!ftResponse.ok) await GSRest.createFeatureType(); // TODO: feature type def is hardcoded, it shouldn't be.
-        // const wfsResponse = await GSRest.getWfsSettings(GeoServerProps.Workspace);
-        // if (!wfsResponse.ok) await GSRest.setWfsSettings(GeoServerProps.Workspace);
-    }
-
     const fetchProjectData = async () => {
-        await upsertGeoserver();
 
         const URL = `${GEOSERVER_HOST}/${GeoServerProps.Workspace}/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json
             &typeNames=${GeoServerProps.Layer}
@@ -104,13 +87,10 @@ export const actions: Actions = {
 
         const features = Demo.generateDemo(Number.parseInt(size));
         const response = await WFS.insertProjectTiles(features, project.id);
-        // console.log(response);
         if (!response) {
             // this only happens if the geojson is formatted badly
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
-
-        console.log(await response.text());
     },
 
     // Dev action
