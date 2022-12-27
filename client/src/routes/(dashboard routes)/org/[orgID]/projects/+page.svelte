@@ -41,14 +41,14 @@
 
     <!--  List of Invites  -->
     {#each projects as project, index}
-        <div class="grid-row" on:click={() => goto(`/project/${project.id}`)}>
+        <a class="grid-row" href="/project/{project.id}">
             <div class="grid-cell grid-1">{project.name}</div>
             <div class="grid-cell grid-2">{project.description}</div>
             <div class="grid-cell grid-3">{project.status}</div>
             <div class="grid-cell grid-4">{project.type}</div>
             <div class="grid-cell grid-5">{formatDate(project.start_date)}</div>
             <div class="grid-cell grid-6">{formatDate(project.end_date)}</div>
-        </div>
+        </a>
 
     {/each}
 </div>
@@ -83,6 +83,7 @@
     }
 
     .grid-cell {
+        color: white;
         padding: 10px 0;
     }
 

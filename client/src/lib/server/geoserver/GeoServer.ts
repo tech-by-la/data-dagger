@@ -15,7 +15,6 @@ interface IGSRest {
     createWorkspace(workspace: string): Promise<Response>;
 
     getWfsSettings(workspace: string): Promise<Response>;
-    setWfsSettings(workspace: string): Promise<Response>;
     enableWfs(workspace: string): Promise<any>;
 
     getDatastore(store: string): Promise<Response>;
@@ -29,7 +28,7 @@ interface IGSRest {
 class GeoServer implements IGSRest {
 
     public async init() {
-        Logger.log('GeoServer:', 'Initializing');
+        Logger.log('GeoServer:', 'Initializing...');
         const wsResponse = await this.getWorkspace(GeoServerProps.Workspace);
         if (!wsResponse.ok) await this.createWorkspace(GeoServerProps.Workspace);
         const wfsResponse = await this.getWfsSettings(GeoServerProps.Workspace);
@@ -38,7 +37,7 @@ class GeoServer implements IGSRest {
         if (!dsResponse.ok) await this.createDatastore(GeoServerProps.DataStore);
         const ftResponse = await this.getFeatureType('poly');
         if (!ftResponse.ok) await this.createFeatureType(); // TODO: feature type def is hardcoded, it shouldn't be.
-        Logger.log('GeoServer:', 'Finished initializing');
+        Logger.log('GeoServer:', 'Finished initializing!');
     }
 
     private getHeaders(useXML?: boolean) {
@@ -50,33 +49,32 @@ class GeoServer implements IGSRest {
 
     async getWorkspace(workspace = ''): Promise<Response> {
         const URL = `${GEOSERVER_HOST}/rest/workspaces/${workspace}.json`;
-        return await fetch(URL, { headers: this.getHeaders() });
+        const response = await fetch(URL, { headers: this.getHeaders() });
+        Logger.log('GeoServer:', response.ok ? 'Workspace found!' : 'Workspace not found!')
+        return response;
     }
 
     async createWorkspace(workspace: string): Promise<Response> {
+        Logger.log('GeoServer:', 'Creating workspace...');
         const URL = `${GEOSERVER_HOST}/rest/workspaces?default=true`;
-        return await fetch(URL, {
+        const response = await fetch(URL, {
             method: "POST",
             headers: this.getHeaders(true),
             body: generateWorkspaceDefinitionXML(workspace),
         });
+        Logger.log('GeoServer:', response.ok ? 'Workspace created!' : 'Could not create workspace!');
+        return response;
     }
 
     async getWfsSettings(workspace: string): Promise<Response> {
         const URL = `${GEOSERVER_HOST}/rest/services/wfs/workspaces/${workspace}/settings.json`;
-        return await fetch(URL, { headers: this.getHeaders() });
-    }
-
-    async setWfsSettings(workspace: string): Promise<Response> {
-        const URL = `${GEOSERVER_HOST}/rest/services/wfs/workspaces/${workspace}/settings`;
-        return await fetch(URL, {
-            method: "PUT",
-            headers: this.getHeaders(true),
-            body: generateWfsSettingsXML(),
-        });
+        const response = await fetch(URL, { headers: this.getHeaders() });
+        Logger.log('GeoServer:', response.ok ? 'WFS is enabled!' : 'WFS is disabled!');
+        return response;
     }
 
     async enableWfs(workspace: string) {
+        Logger.log('GeoServer:', 'Enabling WFS...');
         const browser = await webkit.launch();
         const page = await browser.newPage();
         await page.goto(GEOSERVER_HOST);
@@ -92,35 +90,46 @@ class GeoServer implements IGSRest {
         await page.locator('input[name="tabs\\:panel\\:services\\:services\\:2\\:enabled"]').check();
         Logger.log('Playwright:', 'Checked WFS checkbox to enable WFS');
         await page.click('.form-button-save');
-        Logger.log('Playwright:', 'Clicked save!');
+        Logger.log('Playwright:', 'Clicked save');
+        Logger.log('GeoServer:', 'Successfully enabled WFS!');
     }
 
-    async getDatastore(store: string): Promise<any> {
+    async getDatastore(store: string): Promise<Response> {
         const URL = `${GEOSERVER_HOST}/rest/workspaces/datadagger/datastores/${store}.json`;
-        return await fetch(URL, { headers: this.getHeaders() });
+        const response = await fetch(URL, { headers: this.getHeaders() });
+        Logger.log('GeoServer:', response.ok ? 'Datastore found' : 'Could not find datastore');
+        return response;
     }
 
-    async createDatastore(store: string): Promise<any> {
+    async createDatastore(store: string): Promise<Response> {
+        Logger.log('GeoServer:', 'Creating datastore...');
         const URL = `${GEOSERVER_HOST}/rest/workspaces/datadagger/datastores`;
-        return await fetch(URL, {
+        const response = await fetch(URL, {
             method: "POST",
             headers: this.getHeaders(true),
             body: generateDatastoreDefinitionXML(GeoServerProps.DataStore),
         });
+        Logger.log('GeoServer:', response.ok ? 'Successfully created datastore!' : 'Could not create datastore!');
+        return response;
     }
 
     async getFeatureType(typeName = ''): Promise<Response> {
         const URL = `${GEOSERVER_HOST}/rest/workspaces/datadagger/datastores/geodata/featuretypes/${typeName}.json`
-        return await fetch(URL, { headers: this.getHeaders() });
+        const response = await fetch(URL, { headers: this.getHeaders() });
+        Logger.log('GeoServer:', response.ok ? 'Feature-type found!' : 'Feature-type not found');
+        return response;
     }
 
     async createFeatureType(): Promise<Response> {
+        Logger.log('GeoServer:', 'Creating feature-type...');
         const URL = `${GEOSERVER_HOST}/rest/workspaces/${GeoServerProps.Workspace}/datastores/${GeoServerProps.DataStore}/featuretypes`
-        return await fetch(URL, {
+        const response = await fetch(URL, {
             method: "POST",
             headers: this.getHeaders(true),
             body: getFeatureTypeDefinitionXML()
         });
+        Logger.log('GeoServer:', response.ok ? 'Successfully created feature-type!' : 'Could not create feature-type!');
+        return response;
     }
 
     async deleteFeatureType(featureType: string): Promise<Response> {

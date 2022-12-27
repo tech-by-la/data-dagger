@@ -86,7 +86,7 @@ export const actions: Actions = {
         }
 
         const features = Demo.generateDemo(Number.parseInt(size));
-        const response = await WFS.insertProjectTiles(features, project.id);
+        const response = await WFS.insertProjectTiles(features, project_id);
         if (!response) {
             // this only happens if the geojson is formatted badly
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
