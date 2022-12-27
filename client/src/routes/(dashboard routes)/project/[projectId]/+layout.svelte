@@ -7,15 +7,15 @@
 </script>
 
 <Container>
-    <div class="top-panel">
-      <div class="user-info">
-        Logged in as {user.email}
-      </div>
-
-      <div class="title">
-        <h1>Your Organizations</h1>
-
-      </div>
+  <div class="top-panel">
+    <div class="user-info">
+      Logged in as {user.email}
     </div>
+
+    <div class="title">
+      <h1>Your Organizations</h1>
+
+    </div>
+</div>
   </Container>
   <slot></slot>

@@ -4,6 +4,7 @@
     import { goto } from '$app/navigation';
     import Container from '$lib/Components/Container.svelte';
     import {IconButton} from "fluent-svelte";
+    import Line from '$lib/Components/Line.svelte';
 
     const { userOrgs, invites, user } = $page.data;
 </script>
@@ -38,21 +39,24 @@
       
       <Container>
         <h1>Invites</h1>
+        
         {#if invites.length < 1}
-          <h2 class="grid-full">No invites to show</h2>
+          <h2>No invites to show</h2>
         {:else}
+        <Line/>
           {#each invites as invite, index}
             <div class="invite">
               <p>{invite.organization_name} {invite.sent_at.toLocaleDateString()}</p>
               <form method="post" action={`/user/${user.sub}/handle-invite?/accept`}>
-                <IconButton>Accept</IconButton>
+                <button type="submit" class="btn">Accept</button>
                 <input name="org_id" type="hidden" value={invite.organization_id}>
               </form>
               <form method="post" action={`/user/${user.sub}/handle-invite?/decline`}>
-                <IconButton>Decline</IconButton>
+                <button type="submit" class="btn">Decline</button>
                 <input name="org_id" type="hidden" value={invite.organization_id}>
               </form>
             </div>
+            <Line/>
           {/each}
         {/if}
       </Container>
@@ -71,7 +75,8 @@
           {:else}
             <div class="org-cards-title">
                 <h1>Organizations</h1>
-                <div class="line grid-full"></div>
+                <!-- <Line/> -->
+                <div class="line"></div>
             </div>
             
             {#each userOrgs as org, i }
@@ -88,7 +93,8 @@
                   <Button btnClick= {() => goto(`/org/${org.id}`)} btnTitle={"Go to"} width = "50%"></Button>
                 </div>
               </div>
-              <div class="line grid-full"></div>
+              <!-- <Line/> -->
+              <div class="line"></div>
             {/each}
           {/if}
 
@@ -137,17 +143,15 @@
     align-items: center;
     justify-content: space-evenly;
   }
-  .org-wrapper  {
-    text-align: center;
-  }
   .empty-div{
     flex: 1;
   }
   .line {
-        height: 1px;
+        height: 2px;
         width: 100%;
-        background-color: white;
+        background-color: #798AC5;
         margin-top: 10px;
+        margin-bottom: 10px;
         padding: 0;
   }
   .single-org-card {

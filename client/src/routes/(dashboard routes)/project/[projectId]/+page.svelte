@@ -12,9 +12,9 @@
     const isMember = project.members.includes(user.sub);
     const isMod = org.members[0].org_role_id === 'OWNER' || org.members[0].org_role_id === 'MODERATOR';
 
-    const checkedFeatures = features.filter(f => f.properties.checked).length;
-    const approvedFeatures = features.filter(f => f.properties.result === 'APPROVED').length;
-    const failedFeatures = features.filter(f => f.properties.result === 'FAILED').length;
+    const checkedFeatures = features.filter((f: { properties: { checked: any; }; }) => f.properties.checked).length;
+    const approvedFeatures = features.filter((f: { properties: { result: any; }; }) => f.properties.result === 'APPROVED').length;
+    const failedFeatures = features.filter((f: { properties: { result: any; }; }) => f.properties.result === 'FAILED').length;
 
     let demoSize = 30;
 </script>

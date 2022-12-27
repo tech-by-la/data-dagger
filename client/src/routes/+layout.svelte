@@ -74,6 +74,30 @@
         height: 35px;
         margin: -8px;
     }
+    .btn {
+        color: rgb(255, 255, 255);
+        font-size: 20px;
+        line-height: 20px;
+        padding: 10px;
+        font-family: 'Oswald';
+        font-weight: normal;
+        font-style: normal;
+        font-variant: normal;
+        text-transform: none;
+        border: 3px solid #798AC5;
+        display: inline-block;
+        background: 0;
+        margin: 5px;
+    }
+
+    .btn:hover {
+        cursor: pointer;
+        background: #798AC5;
+    }
+
+    .btn:active {
+        background: #144E75;
+    }
 
 </style>
 
