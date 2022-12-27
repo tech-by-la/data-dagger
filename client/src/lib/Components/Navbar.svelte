@@ -38,12 +38,8 @@
     <div class="links-container">
         <div class="links">
             {#if $page.data.user}
-<!--                <a href="/project/1" data-sveltekit-preload-data>Project</a>-->
-<!--                <p> / </p>-->
                 <a href="/user/{userID}" data-sveltekit-preload-data>Profile</a>
                 <p> / </p>
-<!--                <a href="/org/e91efa01e012001" data-sveltekit-preload-data>Organization</a>-->
-<!--                <p> / </p>-->
                 {#if $page.data.user.roles.includes('ADMIN') || $page.data.user.roles.includes("SUPER_ADMIN")}
                     <a href="/admin" data-sveltekit-preload-data>Admin</a>
                     <p> / </p>
@@ -66,20 +62,19 @@
     <Prompt toggle={toggleTheLoginPrompt} >
         <Button btnClick={toggleTheLoginPrompt} btnTitle={""}><li class="icon"><MdClose/></li></Button>
        <InputForm formFunction="/login" formName="Login" />
-       <!-- <Button btnClick={toggleTheLoginPrompt} btnTitle={"Close"}></Button> -->
     </Prompt>
 
 {/if}
 {#if logoutPromptController}
     <Prompt toggle={toggleTheLogoutPrompt} >
+        <Button btnClick={toggleTheLogoutPrompt} btnTitle={""}><li class="icon"><MdClose/></li></Button>
        <InputForm formFunction="/logout" formName="Logout" />
-       <!-- <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Close"}></Button> -->
     </Prompt>
 {/if}
 {#if registerPromptController}
     <Prompt toggle={toggleTheRegisterPrompt}>
+        <Button btnClick={toggleTheRegisterPrompt} btnTitle={""}><li class="icon"><MdClose/></li></Button>
         <InputForm formFunction="/register" formName="Register" />
-        <!-- <Button btnClick={toggleTheRegisterPrompt} btnTitle={"Close"}></Button> -->
     </Prompt>
 {/if}
 
