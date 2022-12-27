@@ -9,36 +9,38 @@
 </script>
 
 <div class="user-dashboard-wrapper">
-    <Container>
-      <div class="top-panel">
-        <div class="user-info">
-          Logged in as {user.email}
-        </div>
-
-        <div class="title">
-          <h1>Your Organizations</h1>
-
-        </div>
+  <Container>
+    <div class="top-panel">
+      <div class="user-info">
+        Logged in as {user.email}
       </div>
-    </Container>
 
-    <div class="panels">
-      <div class="left-panel">
-        <Container>
-          <div class="info-text">
-            <p> - These are the organizations you are a part of. </p>
-            <p> - Go to an organization dashboard to see available projects</p>
-            <p> - To create a new click the link below to open a create new Organization form</p>
-            <p> - To delete a Organization (that you are an owner of) please contact Data Dagger Support</p>
+      <div class="title">
+        <h1> - Organizations Dashboard - </h1>
 
-          </div>
+      </div>
+      <div class="empty-div">
+        <!-- For spacing title div corectly -->
+      </div>
+    </div>
+  </Container>
 
-        </Container>
-        <Container>
-          <slot></slot>
-        </Container>
-        <Container>
-          <h1>Invites</h1>
+  <div class="panels">
+    <div class="left-panel">
+      <Container>
+        <div class="info-text">
+          <p> - These are the organizations you are a part of. </p>
+          <p> - Go to an organization dashboard to see available projects</p>
+          <p> - To create a new click the link below to open a create new Organization form</p>
+          <p> - To delete a Organization (that you are an owner of) please contact Data Dagger Support</p>
+        </div>
+      </Container>
+      
+      <Container>
+        <h1>Invites</h1>
+        {#if invites.length < 1}
+          <h2 class="grid-full">No invites to show</h2>
+        {:else}
           {#each invites as invite, index}
             <div class="invite">
               <p>{invite.organization_name} {invite.sent_at.toLocaleDateString()}</p>
@@ -52,46 +54,67 @@
               </form>
             </div>
           {/each}
-        </Container>
-      </div>
+        {/if}
+      </Container>
+    </div>
 
+    <div class="right-panel">
 
-      <div class="right-panel">
-      {#each userOrgs as org, i }
-        <Container>
-        <div class="org-wrapper">
-          <p>Name : {org.name}</p>
-          <p>Your Role : {org.members.find(m => m.user_id === user.sub).org_role_id}</p>
-          <p>Nr of Members: {org.members.length}</p>
-          <p>Nr of Projects: {org.projectCount}</p>
-          <Button btnClick= {() => goto(`/org/${org.id}`)} btnTitle={"Go to " + org.name + " dashboard page"} width = "50%"></Button>
+      <Container>
+        <slot></slot>
+      </Container>
+    
+      <Container>   
+        <div class="org-cards">
+          {#if userOrgs.length < 1}
+          <h2>No Organizations yet</h2>
+          {:else}
+            <div class="org-cards-title">
+                <h1>Organizations</h1>
+                <div class="line grid-full"></div>
+            </div>
+            
+            {#each userOrgs as org, i }
+              <div class="single-org-card">
+                <div class="org-title">
+                  <h2>{org.name}</h2>
+                </div>
+                <div class="org-info">
+                  <p>Your Role : {org.members.find(m => m.user_id === user.sub).org_role_id}</p>
+                  <p>Nr of Members: {org.members.length}</p>
+                  <p>Nr of Projects: {org.projectCount}</p>
+                </div>
+                <div class="org-nav-btn">
+                  <Button btnClick= {() => goto(`/org/${org.id}`)} btnTitle={"Go to"} width = "50%"></Button>
+                </div>
+              </div>
+              <div class="line grid-full"></div>
+            {/each}
+          {/if}
+
         </div>
-        </Container>
-      {/each}
-      </div>
-
+      </Container> 
 
     </div>
   </div>
+</div>
 
-  <style>
+<style>
 
-     .title {
+  .title {
     display: flex;
     align-items: center;
     flex: 2;
     justify-content: center;
     font-size: 15px;
-
-    }
-    .user-info {
+  }
+  .user-info {
     display: flex;
     align-items: center;
     flex: 1;
     justify-content: center;
-    }
-
-    .info-text {
+  }
+  .info-text {
     font-size: 20px;
     font-weight: 100;
   }
@@ -109,11 +132,31 @@
   .left-panel{
     flex: 2;
   }
-
   .invite {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
   }
+  .org-wrapper  {
+    text-align: center;
+  }
+  .empty-div{
+    flex: 1;
+  }
+  .line {
+        height: 1px;
+        width: 100%;
+        background-color: white;
+        margin-top: 10px;
+        padding: 0;
+  }
+  .single-org-card {
+    display: flex;
+    align-items: center;
+  }
+  .org-info, .org-nav-btn, .org-title{
+    width: 33%;
+    text-align: center;
+  }
 
-  </style>
+</style>

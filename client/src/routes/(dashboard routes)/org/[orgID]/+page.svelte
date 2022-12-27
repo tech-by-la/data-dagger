@@ -1,55 +1,33 @@
 <script lang="ts">
-    import { page } from '$app/stores';
+  import type { PageData } from './$types';
+  import Button from '$lib/Components/Button.svelte';
+  import { goto } from '$app/navigation';
+  import { page } from "$app/stores";
 
-    const organization = $page.data.organization.data;
-
-</script>
-
-
+  const { organization, isMod, isOwner, user, projects} = $page.data;
+    const hasAccess = isOwner || isMod;
+  </script>
+  <div class="wrapper">
+    {#if hasAccess}
+    <Button
+        btnClick={() => goto(`/org/${organization.id}/invite`)}
+        btnTitle="Invite Members"
+        width="100%"
+        active={$page.url.pathname.endsWith(`/org/${organization.id}/invite`)}
+    />
+    <Button
+        btnClick={() => goto(`/org/${organization.id}/invite/pending`)}
+        btnTitle="Pending Invites"
+        width="100%"
+        active={$page.url.pathname.endsWith(`/org/${organization.id}/invite/pending`)}
+    />
+  {/if}
+  
+  </div>
+  
   <style>
-    div {
-      border: 5px #1e18444b solid;
-      padding: 10px;
-      margin: 0px 10px;
-    }
-    .project-page-wrapper {
-      display: flex;
-      flex-direction: column;
-      margin: 0;
-      padding: 0;
-      border: 0;
-    }
-    .con-2  {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      padding: 0;
-      border: 0;
-    }
-    .con-2 div{
-      height: 50vh;
-    }
-    .con-2-1 {
-      margin-left: 0;
-      flex: 1;
-      height: 100px;
-    }
-    .con-2-2 {
-      flex: 4;
-
-    }
-    .con-2-3 {
-      margin-right: 0;
-      flex:1;
-    }
-     .con-1 {
-      flex: 2;
-     }
-     .con-2 {
-      flex: 6;
-     }
-     .con-3 {
-      flex: 1;
-     }
-
+      .wrapper{
+          display: flex;
+      }
   </style>
+
