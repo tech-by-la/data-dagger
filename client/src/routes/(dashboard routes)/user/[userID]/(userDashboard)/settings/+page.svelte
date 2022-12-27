@@ -2,9 +2,10 @@
     import Button from "$lib/Components/Button.svelte";
     import { page } from "$app/stores"
 	import { goto } from "$app/navigation";
+    import MdClose from 'svelte-icons/md/MdClose.svelte';
     const  { user } = $page.data
 </script>
-<Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="X" width = "15%"></Button>
+<Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="" width = "50px"><li class="icon"><MdClose/></Button>
 <div class="content">
     
     <form method="post" action="?/logoutEverywhere">

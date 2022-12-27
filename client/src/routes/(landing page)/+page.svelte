@@ -20,6 +20,7 @@
 	import VectorLayer from "ol/layer/Vector";
     import {bbox as bboxStrategy} from 'ol/loadingstrategy';
     import TileWMS from 'ol/source/TileWMS';
+    import MdClose from 'svelte-icons/md/MdClose.svelte';
 
 
     const pageText = $page.data.text
@@ -99,7 +100,7 @@ let kmTileWfsLayer = new VectorLayer({
 {#if pagePromptController}
     <Prompt toggle={toggleThePrompt}>
         <div class="xBtn">
-        <Button btnClick={toggleThePrompt} btnTitle={"X"}></Button>
+        <Button btnClick={toggleThePrompt} btnTitle={""}><li class="icon"><MdClose/></Button>
         </div>
         <InputForm formFunction="/register" formName="Register" />
 

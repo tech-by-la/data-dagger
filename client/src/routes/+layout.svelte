@@ -67,6 +67,11 @@
         left: 0;
         right: 0;
     }
+    .icon {
+        list-style-type: none;
+        height: 35px;
+        margin: -8px;
+    }
 
 </style>
 
