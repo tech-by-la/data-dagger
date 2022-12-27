@@ -3,6 +3,7 @@ import db from '$lib/server/database/DatabaseGateway';
 import {error} from "@sveltejs/kit";
 import {OrgRoles, StatusCode, StatusMessage} from "$lib/server/util/enums";
 
+
 export const load: LayoutServerLoad = async ({params, locals, parent}) => {
 	await parent();
 

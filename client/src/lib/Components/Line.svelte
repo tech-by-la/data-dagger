@@ -1,7 +1,7 @@
 <div class="line"></div>
 <style>
     .line {
-        height: 2px;
+        height: 3px;
         width: 100%;
         background-color: #798AC5;
         margin-top: 10px;

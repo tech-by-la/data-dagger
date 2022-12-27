@@ -45,10 +45,8 @@
         background-size: 100% 100%;
         background-attachment: fixed;
         font-family: "Oswald", sans-serif;
-        /* font-weight: 400; */
         color: rgb(255, 255, 255);
-        /* width: 100%; */
-        /* height: 100%; */
+        
     }
 
     main {

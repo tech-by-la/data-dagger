@@ -17,7 +17,7 @@
       </div>
 
       <div class="title">
-        <h1> - Organizations Dashboard - </h1>
+        <h1> - User Dashboard - </h1>
 
       </div>
       <div class="empty-div">
@@ -46,15 +46,22 @@
         <Line/>
           {#each invites as invite, index}
             <div class="invite">
-              <p>{invite.organization_name} {invite.sent_at.toLocaleDateString()}</p>
-              <form method="post" action={`/user/${user.sub}/handle-invite?/accept`}>
-                <button type="submit" class="btn">Accept</button>
-                <input name="org_id" type="hidden" value={invite.organization_id}>
-              </form>
-              <form method="post" action={`/user/${user.sub}/handle-invite?/decline`}>
-                <button type="submit" class="btn">Decline</button>
-                <input name="org_id" type="hidden" value={invite.organization_id}>
-              </form>
+              <div class="invite-info">
+                <p>{invite.organization_name} {invite.sent_at.toLocaleDateString()}</p>
+              </div>
+              <div class="invite-accept">
+                <form method="post" action={`/user/${user.sub}/handle-invite?/accept`}>
+                  <button type="submit" class="btn">Accept</button>
+                  <input name="org_id" type="hidden" value={invite.organization_id}>
+                </form>
+              </div>
+              <div class="invite-decline">
+                <form method="post" action={`/user/${user.sub}/handle-invite?/decline`}>
+                  <button type="submit" class="btn">Decline</button>
+                  <input name="org_id" type="hidden" value={invite.organization_id}>
+                </form>
+              </div>
+              
             </div>
             <Line/>
           {/each}
@@ -75,8 +82,8 @@
           {:else}
             <div class="org-cards-title">
                 <h1>Organizations</h1>
-                <!-- <Line/> -->
-                <div class="line"></div>
+                <Line/>
+                
             </div>
             
             {#each userOrgs as org, i }
@@ -85,7 +92,7 @@
                   <h2>{org.name}</h2>
                 </div>
                 <div class="org-info">
-                  <p>Your Role : {org.members.find(m => m.user_id === user.sub).org_role_id}</p>
+                  <p>Your Role : {org.members.find( m => m.user_id === user.sub).org_role_id}</p>
                   <p>Nr of Members: {org.members.length}</p>
                   <p>Nr of Projects: {org.projectCount}</p>
                 </div>
@@ -93,8 +100,8 @@
                   <Button btnClick= {() => goto(`/org/${org.id}`)} btnTitle={"Go to"} width = "50%"></Button>
                 </div>
               </div>
-              <!-- <Line/> -->
-              <div class="line"></div>
+              <Line/>
+              
             {/each}
           {/if}
 
@@ -146,20 +153,13 @@
   .empty-div{
     flex: 1;
   }
-  .line {
-        height: 2px;
-        width: 100%;
-        background-color: #798AC5;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        padding: 0;
-  }
   .single-org-card {
     display: flex;
     align-items: center;
   }
-  .org-info, .org-nav-btn, .org-title{
-    width: 33%;
+  .org-info, .org-nav-btn, .org-title, .invite-info, .invite-decline, .invite-accept{
+    /* width: 33%; */
+    flex: 1;
     text-align: center;
   }
 

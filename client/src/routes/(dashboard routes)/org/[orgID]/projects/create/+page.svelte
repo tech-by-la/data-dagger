@@ -29,7 +29,7 @@
 
 <div class="form-wrapper">
     <form method="post">
-        <h1>Invite Members</h1>
+        <h1>Create Project</h1>
 
         <input name="organization_id" type="hidden" bind:value={$page.data.organization.id}>
         <input name="status" type="hidden" value="PENDING">
