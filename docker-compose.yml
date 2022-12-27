@@ -16,7 +16,7 @@ services:
 
   geoserver:
     container_name: geoserver
-    image: docker.osgeo.org/geoserver:2.21.1
+    image: docker.osgeo.org/geoserver:2.22-RC
     restart: unless-stopped
     networks:
       - dd-net

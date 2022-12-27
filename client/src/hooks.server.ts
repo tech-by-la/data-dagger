@@ -5,8 +5,7 @@ import {validateRefreshToken} from "$lib/server/util/helpers";
 import db from '$lib/server/database/DatabaseGateway';
 import GeoServer from "$lib/server/geoserver/GeoServer";
 
-db.initDb();
-GeoServer.init();
+db.initDb().then(() => GeoServer.REST.init());
 
 export const handle = (async ({ event, resolve }) => {
 

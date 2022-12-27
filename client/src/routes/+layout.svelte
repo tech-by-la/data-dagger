@@ -16,11 +16,13 @@
     let loading = false;
     let timer;
     beforeNavigate(() => {
+        progress.set(0);
         timer = setTimeout(() => {
             loading = true;
-            progress.set(60, { duration: 500, easing: cubicOut })
-            progress.set(95, { duration: 10000, delay: 500 });
-        }, 100);
+            progress.set(60, { duration: 2500, easing: cubicOut })
+            progress.set(90, { duration: 10000, delay: 2500 });
+            progress.set(99, { duration: 30000, delay: 12500 });
+        }, 200);
     });
     afterNavigate(() => {
         clearInterval(timer);

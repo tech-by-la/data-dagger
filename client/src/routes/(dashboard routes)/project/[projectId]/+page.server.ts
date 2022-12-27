@@ -2,24 +2,17 @@ import type {PageServerLoad} from "./$types";
 import {type Actions, error, fail} from "@sveltejs/kit";
 import type {Project} from "$lib/server/util/interfaces";
 
-import {GeoServerProps, OrgRoles, StatusCode, StatusMessage} from "$lib/server/util/enums";
+import {OrgRoles, StatusCode, StatusMessage} from "$lib/server/util/enums";
 import db from "$lib/server/database/DatabaseGateway";
-import WFS from "$lib/server/geoserver/WFS";
 import Demo from "$lib/server/geoserver/Demo";
-import {GEOSERVER_HOST} from "$env/static/private";
 import Logger from "$lib/server/util/Logger";
+import GeoServer from "$lib/server/geoserver/GeoServer";
 
-export const load: PageServerLoad = async ({parent, params, fetch}) => {
+export const load: PageServerLoad = async ({parent, params}) => {
     await parent();
 
     const fetchProjectData = async () => {
-
-        const URL = `${GEOSERVER_HOST}/${GeoServerProps.Workspace}/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json
-            &typeNames=${GeoServerProps.Layer}
-            &Filter=<Filter><PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>${params.projectId}</Literal></PropertyIsEqualTo></Filter>
-        `;
-
-        const response = await fetch(URL);
+        const response = await GeoServer.WFS.fetchFeaturesByProject(params.projectId);
 
         if (!response.ok) {
             Logger.error(await response.text().catch());
@@ -86,7 +79,7 @@ export const actions: Actions = {
         }
 
         const features = Demo.generateDemo(Number.parseInt(size));
-        const response = await WFS.insertProjectTiles(features, project_id);
+        const response = await GeoServer.WFS.insertFeatures(features, project_id);
         if (!response) {
             // this only happens if the geojson is formatted badly
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
@@ -102,6 +95,6 @@ export const actions: Actions = {
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
 
-        await WFS.deleteProjectData(project_id);
+        await GeoServer.WFS.deleteProjectData(project_id);
     }
 }

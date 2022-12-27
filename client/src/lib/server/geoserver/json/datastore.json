@@ -1,0 +1,14 @@
+{
+  "dataStore": {
+    "name": "geodata",
+    "connectionParameters": {
+      "host": "geoserver_db",
+      "port": 5432,
+      "database": "geodata",
+      "user": "",
+      "passwd": "",
+      "dbtype": "postgis",
+      "schema": "public"
+    }
+  }
+}

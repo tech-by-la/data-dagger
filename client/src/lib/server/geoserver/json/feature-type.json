@@ -1,0 +1,93 @@
+{
+  "featureType": {
+    "name": "poly",
+    "nativeName": "poly",
+    "namespace": {
+      "name": "datadagger"
+    },
+    "title": "Polly",
+    "keywords": [],
+    "srs": "EPSG:3857",
+    "nativeBoundingBox": {
+      "minx": -20037508.342789244,
+      "maxx": 20037508.342789244,
+      "miny": -20048966.1040146,
+      "maxy": 20048966.104014594,
+      "crs": "EPSG:3857"
+    },
+    "latLonBoundingBox": {
+      "minx": -20037508.342789244,
+      "maxx": 20037508.342789244,
+      "miny": -20048966.1040146,
+      "maxy": 20048966.104014594,
+      "crs": "EPSG:3857"
+    },
+    "projectionPolicy": "FORCE_DECLARED",
+    "enabled": true,
+    "store": {
+      "@class": "dataStore",
+      "name": "geodata"
+    },
+    "serviceConfiguration": false,
+    "maxFeatures": 0,
+    "numDecimals": 0,
+    "padWithZeros": false,
+    "forcedDecimal": false,
+    "overrideingServiceSRS": false,
+    "skipNumberMatched": false,
+    "circularArcPresent": false,
+    "attributes": {
+      "attribute": [
+        {
+          "name": "the_geom",
+          "minOccurs": 0,
+          "maxOccurs": 1,
+          "nillable": false,
+          "binding": "org.locationtech.jts.geom.Polygon"
+        },
+        {
+          "name": "project_id",
+          "minOccurs": 0,
+          "maxOccurs": 1,
+          "nillable": false,
+          "binding": "java.lang.String"
+        },
+        {
+          "name": "id",
+          "minOccurs": 0,
+          "maxOccurs": 1,
+          "nillable": false,
+          "binding": "java.lang.Integer"
+        },
+        {
+          "name": "ocg_fid",
+          "minOccurs": 0,
+          "maxOccurs": 1,
+          "nillable": true,
+          "binding": "java.lang.Integer"
+        },
+        {
+          "name": "ogr_fid",
+          "minOccurs": 0,
+          "maxOccurs": 1,
+          "nillable": true,
+          "binding": "java.lang.Integer"
+        },
+        {
+          "name": "status",
+          "minOccurs": 0,
+          "maxOccurs": 1,
+          "nillable": false,
+          "binding": "java.lang.String"
+        },
+        {
+          "name": "checked_by",
+          "minOccurs": 0,
+          "maxOccurs": 1,
+          "nillable": false,
+          "binding": "java.lang.String"
+        }
+      ]
+    }
+  }
+}
