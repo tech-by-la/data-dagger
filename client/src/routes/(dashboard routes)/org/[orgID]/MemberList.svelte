@@ -38,8 +38,7 @@
 									<div class="grid-cell grid-3">{member.org_role_id}</div>
 									<div class="grid-cell grid-4">
 											{#if isOwner && member.org_role_id !== 'OWNER'}
-											<!-- This form needs to be updated -->
-                        
+											<!-- The form action /members needs to be moved to (actions) folder -->
 													<form method="post" action="/members">
 														<button type="submit" class="btn">Remove</button>
 															<input name="org_id" type="hidden" value={organization.id}>

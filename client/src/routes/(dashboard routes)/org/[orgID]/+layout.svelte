@@ -67,50 +67,6 @@
         <ProjectList></ProjectList>   
     </div>
   </div>
-    
-  
-  <!-- <Container>
-  <div class="projects-div">
-    <h1 class="grid-full">Projects for {organization.name}</h1>
-
-    <div class="add-button">
-        <IconButton
-            on:click={() => goto(`/org/${organization.id}/projects/create`)}
-            style="cursor: pointer"
-        >
-            <FaPlus/>
-        </IconButton>
-    </div>
-
-    {#if projects.length < 1}
-        <h2 class="grid-full">No projects to show</h2>
-    {:else}
-        <div class="grid-1">
-          <h2>Name</h2>
-        </div>
-        <div class="grid-2">
-         <h2>Description</h2> 
-        </div>
-        <div class="grid-3">
-         <h2>Status</h2>
-        </div>
-        <div class="grid-4">Type</div>
-        <div class="line grid-full"></div>
-    {/if}
-
-    {#each projects as project, index} -->
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <!-- <div class="grid-row" on:click={() => goto(`/project/${project.id}`)}>
-            <div class="grid-cell grid-1">{project.name}</div>
-            <div class="grid-cell grid-2">{project.description}</div>
-            <div class="grid-cell grid-3">{project.status}</div>
-            <div class="grid-cell grid-4">{project.type}</div>
-        </div>
-
-    {/each}
-  </div>
-</Container> -->
-  <!-- <slot></slot>       -->
 </div>
 
 <style>
@@ -128,55 +84,6 @@
     font-size: 15px;
 
     }
-    .projects-div {
-        position: relative;
-        display: grid;
-        grid-template-columns: auto auto auto auto auto auto;
-    }
-    .grid-row {
-        display: contents;
-    }
-
-    /* .grid-row:hover div {
-        cursor: pointer;
-        background-color: #394c8f;
-    } */
-
-    .grid-cell {
-        padding: 10px 0;
-    }
-
-    .grid-1 {
-        grid-column: 1;
-        padding-left: 10px
-    }
-    .grid-2 {
-        grid-column: 2;
-    }
-    .grid-3 {
-        grid-column: 3;
-    }
-    .grid-4 {
-        grid-column: 4;
-    }
-    .grid-5 {
-        grid-column: 5;
-    }
-    .grid-6 {
-        grid-column: 6;
-    }
-
-    .grid-full {
-        grid-column: 1 / span 6;
-        padding: 10px;
-    }
-    .line {
-        height: 1px;
-        width: 100%;
-        background-color: white;
-        margin-top: 10px;
-        padding: 0;
-    }
     .panels {
     display: flex;
     }
@@ -185,47 +92,6 @@
     }
     .left-panel{
     flex: 2;
-    }
-		.single-proj-card {
-    display: flex;
-    align-items: center;
-  }
-  .proj-info, .proj-nav-btn, .proj-title{
-    width: 33%;
-    text-align: center;
-  }
-
-	.member-list {
-        position: relative;
-        display: grid;
-        width: 100%;
-        grid-template-columns: auto auto auto 60px;
-    }
-		.btn {
-        color: rgb(255, 255, 255);
-        font-size: 20px;
-        line-height: 20px;
-        padding: 10px;
-        /* border-radius: 10px; */
-        font-family: 'Oswald';
-        font-weight: normal;
-        font-style: normal;
-        font-variant: normal;
-        text-transform: none;
-        border: 3px solid #798AC5;
-        display: inline-block;
-        background: 0;
-        margin: 5px;
-        /* width: {width}; */
-    }
-
-    .btn:hover {
-        cursor: pointer;
-        background: #798AC5;
-    }
-
-    .btn:active {
-        background: #144E75;
     }
 
 </style>
