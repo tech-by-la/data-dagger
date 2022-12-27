@@ -56,6 +56,7 @@
     .inner-btn-div {
         display: flex;
         flex-direction: row;
+        justify-content: space-evenly;
     }
 
 
