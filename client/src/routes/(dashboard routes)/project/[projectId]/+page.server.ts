@@ -4,8 +4,8 @@ import type {Project} from "$lib/server/util/interfaces";
 
 import {GeoServerProps, OrgRoles, StatusCode, StatusMessage} from "$lib/server/util/enums";
 import db from "$lib/server/database/DatabaseGateway";
-import WFS from "$lib/server/projects/WFS";
-import Demo from "$lib/server/projects/Demo";
+import WFS from "$lib/server/geoserver/WFS";
+import Demo from "$lib/server/geoserver/Demo";
 import {GEOSERVER_HOST} from "$env/static/private";
 import Logger from "$lib/server/util/Logger";
 
@@ -13,7 +13,8 @@ export const load: PageServerLoad = async ({parent, params, fetch}) => {
     await parent();
 
     const fetchProjectData = async () => {
-        const URL = `${GEOSERVER_HOST}/datadagger/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json
+
+        const URL = `${GEOSERVER_HOST}/${GeoServerProps.Workspace}/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json
             &typeNames=${GeoServerProps.Layer}
             &Filter=<Filter><PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>${params.projectId}</Literal></PropertyIsEqualTo></Filter>
         `;
@@ -22,8 +23,8 @@ export const load: PageServerLoad = async ({parent, params, fetch}) => {
 
         if (!response.ok) {
             Logger.error(await response.text().catch());
-            return [];
-            // throw error(StatusCode.INTERNAL_SERVER_ERROR, {message: StatusMessage.INTERNAL_SERVER_ERROR});
+            // return [];
+            throw error(StatusCode.INTERNAL_SERVER_ERROR, {message: StatusMessage.INTERNAL_SERVER_ERROR});
         }
 
         const data = await response.json();
@@ -85,14 +86,11 @@ export const actions: Actions = {
         }
 
         const features = Demo.generateDemo(Number.parseInt(size));
-        const response = await WFS.insertProjectTiles(features, project.id);
+        const response = await WFS.insertProjectTiles(features, project_id);
         if (!response) {
             // this only happens if the geojson is formatted badly
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
-
-        const data = await response.text();
-        console.log(data);
     },
 
     // Dev action

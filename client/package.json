@@ -53,6 +53,7 @@
 		"jsonwebtoken": "^9.0.0",
 		"mongoose": "^6.8.0",
 		"ol": "^7.1.0",
+		"playwright": "^1.29.1",
 		"proj4": "^2.8.0",
 		"radix-icons-svelte": "^1.2.1",
 		"snowflakify": "^1.0.5",

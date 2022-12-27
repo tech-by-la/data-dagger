@@ -23,7 +23,9 @@ services:
     expose:
       - ${GEO_PORT}
     volumes:
-      - "./volumes/geoserver/geoserver_data:/opt/geoserver_data/:Z"
+      - "geoserver_data:/opt/geoserver_data/:Z"
+    depends_on:
+      - geoserver_db
 
   # === Databases === #
   authentication_db:
@@ -41,8 +43,6 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
       MYSQL_DATABASE: auth
       MYSQL_TCP_PORT: ${MYSQL_PORT}
-    depends_on:
-      - geoserver_db
 
   projects_db:
     container_name: projects_db
@@ -94,6 +94,7 @@ volumes:
   projects_config:
   postgis_data:
   postgis_config:
+  geoserver_data:
 
 networks:
   dd-net:

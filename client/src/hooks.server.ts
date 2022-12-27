@@ -3,9 +3,10 @@ import Jwt from "$lib/server/security/jwt";
 import {Cookies} from "$lib/server/util/enums";
 import {validateRefreshToken} from "$lib/server/util/helpers";
 import db from '$lib/server/database/DatabaseGateway';
+import GeoServer from "$lib/server/geoserver/GeoServer";
 
-await db.initDb();
-
+db.initDb();
+GeoServer.init();
 
 export const handle = (async ({ event, resolve }) => {
 
@@ -47,12 +48,4 @@ export const handle = (async ({ event, resolve }) => {
     event.locals.user = await verifyUser();
     return resolve(event);
 }) satisfies Handle;
-
-// export const handleFetch: HandleFetch = ({ event, request, fetch }) => {
-//     if (request.url.startsWith(PUBLIC_API_URL)) {
-//         request.headers.set('cookie', event.request.headers.get('cookie') || '');
-//     }
-//
-//     return fetch(request);
-// }
 
