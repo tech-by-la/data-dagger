@@ -1,8 +1,10 @@
 import type {PageServerLoad} from "./$types";
-import GeoServer from "$lib/server/geoserver/GeoServer";
 import type {Actions} from "@sveltejs/kit";
-import {FeatureStatus, StatusCode, StatusMessage} from "$lib/server/util/enums";
 import {fail} from "@sveltejs/kit";
+
+import {FeatureStatus, StatusCode, StatusMessage} from "$lib/server/util/enums";
+import GeoServer from "$lib/server/geoserver/GeoServer";
+import db from "$lib/server/database/DatabaseGateway";
 
 export const load: PageServerLoad = (async ({parent, params}) => {
     await parent();
@@ -18,19 +20,27 @@ export const load: PageServerLoad = (async ({parent, params}) => {
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-    default: async ({request}) => {
+    default: async ({request, locals}) => {
         const form = await request.formData();
-        const organization_id = form.get('org_id');
+        const feature_id = form.get('feature_id');
+        const project_id = form.get('project_id');
         const status = form.get('status');
 
         if (
-            !organization_id || typeof organization_id !== "string" ||
+            !feature_id || typeof feature_id !== "string" ||
+            !project_id || typeof project_id !== "string" ||
             !status || typeof status !== "string" ||
-            !Object.values(FeatureStatus).includes(status)
+            !Object.values(FeatureStatus).includes(status as FeatureStatus)
         ) {
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
 
+        const project = await db.projectRepo.findEnabledById(project_id);
+        const isMember = project?.members?.includes(locals.user.sub);
+        if (!project || !isMember) {
+            return fail(StatusCode.FORBIDDEN, { message: StatusMessage.FORBIDDEN });
+        }
 
+        await GeoServer.WFS.updateFeature(feature_id, status as FeatureStatus, locals.user.email);
     }
 }

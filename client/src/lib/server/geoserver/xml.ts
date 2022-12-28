@@ -56,6 +56,24 @@ export const generateWfsInsertRequest = (tileData: Feature[], project_id: string
     return xml;
 }
 
+export const generateWfsUpdateRequest = (fid: string, status: string, checked_by: string) => {
+    return transactionOpenTag + `
+        <wfs:Update typeName="${GeoServerProps.Layer}">
+            <wfs:Property>
+                <wfs:Name>status</wfs:Name>
+                <wfs:Value>${status}</wfs:Value>
+            </wfs:Property>
+            <wfs:Property>
+                <wfs:Name>checked_by</wfs:Name>
+                <wfs:Value>${checked_by}</wfs:Value>
+            </wfs:Property>
+            <ogc:Filter>
+                <ogc:FeatureId fid="${fid}"/>
+            </ogc:Filter>
+        </wfs:Update>
+    ` + transactionCloseTag;
+}
+
 /*
  * Generates the XML used in WFS Delete requests.
  * When sent this request will delete all tiles for a given project.
@@ -74,14 +92,6 @@ export const generateWfsDeleteRequest = (project_id: string) => {
                 </ogc:Filter>
             </wfs:Delete>
         ${transactionCloseTag}
-    `;
-}
-
-export const generateWorkspaceDefinitionXML = (workspace: string) => {
-    return `
-        <workspace>
-            <name>${workspace}</name>
-        </workspace>
     `;
 }
 

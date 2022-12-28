@@ -60,7 +60,7 @@
           "binding": "java.lang.Integer"
         },
         {
-          "name": "ocg_fid",
+          "name": "ogc_fid",
           "minOccurs": 0,
           "maxOccurs": 1,
           "nillable": true,

@@ -1,14 +1,15 @@
 import type {Feature} from "$lib/server/util/interfaces";
 import {GEOSERVER_HOST, GEOSERVER_PASS, GEOSERVER_USER} from "$env/static/private";
-import {generateWfsDeleteRequest, generateWfsInsertRequest} from "$lib/server/geoserver/xml";
+import {generateWfsDeleteRequest, generateWfsInsertRequest, generateWfsUpdateRequest} from "$lib/server/geoserver/xml";
 import {FeatureStatus, GeoServerProps} from "$lib/server/util/enums";
+import OLWFS from 'ol/format/WFS';
 
 interface IWFS {
     insertFeatures(tileData: Feature[], project_id: string): Promise<Response | null>;
     fetchFeaturesByProject(project_id: string): Promise<Response>;
     fetchNextFeature(project_id: string): Promise<Response>;
 
-    updateTile(tile_id: number, project_id: string): Promise<Response>;
+    updateFeature(feature_id: string, project_id: string, status: FeatureStatus): Promise<Response>;
     getNextProjectTile(project_id: string): Promise<Response>;
     deleteProjectData(project_id: string): Promise<Response>;
 }
@@ -63,8 +64,9 @@ class WFS implements IWFS {
     }
 
     // TODO
-    public async updateTile(tile_id: number, project_id: string): Promise<any> {
-        return Promise.resolve(undefined);
+    public async updateFeature(feature_id: string, status: FeatureStatus, checked_by: string): Promise<Response> {
+        const xml = generateWfsUpdateRequest(feature_id, status, checked_by);
+        return await this.sendRequest(xml);
     }
 
     // TODO
@@ -72,7 +74,7 @@ class WFS implements IWFS {
         return Promise.resolve(undefined);
     }
 
-    public async deleteProjectData(project_id: string): Promise<Response> {
+    public async deleteProjectData(project_id: string): Promise<any> {
         const xml = generateWfsDeleteRequest(project_id);
         return await this.sendRequest(xml);
     }

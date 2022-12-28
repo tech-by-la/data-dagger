@@ -8,8 +8,7 @@
     import VectorLayer from "ol/layer/Vector";
     import Button from "$lib/Components/Button.svelte";
 
-    const { nextFeature, organization } = $page.data;
-    console.log(nextFeature);
+    const { nextFeature, project } = $page.data;
 
     let map: Map;
 
@@ -60,12 +59,14 @@
         <form method="post">
           <Button btnTitle="">Ok</Button>
           <input name="status" type="hidden" value="ok">
-          <input name="org_id" type="hidden" value={organization.id}>
+          <input name="project_id" type="hidden" value={project.id}>
+          <input name="feature_id" type="hidden" value={nextFeature.id}>
         </form>
         <form method="post">
           <Button btnTitle="">Fail</Button>
           <input name="status" type="hidden" value="fail">
-          <input name="org_id" type="hidden" value={organization.id}>
+          <input name="project_id" type="hidden" value={project.id}>
+          <input name="feature_id" type="hidden" value={nextFeature.id}>
         </form>
       </div>
     </div>
