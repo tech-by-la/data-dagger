@@ -1,10 +1,50 @@
 <script lang="ts">
-    import type { PageData } from '../../../../../../.svelte-kit/types/src/routes';
-    import Map from '$lib/Components/MapCom.svelte';
+    import { page } from '$app/stores';
+    import MapCom from '$lib/Components/MapCom.svelte';
+    import {Map, View} from "ol";
+    import {onMount} from "svelte";
+    import GeoJSON from "ol/format/GeoJSON";
+    import VectorSource from "ol/source/Vector";
+    import VectorLayer from "ol/layer/Vector";
+    import Button from "$lib/Components/Button.svelte";
 
-    export let data: PageData;
+    const { nextFeature, organization } = $page.data;
+    console.log(nextFeature);
+
     let map: Map;
-  </script>
+
+    let feature
+    let featureSource
+    let kmTileWfsLayer;
+
+    onMount(async () => {
+      feature = new GeoJSON().readFeature(nextFeature);
+      featureSource = new VectorSource({});
+      featureSource.addFeature(feature);
+      kmTileWfsLayer = new VectorLayer({
+        source: featureSource,
+        style: {
+          'stroke-width': 4,
+          'stroke-color': '#798AC580',
+          'fill-color': 'transparent',
+
+        },
+      });
+
+      map.addLayer(kmTileWfsLayer);
+
+      const coordinates = nextFeature.geometry.coordinates[0];
+      const x_0 = coordinates[0][0];
+      const y_0 = coordinates[0][1];
+      const x_2 = coordinates[2][0];
+      const y_2 = coordinates[2][1];
+      const x = x_0 + Math.abs(x_0 - x_2) / 2;
+      const y = y_0 + Math.abs(y_0 - y_2) / 2;
+      const view = new View({ center: [Math.abs(x), y], zoom: 14.8});
+      map.setView(view);
+    });
+
+</script>
 
   <!-- <h1>{data.post.title}</h1>
   <div>{@html data.post.content}</div> -->
@@ -15,8 +55,19 @@
     <div class="con-2">
       <div class="con-2-1">Layer controlling con-2-1</div>
       <div class="con-2-2">
-      <Map {map}></Map></div>
-      <div class="con-2-3">Buttons to manipulate data  con-2-3</div>
+      <MapCom bind:map={map}></MapCom></div>
+      <div class="con-2-3">
+        <form method="post">
+          <Button btnTitle="">Ok</Button>
+          <input name="status" type="hidden" value="ok">
+          <input name="org_id" type="hidden" value={organization.id}>
+        </form>
+        <form method="post">
+          <Button btnTitle="">Fail</Button>
+          <input name="status" type="hidden" value="fail">
+          <input name="org_id" type="hidden" value={organization.id}>
+        </form>
+      </div>
     </div>
     <div class="con-3">Bottom pannel con-3</div>
   </div>

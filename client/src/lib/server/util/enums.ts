@@ -109,7 +109,7 @@ export enum Geometries {
     Polygon = "Polygon"
 }
 
-export enum TileStatus {
+export enum FeatureStatus {
     ready = 'ready',
     ok    = 'ok',
     fail  = 'fail',

@@ -1,5 +1,5 @@
 import type {Feature} from "$lib/server/util/interfaces";
-import {Geometries, GeoServerProps, TileStatus} from "$lib/server/util/enums";
+import {Geometries, GeoServerProps, FeatureStatus} from "$lib/server/util/enums";
 
 /*
  * Converts geojson features to XML and prepares the request.
@@ -45,7 +45,7 @@ export const generateWfsInsertRequest = (tileData: Feature[], project_id: string
             <ogc_fid>${properties.ogc_fid}</ogc_fid>
             <ogr_fid>${properties.ogr_fid}</ogr_fid>
             <name>${properties.name || properties.navn}</name>
-            <status>${TileStatus.ready}</status>
+            <status>${FeatureStatus.ready}</status>
         `;
 
         insert += featureCloseTag;
