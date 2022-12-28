@@ -10,6 +10,10 @@ export enum OrgRoles {
     MEMBER = "MEMBER",
 }
 
+export enum ProjectType {
+    GEO_PROJECT = "GeoProject",
+}
+
 export enum ProjectStatus {
     PENDING = "PENDING",
     STARTED = "STARTED",

@@ -1,28 +1,15 @@
 <script>
     import { page } from '$app/stores';
-    import {ProgressRing, Checkbox, CalendarView} from "fluent-svelte";
-    import { slide } from 'svelte/transition';
+    import {ProgressRing} from "fluent-svelte";
 
     let loading = false;
 
-    let showDates = false;
-
     let name = '';
     let description = '';
-    let start_date = new Date(new Date().setHours(0,0,0,0));
-    let end_date = new Date(new Date(start_date).setDate(start_date.getDate() + 1));
-
-    // Date picker safety
-    $: if (start_date.getTime() >= end_date.getTime())
-        end_date = new Date(new Date(start_date).setDate(start_date.getDate() + 1));
-    let minStartDate = new Date(new Date(start_date).setDate(new Date().getDate() - 1));
-    $: endMinDate = new Date(start_date).setDate(start_date.getDate()+1);
 
     const handleReset = () => {
         name = '';
         description = '';
-        start_date = new Date();
-        end_date = new Date(new Date().setDate(start_date.getDate()+1));
     }
 
 </script>
@@ -32,8 +19,6 @@
         <h1>Create Project</h1>
 
         <input name="organization_id" type="hidden" bind:value={$page.data.organization.id}>
-        <input name="status" type="hidden" value="PENDING">
-        <input name="type" type="hidden" value="GeoProject">
         <div class="input-wrapper">
             <div >Project Name</div>
             <input name="name" type="text" placeholder="Project Name" bind:value={name}>
@@ -41,32 +26,10 @@
             <div>Project Description</div>
             <input name="description" class="input-long" type="text" placeholder="Project Description" bind:value={description}>
 
-            <div>Set start/end</div>
-            <div class="checkbox">
-                <Checkbox name="include-dates" type="checkbox" bind:checked={showDates}/>
-            </div>
-
-            {#if showDates}
-                <div class="dates-wrapper" transition:slide>
-                    <div class="date-inner-wrapper">
-                        <div >Start Date</div>
-                        <div >{start_date ? start_date.toLocaleDateString() : "unset"}</div>
-                        <div>
-                            <CalendarView min={minStartDate} bind:value={start_date}/>
-                            <input name="start_date" type="hidden" bind:value={start_date}>
-                        </div>
-                    </div>
-                    <div class="date-inner-wrapper">
-                        <div>End Date</div>
-                        <div>{end_date ? end_date.toLocaleDateString() : "unset"}</div>
-                        <div >
-                            <CalendarView min={endMinDate} bind:value={end_date}/>
-                            <input name="end_date" type="hidden" bind:value={end_date}>
-                        </div>
-                    </div>
-                </div>
-            {/if}
-
+            <div>Project Type</div>
+            <select name="type">
+                <option value="GeoProject">GeoProject</option>
+            </select>
             <div class="flex-box">
                 <button class="btn" type="reset" on:click|preventDefault={handleReset}>Reset</button>
                 <button class="btn" type="submit" on:submit={() => loading = true}>Submit</button>
