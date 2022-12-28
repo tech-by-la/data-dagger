@@ -3,7 +3,9 @@ import {error} from "@sveltejs/kit";
 import {StatusCode, StatusMessage} from "$lib/server/util/enums";
 import db from '$lib/server/database/DatabaseGateway';
 
-export const load: LayoutServerLoad = async ({ locals, params}) => {
+export const load: LayoutServerLoad = async ({ locals, params, parent}) => {
+	await parent();
+	
 	if (locals.user.sub !== params.userID ) {
 		throw error(StatusCode.UNAUTHORIZED, { message: StatusMessage.UNAUTHORIZED });
 	}

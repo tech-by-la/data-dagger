@@ -5,7 +5,7 @@
     import Container from "$lib/Components/Container.svelte";
 	import { IconButton } from "fluent-svelte";
 	import FaPlus from "svelte-icons/fa/FaPlus.svelte";
-  import Line from "$lib/Components/Line.svelte";
+    import Line from "$lib/Components/Line.svelte";
 
     const { organization, isMod, isOwner, user, projects} = $page.data;
     const hasAccess = isOwner || isMod;

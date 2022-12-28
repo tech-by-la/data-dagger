@@ -1,12 +1,14 @@
 <script lang="ts">
-    import { page } from '$app/stores';
-    import Button from '$lib/Components/Button.svelte';
-    import { goto } from '$app/navigation';
-    import Container from '$lib/Components/Container.svelte';
-    import {IconButton} from "fluent-svelte";
-    import Line from '$lib/Components/Line.svelte';
 
-    const { userOrgs, invites, user } = $page.data;
+  import { page } from '$app/stores';
+  import Button from '$lib/Components/Button.svelte';
+  import { goto } from '$app/navigation';
+  import Container from '$lib/Components/Container.svelte';
+  import {IconButton} from "fluent-svelte";
+  import Line from '$lib/Components/Line.svelte';   
+  import NavButtonsUser from './NavButtonsUser.svelte';
+	const { userOrgs, invites, user } = $page.data;
+
 </script>
 
 <div class="user-dashboard-wrapper">
@@ -72,6 +74,8 @@
     <div class="right-panel">
 
       <Container>
+        <NavButtonsUser />
+        <Line />
         <slot></slot>
       </Container>
     
@@ -162,5 +166,11 @@
     flex: 1;
     text-align: center;
   }
+
+    .nav-btns{
+        display: flex;
+    }
+
+
 
 </style>

@@ -5,6 +5,7 @@
     import CheckSquare from 'svelte-icons/fa/FaCheckSquare.svelte';
     import Trash from 'svelte-icons/fa/FaTrash.svelte';
     import {Button, IconButton, ProgressRing} from "fluent-svelte";
+    import Line from "$lib/Components/Line.svelte";
 
     const { invites } = $page.data;
 
@@ -72,11 +73,15 @@
             </div>
         {/if}
 
-        <div class="line grid-full"></div>
+        
     {/if}
-
+    <div class="grid-full">
+        <Line />
+    </div>
+    
     <!--  List of Invites  -->
     {#each invites as invite, index}
+    
         <div class="grid-row">
 
             <!--  Dynamic Check Icon  -->
@@ -101,6 +106,9 @@
             <div class="grid-right {selected.includes(invite.email) ? 'selected' : ''}" on:click={() => handleTrash(invite.email)}>
                 <div class="list-icon"><Trash/></div>
             </div>
+        </div>
+        <div class="grid-full">
+            <Line />
         </div>
 
     {/each}

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { PageData } from './$types';
   import Button from '$lib/Components/Button.svelte';
   import { goto } from '$app/navigation';
   import { page } from "$app/stores";
