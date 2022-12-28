@@ -1,4 +1,4 @@
-import REST from './protocols/Rest';
+import REST from './protocols/REST';
 import WFS from './protocols/WFS';
 
 interface IGeoServer {

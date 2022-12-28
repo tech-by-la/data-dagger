@@ -2,7 +2,7 @@ import type {PageServerLoad} from "./$types";
 import {type Actions, error, fail} from "@sveltejs/kit";
 import type {Project} from "$lib/server/util/interfaces";
 
-import {OrgRoles, StatusCode, StatusMessage} from "$lib/server/util/enums";
+import {OrgRoles, ProjectStatus, StatusCode, StatusMessage} from "$lib/server/util/enums";
 import db from "$lib/server/database/DatabaseGateway";
 import Demo from "$lib/server/geoserver/Demo";
 import Logger from "$lib/server/util/Logger";
@@ -84,6 +84,20 @@ export const actions: Actions = {
             // this only happens if the geojson is formatted badly
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
+
+        let inserted = 0;
+        if (response.ok) {
+            const data = await response.text();
+            const query = `<wfs:totalInserted>`
+            inserted = Number.parseInt(data.slice(data.indexOf(query) + query.length).split('<')[0]);
+        } else {
+            return fail(StatusCode.INTERNAL_SERVER_ERROR, { message: StatusMessage.INTERNAL_SERVER_ERROR });
+        }
+
+        if (!isNaN(inserted) && inserted > 0) {
+            project.status = ProjectStatus.STARTED;
+            await db.projectRepo.update(project);
+        }
     },
 
     // Dev action
@@ -95,6 +109,13 @@ export const actions: Actions = {
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
 
+        const project = await db.projectRepo.findById(project_id);
+        if (!project) {
+            return fail(StatusCode.NOT_FOUND, { message: StatusMessage.NOT_FOUND });
+        }
+
+        project.status = ProjectStatus.PENDING;
         await GeoServer.WFS.deleteProjectData(project_id);
+        await db.projectRepo.update(project);
     }
 }

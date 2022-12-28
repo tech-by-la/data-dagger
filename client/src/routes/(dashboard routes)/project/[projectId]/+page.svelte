@@ -29,10 +29,6 @@
         </form>
     </div>
 
-    {#if project.members.includes(user.sub) && project.status === 'STARTED'}
-        <Button on:click={() => goto(`${$page.url.pathname}/workzone`)}>Workzone</Button>
-    {/if}
-
     <div class="mod-console">
         <h3>Details</h3>
         <p>Organization:</p><p>{org.name}</p>
@@ -86,6 +82,9 @@
     <div style="text-align: center">
         <h1>Project {project.name}</h1>
         <h2>{project.description}</h2>
+        {#if project.members.includes(user.sub) && project.status === 'STARTED'}
+            <Button on:click={() => goto(`${$page.url.pathname}/workzone`)}>Workzone</Button>
+        {/if}
     </div>
     <div style="width: 250px"></div>
 </div>

@@ -50,13 +50,10 @@ export interface Project {
     name: string;
     description: string;
     type: string; // TODO: Define project types
-    project_data?: object;
     created_at?: number;
     updated_at?: number;
     status: string; // TODO: Define project status
     enabled?: boolean;
-    start_date?: number;
-    end_date?: number;
     members?: string[]
 }
 

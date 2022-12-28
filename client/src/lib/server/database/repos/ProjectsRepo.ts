@@ -1,10 +1,11 @@
+import type { Project} from "$lib/server/util/interfaces";
 import mongoose, {
     type SchemaDefinition,
     type SchemaDefinitionType,
     type Connection, Schema
 } from "mongoose";
 import Logger from "$lib/server/util/Logger";
-import type {AuthUser, Project} from "$lib/server/util/interfaces";
+import {ProjectStatus} from "$lib/server/util/enums";
 
 const {Types: {ObjectId}} = mongoose;
 
@@ -82,8 +83,6 @@ export default class ProjectsRepo {
                 description: data.description,
                 type: data.type,
                 status: data.status,
-                start_date: data.start_date,
-                end_date: data.end_date || null,
                 project_data: null, // TODO: implement project data
                 members: data.members,
             });
@@ -101,9 +100,6 @@ export default class ProjectsRepo {
                     type: data.type,
                     status: data.status,
                     enabled: data.enabled,
-                    start_date: data.start_date,
-                    project_data: data.project_data,
-                    end_date: data.end_date,
                     members: data.members,
                 }
             });
@@ -137,17 +133,14 @@ export default class ProjectsRepo {
 }
 
 const projectsDefinition: SchemaDefinition<SchemaDefinitionType<Project>> = {
-    organization_id:    { type: String, unique: true, required: true, dropDups: true},
+    organization_id:    { type: String, required: true},
     name:               { type: String, unique: true, required: true, dropDups: true},
     description:        "String",
     type:               "String",
-    project_data:       "String",
     created_at:         Number,
     updated_at:         Number,
-    status:             "String",
+    status:             { type: String, default: ProjectStatus.PENDING },
     enabled:            { type: Boolean, default: true },
-    start_date:         { type: Number, default: Date.now },
-    end_date:           Number,
     members:            ["String"]
 }
 

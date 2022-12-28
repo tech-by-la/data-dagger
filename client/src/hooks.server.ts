@@ -5,7 +5,8 @@ import {validateRefreshToken} from "$lib/server/util/helpers";
 import db from '$lib/server/database/DatabaseGateway';
 import GeoServer from "$lib/server/geoserver/GeoServer";
 
-db.initDb().then(() => GeoServer.REST.init());
+db.initDb();
+GeoServer.REST.init();
 
 export const handle = (async ({ event, resolve }) => {
 
@@ -47,4 +48,3 @@ export const handle = (async ({ event, resolve }) => {
     event.locals.user = await verifyUser();
     return resolve(event);
 }) satisfies Handle;
-

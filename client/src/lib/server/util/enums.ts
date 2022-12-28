@@ -10,6 +10,12 @@ export enum OrgRoles {
     MEMBER = "MEMBER",
 }
 
+export enum ProjectStatus {
+    PENDING = "PENDING",
+    STARTED = "STARTED",
+    ENDED   = "ENDED"
+}
+
 export enum Cookies {
     ID_TOKEN = "idToken",
     REFRESH_TOKEN = "refreshToken",
