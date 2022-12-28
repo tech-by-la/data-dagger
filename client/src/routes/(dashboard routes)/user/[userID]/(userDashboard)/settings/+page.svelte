@@ -19,7 +19,7 @@
         text-align: center;
     }
     .btn{
-    font-size: 15px;
+    font-size: 20px;
     line-height: 20px;
     padding: 10px;
      

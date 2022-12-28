@@ -40,10 +40,16 @@
         display: flex;
         flex-direction: row;
     }
+    .btn {
+        font-size: 20px;
+    }
+    input {
+        font-size: 15px;
+    }
 
 
     input, .btn{
-    font-size: 15px;
+    
     line-height: 20px;
     padding: 10px;
 
