@@ -19,8 +19,6 @@
         <h1>Create Project</h1>
 
         <input name="organization_id" type="hidden" bind:value={$page.data.organization.id}>
-        <input name="status" type="hidden" value="PENDING">
-        <input name="type" type="hidden" value="GeoProject">
         <div class="input-wrapper">
             <div >Project Name</div>
             <input name="name" type="text" placeholder="Project Name" bind:value={name}>
@@ -28,6 +26,10 @@
             <div>Project Description</div>
             <input name="description" class="input-long" type="text" placeholder="Project Description" bind:value={description}>
 
+            <div>Project Type</div>
+            <select name="type">
+                <option value="GeoProject">GeoProject</option>
+            </select>
             <div class="flex-box">
                 <button class="btn" type="reset" on:click|preventDefault={handleReset}>Reset</button>
                 <button class="btn" type="submit" on:submit={() => loading = true}>Submit</button>
