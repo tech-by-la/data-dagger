@@ -74,6 +74,13 @@
           "binding": "java.lang.Integer"
         },
         {
+          "name": "name",
+          "minOccurs": 0,
+          "maxOccurs": 1,
+          "nillable": true,
+          "binding": "java.lang.String"
+        },
+        {
           "name": "status",
           "minOccurs": 0,
           "maxOccurs": 1,

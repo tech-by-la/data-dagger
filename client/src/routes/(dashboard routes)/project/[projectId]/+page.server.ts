@@ -9,7 +9,7 @@ import Logger from "$lib/server/util/Logger";
 import GeoServer from "$lib/server/geoserver/GeoServer";
 
 export const load: PageServerLoad = async ({parent, params}) => {
-    await parent();
+    const { project } = await parent();
 
     const fetchProjectData = async () => {
         const response = await GeoServer.WFS.fetchFeaturesByProject(params.projectId);
@@ -21,7 +21,8 @@ export const load: PageServerLoad = async ({parent, params}) => {
         }
 
         const data = await response.json();
-        return data?.features;
+
+        return data?.features || [];
     }
 
     return {

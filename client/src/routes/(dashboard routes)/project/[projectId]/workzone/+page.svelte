@@ -7,6 +7,7 @@
     import VectorSource from "ol/source/Vector";
     import VectorLayer from "ol/layer/Vector";
     import Button from "$lib/Components/Button.svelte";
+    import {ProgressRing} from "fluent-svelte";
 
     const { nextFeature, project } = $page.data;
 
@@ -15,6 +16,7 @@
     let feature
     let featureSource
     let kmTileWfsLayer;
+    let loading = false;
 
     onMount(async () => {
       feature = new GeoJSON().readFeature(nextFeature);
@@ -50,24 +52,40 @@
 
 
   <div class="project-page-wrapper">
-    <div class="con-1">Project con-1</div>
+    <div class="con-1">
+        Project con-1
+    </div>
     <div class="con-2">
-      <div class="con-2-1">Layer controlling con-2-1</div>
+      <div class="con-2-1">
+          Layer controlling con-2-1
+          {#if loading}
+              <div class="loading"></div>
+          {/if}
+      </div>
       <div class="con-2-2">
-      <MapCom bind:map={map}></MapCom></div>
+          <MapCom bind:map={map}></MapCom>
+          {#if loading}
+              <div class="loading">
+                  <ProgressRing size={60}/>
+              </div>
+          {/if}
+      </div>
       <div class="con-2-3">
-        <form method="post">
-          <Button btnTitle="">Ok</Button>
-          <input name="status" type="hidden" value="ok">
-          <input name="project_id" type="hidden" value={project.id}>
-          <input name="feature_id" type="hidden" value={nextFeature.id}>
-        </form>
-        <form method="post">
-          <Button btnTitle="">Fail</Button>
-          <input name="status" type="hidden" value="fail">
-          <input name="project_id" type="hidden" value={project.id}>
-          <input name="feature_id" type="hidden" value={nextFeature.id}>
-        </form>
+          <form method="post">
+              <Button btnTitle="" btnClick={() => loading = true}>OK</Button>
+              <input name="status" type="hidden" value="ok">
+              <input name="project_id" type="hidden" value={project.id}>
+              <input name="feature_id" type="hidden" value={nextFeature.id}>
+          </form>
+          <form method="post">
+              <Button btnTitle="" btnClick={() => loading = true}>FAIL</Button>
+              <input name="status" type="hidden" value="fail">
+              <input name="project_id" type="hidden" value={project.id}>
+              <input name="feature_id" type="hidden" value={nextFeature.id}>
+          </form>
+          {#if loading}
+            <div class="loading"></div>
+          {/if}
       </div>
     </div>
     <div class="con-3">Bottom pannel con-3</div>
@@ -97,26 +115,41 @@
       height: 70vh;
     }
     .con-2-1 {
-      margin-left: 0;
-      flex: 1;
-      height: 100px;
+        position: relative;
+        margin-left: 0;
+        flex: 1;
+        height: 100px;
     }
     .con-2-2 {
-      flex: 4;
-
+        position: relative;
+        flex: 4;
     }
     .con-2-3 {
-      margin-right: 0;
-      flex:1;
+        position: relative;
+        margin-right: 0;
+        flex:1;
     }
      .con-1 {
-      flex: 2;
+         position: relative;
+         flex: 2;
      }
      .con-2 {
-      flex: 6;
+         flex: 6;
      }
      .con-3 {
-      flex: 1;
+         flex: 1;
+     }
+
+     .loading {
+         position: absolute;
+         top: 0;
+         right: 0;
+         left: 0;
+         margin: 10px;
+         z-index: 2;
+         display: flex;
+         justify-content: center;
+         align-items: center;
      }
 
   </style>

@@ -3,11 +3,23 @@
     import { goto } from '$app/navigation';
     import {Button} from "fluent-svelte";
 
+    const { user, project, features, org } = $page.data;
+    enum Status {
+        PENDING = 'PENDING',
+        STARTED = 'STARTED',
+        FINISHED = 'FINISHED',
+    }
+
+    let status = features.length === 0
+        ? Status.PENDING
+        : features.filter(f => f.properties.status !== 'ready').length === features.length
+        ? Status.FINISHED
+        : Status.STARTED;
+
     let disableJoin   = false;
     let disableDemo   = false;
-    let disableDelete = false
-
-    const { user, project, features, org } = $page.data;
+    let disableDelete = false;
+    let disableExport = false;
 
     const isMember = project.members.includes(user.sub);
     const isMod = org.members[0].org_role_id === 'OWNER' || org.members[0].org_role_id === 'MODERATOR';
@@ -17,6 +29,31 @@
     const failedFeatures = features.filter((f: { properties: { status: string; }; }) => f.properties.status === 'fail').length;
 
     let demoSize = 30;
+
+    const handleExport = async () => {
+        disableExport = true;
+
+        const response = await fetch(`/api/export/${project.id}`);
+        if (!response.ok) {
+            window.location.reload();
+            return;
+        }
+        const blob: Blob = await response.blob();
+        const fileUrl = URL.createObjectURL(blob);
+        const link: HTMLAnchorElement = document.createElement('a');
+
+        const org_name = org.name.replace(/[^\w ]/g, '').replace(' ', '').toLowerCase();
+        const proj_name = project.name.replace(/[^\w ]/g, '').replace(' ', '').toLowerCase();
+        const date = new Date().toISOString().replaceAll('-', '').replaceAll('_', '').replaceAll(':', '').replaceAll('T', '').split('.')[0]
+        const fileName = `${org_name}_${proj_name}_${date}`;
+
+        link.href = fileUrl;
+        link.download = `${fileName}.geojson`;
+        link.click();
+        URL.revokeObjectURL(fileUrl);
+        
+        disableExport = false;
+    }
 </script>
 
 <div class="content">
@@ -35,7 +72,13 @@
         <p>Project Type:</p><p>{project.type}</p>
         <p>Project Created:</p><p>{new Date(project.created_at).toLocaleDateString()}</p>
         <p>Joined Workers:</p><p>{project.members.length}</p>
-        <p>Status:</p><p>{project.status}</p>
+        <p>Status:</p><p>{status}</p>
+
+        {#if status === Status.FINISHED}
+            <div class="grid-span">
+                <Button disabled={disableExport} on:click={handleExport}>Export Data</Button>
+            </div>
+        {/if}
 
         {#if features.length > 0}
             <hr class="grid-span">
@@ -46,7 +89,7 @@
             <p>Failed:</p><p>{failedFeatures}</p>
         {/if}
 
-        {#if isMod && project.status === 'PENDING' && features.length === 0}
+        {#if isMod && status === Status.PENDING}
             <hr class="grid-span">
             <p class="grid-span">Upload project data to start the project!</p>
             <p class="grid-span">You can upload a .geojson or generate a demo project</p>
@@ -82,7 +125,7 @@
     <div style="text-align: center">
         <h1>Project {project.name}</h1>
         <h2>{project.description}</h2>
-        {#if project.members.includes(user.sub) && project.status === 'STARTED'}
+        {#if project.members.includes(user.sub) && status === Status.STARTED}
             <Button on:click={() => goto(`${$page.url.pathname}/workzone`)}>Workzone</Button>
         {/if}
     </div>

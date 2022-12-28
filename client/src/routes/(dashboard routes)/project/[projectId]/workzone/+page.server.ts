@@ -1,6 +1,6 @@
 import type {PageServerLoad} from "./$types";
 import type {Actions} from "@sveltejs/kit";
-import {fail} from "@sveltejs/kit";
+import {fail, redirect} from "@sveltejs/kit";
 
 import {FeatureStatus, StatusCode, StatusMessage} from "$lib/server/util/enums";
 import GeoServer from "$lib/server/geoserver/GeoServer";
@@ -13,6 +13,10 @@ export const load: PageServerLoad = (async ({parent, params}) => {
         const response = await GeoServer.WFS.fetchNextFeature(params.projectId);
         // console.log(await response.text())
         const data = await response.json();
+        console.log(data);
+        if (data.features.length === 0) {
+            throw redirect(302, `/project/${params.projectId}`);
+        }
         return { nextFeature: data.features[0] }
     }
 

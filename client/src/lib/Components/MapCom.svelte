@@ -47,12 +47,11 @@
     });
 </script>
 
-    <div id="map"></div>
-
-
+<div id="map"><slot/></div>
 
 <style>
     #map {
+        position: relative;
         margin: 0px;
         border: 0px;
         width: 100%;
