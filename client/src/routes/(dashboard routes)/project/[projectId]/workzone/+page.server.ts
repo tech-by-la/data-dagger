@@ -1,23 +1,32 @@
 import type {PageServerLoad} from "./$types";
 import type {Actions} from "@sveltejs/kit";
-import {fail, redirect} from "@sveltejs/kit";
+import {error, fail, redirect} from "@sveltejs/kit";
 
 import {FeatureStatus, StatusCode, StatusMessage} from "$lib/server/util/enums";
 import GeoServer from "$lib/server/geoserver/GeoServer";
 import db from "$lib/server/database/DatabaseGateway";
 
-export const load: PageServerLoad = (async ({parent, params}) => {
+export const load: PageServerLoad = (async ({parent, params, locals}) => {
     await parent();
 
     const fetchNextFeature = async () => {
-        const response = await GeoServer.WFS.fetchNextFeature(params.projectId);
-        // console.log(await response.text())
+        const nextFeature = await db.fidRepo.findOneAvailableAndLock(params.projectId, locals.user.sub);
+        if (!nextFeature?.fid) {
+            throw redirect(302, `/project/${params.projectId}`);
+        }
+
+        const response = await GeoServer.WFS.fetchNextFeature(nextFeature.fid as string);
+
+        if (!response.ok) {
+            throw error(response.status);
+            // throw redirect(302, `/project/${params.projectId}`);
+        }
+
         const data = await response.json();
-        console.log(data);
         if (data.features.length === 0) {
             throw redirect(302, `/project/${params.projectId}`);
         }
-        return { nextFeature: data.features[0] }
+        return { nextFeature: {...data.features[0]} }
     }
 
     return fetchNextFeature()
@@ -45,6 +54,11 @@ export const actions: Actions = {
             return fail(StatusCode.FORBIDDEN, { message: StatusMessage.FORBIDDEN });
         }
 
-        await GeoServer.WFS.updateFeature(feature_id, status as FeatureStatus, locals.user.email);
+        const response = await GeoServer.WFS.updateFeature(feature_id, status as FeatureStatus, locals.user.email);
+        const data = await response.text();
+        const updated = Number.parseInt(data.split('wfs:totalUpdated')[1].replace(/[^\w ]/g, ''));
+        if (response.ok && !isNaN(updated) && updated === 1) {
+            await db.fidRepo.setChecked(feature_id);
+        }
     }
 }

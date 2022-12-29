@@ -1,6 +1,6 @@
 <script lang="ts">
     import { page } from '$app/stores';
-    import { goto } from '$app/navigation';
+    import {goto} from '$app/navigation';
     import {Button} from "fluent-svelte";
 
     const { user, project, features, org } = $page.data;
@@ -51,7 +51,7 @@
         link.download = `${fileName}.geojson`;
         link.click();
         URL.revokeObjectURL(fileUrl);
-        
+
         disableExport = false;
     }
 </script>

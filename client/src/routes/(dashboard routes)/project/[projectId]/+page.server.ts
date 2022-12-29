@@ -2,14 +2,14 @@ import type {PageServerLoad} from "./$types";
 import {type Actions, error, fail} from "@sveltejs/kit";
 import type {Project} from "$lib/server/util/interfaces";
 
-import {OrgRoles, ProjectStatus, StatusCode, StatusMessage} from "$lib/server/util/enums";
+import {GeoServerProps, OrgRoles, ProjectStatus, StatusCode, StatusMessage} from "$lib/server/util/enums";
+import GeoServer from "$lib/server/geoserver/GeoServer";
 import db from "$lib/server/database/DatabaseGateway";
 import Demo from "$lib/server/geoserver/Demo";
 import Logger from "$lib/server/util/Logger";
-import GeoServer from "$lib/server/geoserver/GeoServer";
 
 export const load: PageServerLoad = async ({parent, params}) => {
-    const { project } = await parent();
+    await parent();
 
     const fetchProjectData = async () => {
         const response = await GeoServer.WFS.fetchFeaturesByProject(params.projectId);
@@ -21,7 +21,6 @@ export const load: PageServerLoad = async ({parent, params}) => {
         }
 
         const data = await response.json();
-
         return data?.features || [];
     }
 
@@ -86,14 +85,23 @@ export const actions: Actions = {
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
 
-        let inserted = 0;
-        if (response.ok) {
-            const data = await response.text();
-            const query = `<wfs:totalInserted>`
-            inserted = Number.parseInt(data.slice(data.indexOf(query) + query.length).split('<')[0]);
-        } else {
-            return fail(StatusCode.INTERNAL_SERVER_ERROR, { message: StatusMessage.INTERNAL_SERVER_ERROR });
+        if (!response.ok) {
+            return fail(StatusCode.INTERNAL_SERVER_ERROR, {message: StatusMessage.INTERNAL_SERVER_ERROR});
         }
+
+        const data = await response.text();
+
+        const insertedQuery = `<wfs:totalInserted>`;
+        const inserted = Number.parseInt(data.slice(data.indexOf(insertedQuery) + insertedQuery.length).split('<')[0]);
+
+        // find inserted fids
+        const fids = data
+            .split("wfs:InsertResults")[1]
+            .split("\"")
+            .filter(f => f.includes(`${GeoServerProps.Layer}.`));
+
+        await db.fidRepo.insertMany(project_id, fids);
+        console.log(await db.fidRepo.findAllByProject(project_id))
 
         if (!isNaN(inserted) && inserted > 0) {
             project.status = ProjectStatus.STARTED;
@@ -117,6 +125,7 @@ export const actions: Actions = {
 
         project.status = ProjectStatus.PENDING;
         await GeoServer.WFS.deleteProjectData(project_id);
+        await db.fidRepo.deleteByProject(project_id);
         await db.projectRepo.update(project);
     }
 }

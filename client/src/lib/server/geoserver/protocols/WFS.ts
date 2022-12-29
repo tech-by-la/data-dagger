@@ -42,25 +42,34 @@ class WFS implements IWFS {
                     `<PropertyName>project_id</PropertyName><Literal>${project_id}</Literal>` +
                 `</PropertyIsEqualTo></Filter>`
 
-        return await fetch(URL);
+        return await fetch(URL, { headers: this.headers });
     }
 
-    public async fetchNextFeature(project_id: string): Promise<Response> {
+    public async fetchNextFeature(fid: string): Promise<Response> {
+        // `http://localhost:9090/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typenames=sf:bugsites
+        // &filter=%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%3E%3C
+        // fes:ResourceId%20rid=%22bugsites.3%22/%3E%3C/fes:Filter%3E`
+
+        // `\`<PropertyIsEqualTo>\` +
+        //                 \`<PropertyName>project_id</PropertyName><Literal>${project_id}</Literal>\` +
+        //             \`</PropertyIsEqualTo>\` +
+        //             \`<PropertyIsEqualTo>\` +
+        //                 \`<PropertyName>status</PropertyName><Literal>${FeatureStatus.ready}</Literal>\` +
+        //             \`</PropertyIsEqualTo>\` +`
+
+        // `&filter=` +
+        // `<Filter>` +
+        // `<FeatureId fid=poly.1071 />` +
+        // `</Filter>` +
+
         const URL =
-            `${GEOSERVER_HOST}/${GeoServerProps.Workspace}/ows?service=WFS&version=2.0.0&request=GetFeature` +
+            `${GEOSERVER_HOST}/${GeoServerProps.Workspace}/wfs?service=WFS&version=2.0.0` +
+            `&request=GetFeature` +
             `&outputFormat=json` +
             `&typeNames=${GeoServerProps.Layer}` +
-            `&Filter=` +
-                `<Filter>` +
-                    `<PropertyIsEqualTo>` +
-                        `<PropertyName>project_id</PropertyName><Literal>${project_id}</Literal>` +
-                    `</PropertyIsEqualTo>` +
-                    `<PropertyIsEqualTo>` +
-                        `<PropertyName>status</PropertyName><Literal>${FeatureStatus.ready}</Literal>` +
-                    `</PropertyIsEqualTo>` +
-                `</Filter>` +
+            `&featureID=${fid}` +
             `&count=1`
-        return await fetch(URL);
+        return await fetch(URL, { headers: this.headers });
     }
 
     // TODO

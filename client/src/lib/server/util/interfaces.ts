@@ -1,5 +1,6 @@
 import type {User, UserRole, OrgUser, EOrgRole} from "@prisma/client";
 import type {JwtPayload} from "jsonwebtoken";
+import type {ProjectStatus, ProjectType} from "$lib/server/util/enums";
 
 // ===== Types ===== //
 
@@ -10,51 +11,59 @@ type UserOrgs = { org_id: string, role: EOrgRole }[]
 
 export interface UserInfo extends User {
     roles?: UserRole[];
-    orgs?: OrgUser[]
+    orgs?:  OrgUser[]
 }
 
 export interface AuthUser {
-    id: string;
-    email: string;
-    roles: string[];
-    orgs: { org_id: string, role: EOrgRole }[]
+    id:     string;
+    email:  string;
+    roles:  string[];
+    orgs:   { org_id: string, role: EOrgRole }[]
 }
 
 // ===== Request/Response body definitions ===== //
 
 export interface UserRequestBody {
-    email: string;
-    password: string;
+    email:       string;
+    password:    string;
     first_name?: string;
-    last_name?: string;
+    last_name?:  string;
 }
 
 export interface OrgRequestBody {
-    name: string;
-    contact_email: string;
+    name:           string;
+    contact_email:  string;
     contact_phone?: string;
 }
 
 export interface InviteResponseBody {
     alreadyJoined?: string[];
-    invalid?: string[];
-    invited?: string[];
-    tooEarly?: string[];
+    invalid?:       string[];
+    invited?:       string[];
+    tooEarly?:      string[];
 }
 
 // ===== DB Interfaces ===== //
 
 export interface Project {
-    id?: string;
+    id?:             string;
     organization_id: string;
-    name: string;
-    description: string;
-    type: string; // TODO: Define project types
-    created_at?: number;
-    updated_at?: number;
-    status: string; // TODO: Define project status
-    enabled?: boolean;
-    members?: string[]
+    name:            string;
+    description:     string;
+    type:            ProjectType;
+    created_at?:     number;
+    updated_at?:     number;
+    status:          ProjectStatus; // TODO: Define project status
+    enabled?:        boolean;
+    members?:        string[]
+}
+
+export interface FeatureClone {
+    fid:         string;
+    checked:     boolean;
+    project_id:  string;
+    accessed_at: Date;
+    accessed_by: string;
 }
 
 // ===== JWT Payloads ===== //
@@ -62,7 +71,7 @@ export interface Project {
 export interface JwtUserPayload extends JwtPayload{
     email: string;
     roles: UserRole["name"][];
-    orgs: UserOrgs
+    orgs:  UserOrgs
 }
 
 export interface RefreshTokenPayload extends JwtPayload {
@@ -72,18 +81,18 @@ export interface RefreshTokenPayload extends JwtPayload {
 // ===== WFS/XML/GEOJSON ===== //
 
 export interface Feature {
+    geometry: {
+        type:        string;
+        coordinates: [ [number, number][] ],
+    };
     properties: {
         project_id: string;
-        id: number;
-        ogc_fid: number;
-        ogr_fid: number;
-        navn?: string;
-        name?: string;
-        checked: boolean;
-        result?: string;
+        id:         number;
+        ogc_fid:    number;
+        ogr_fid:    number;
+        navn?:      string;
+        name?:      string;
+        checked:    boolean;
+        result?:    string;
     };
-    geometry: {
-        type: string;
-        coordinates: [ [number, number][] ],
-    }
 }

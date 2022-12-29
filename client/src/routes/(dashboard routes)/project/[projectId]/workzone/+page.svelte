@@ -8,6 +8,7 @@
     import VectorLayer from "ol/layer/Vector";
     import Button from "$lib/Components/Button.svelte";
     import {ProgressRing} from "fluent-svelte";
+    import {beforeNavigate} from "$app/navigation";
 
     const { nextFeature, project } = $page.data;
 
@@ -45,6 +46,9 @@
       map.setView(view);
     });
 
+    // unlock feature
+    beforeNavigate(() => fetch(`/api/features/${nextFeature.id}/unlock`));
+
 </script>
 
   <!-- <h1>{data.post.title}</h1>
@@ -54,6 +58,7 @@
   <div class="project-page-wrapper">
     <div class="con-1">
         Project con-1
+        <a style="color: white" href="/project/{project.id}">Project Dashboard</a>
     </div>
     <div class="con-2">
       <div class="con-2-1">

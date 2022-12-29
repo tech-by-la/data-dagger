@@ -1,4 +1,4 @@
-import type { Project} from "$lib/server/util/interfaces";
+import type {FeatureClone, Project} from "$lib/server/util/interfaces";
 import mongoose, {
     type SchemaDefinition,
     type SchemaDefinitionType,
@@ -143,4 +143,3 @@ const projectsDefinition: SchemaDefinition<SchemaDefinitionType<Project>> = {
     enabled:            { type: Boolean, default: true },
     members:            ["String"]
 }
-

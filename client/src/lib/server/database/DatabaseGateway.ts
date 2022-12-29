@@ -10,6 +10,7 @@ import OrgRepo from "./repos/OrgRepo.js";
 import InviteRepo from "./repos/InviteRepo.js";
 import ProjectsRepo from "$lib/server/database/repos/ProjectsRepo";
 import Logger from "$lib/server/util/Logger";
+import FidRepo from "$lib/server/database/repos/FidRepo";
 
 export interface IDatabaseGateway {
     userRepo: UserRepo;
@@ -17,6 +18,7 @@ export interface IDatabaseGateway {
     orgRepo: OrgRepo;
     inviteRepo: InviteRepo;
     projectRepo: ProjectsRepo;
+    fidRepo: FidRepo
 }
 
 class DatabaseGateway implements IDatabaseGateway {
@@ -28,6 +30,7 @@ class DatabaseGateway implements IDatabaseGateway {
     public readonly orgRepo = new OrgRepo(this.db);
     public readonly inviteRepo = new InviteRepo(this.db);
     public readonly projectRepo: ProjectsRepo;
+    public readonly fidRepo: FidRepo;
 
     constructor() {
         Logger.log('Initializing Databases');
@@ -37,6 +40,7 @@ class DatabaseGateway implements IDatabaseGateway {
         if (!url) throw Error('DATABASE_URL is missing in environment');
         this.projDb = mongoose.createConnection(url);
         this.projectRepo = new ProjectsRepo(this.projDb);
+        this.fidRepo = new FidRepo(this.projDb);
         Logger.log('Projects Database Initialized');
     }
 
