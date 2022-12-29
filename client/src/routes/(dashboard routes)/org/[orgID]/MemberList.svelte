@@ -41,8 +41,8 @@
 											<!-- The form action /members needs to be moved to (actions) folder -->
 													<form method="post" action="/members">
 														<button type="submit" class="btn">Remove</button>
-															<input name="org_id" type="hidden" value={organization.id}>
-															<input name="user_id" type="hidden" value={member.user_id}>
+															<input name="org_id input" type="hidden" value={organization.id}>
+															<input name="user_id input" type="hidden" value={member.user_id}>
 													</form>
 											{/if}
 									</div>
@@ -55,32 +55,10 @@
 
 <style>
    
-   .top-panel {
-    display: flex;
-    justify-content: space-around;
-    height: 30px;
-  }
-  .title {
-    display: flex;
-    align-items: center;
-    flex: 2;
-    justify-content: center;
-    font-size: 15px;
-
-    }
-    .projects-div {
-        position: relative;
-        display: grid;
-        grid-template-columns: auto auto auto auto auto auto;
-    }
+  
     .grid-row {
         display: contents;
     }
-
-    /* .grid-row:hover div {
-        cursor: pointer;
-        background-color: #394c8f;
-    } */
 
     .grid-cell {
         padding: 10px 0;
@@ -99,41 +77,12 @@
     .grid-4 {
         grid-column: 4;
     }
-    .grid-5 {
-        grid-column: 5;
-    }
-    .grid-6 {
-        grid-column: 6;
-    }
 
     .grid-full {
         grid-column: 1 / span 6;
         padding: 10px;
     }
-    .line {
-        height: 1px;
-        width: 100%;
-        background-color: white;
-        margin-top: 10px;
-        padding: 0;
-    }
-    .panels {
-    display: flex;
-    }
-    .right-panel{
-    flex: 3;
-    }
-    .left-panel{
-    flex: 2;
-    }
-		.single-proj-card {
-    display: flex;
-    align-items: center;
-  }
-  .proj-info, .proj-nav-btn, .proj-title{
-    width: 33%;
-    text-align: center;
-  }
+    
 
 	.member-list {
         position: relative;
@@ -141,12 +90,11 @@
         width: 100%;
         grid-template-columns: auto auto auto 60px;
     }
-		.btn {
+    .btn {
         color: rgb(255, 255, 255);
         font-size: 20px;
         line-height: 20px;
         padding: 10px;
-        /* border-radius: 10px; */
         font-family: 'Oswald';
         font-weight: normal;
         font-style: normal;
@@ -156,7 +104,7 @@
         display: inline-block;
         background: 0;
         margin: 5px;
-        /* width: {width}; */
+        
     }
 
     .btn:hover {

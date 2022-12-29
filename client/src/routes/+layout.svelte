@@ -46,9 +46,7 @@
         background-attachment: fixed;
         font-family: "Oswald", sans-serif;
         color: rgb(255, 255, 255);
-        
     }
-
     main {
         margin: 0;
         display: flex;
@@ -56,11 +54,9 @@
         backdrop-filter: blur(5px);
         min-height: 100vh;
     }
-
     .slot {
         flex: 1;
     }
-
     .progress-bar {
         position: fixed;
         top: 0;
@@ -86,16 +82,48 @@
         display: inline-block;
         background: 0;
         margin: 5px;
+        border-radius: 15px;
     }
-
+    .input {
+        font-size: 15px;
+        line-height: 20px;
+        padding: 10px;
+        font-family: 'Oswald';
+        font-weight: normal;  
+        font-style: normal; 
+        font-variant: normal; 
+        text-transform: none;   
+        display: inline-block;
+        color: rgb(255, 255, 255);
+        background:#1e1844ab;
+        margin: 5px;
+        width: auto;
+        border: 2px solid #798AC5; 
+    }
+    .input:focus{
+        background: #798AC5; 
+        outline: 5px solid #1e1844ab;
+        color: #ffffff
+    }
     .btn:hover {
         cursor: pointer;
         background: #798AC5;
     }
-
-    .btn:active {
-        background: #144E75;
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    select:-webkit-autofill:hover,
+    select:-webkit-autofill:focus {
+        border: 2px solid rgb(91, 99, 173);
+        -webkit-text-fill-color: rgb(255, 255, 255);
+        -webkit-box-shadow: 0 0 0px 1000px rgb(101, 103, 143) inset;
+        transition: background-color 5000s ease-in-out 0s;
     }
+    
 
 </style>
 

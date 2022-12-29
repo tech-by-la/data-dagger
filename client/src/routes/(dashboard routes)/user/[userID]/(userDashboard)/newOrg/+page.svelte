@@ -12,9 +12,9 @@
     <Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="" width = "50px"><li class="icon"><MdClose/></Button>
     <form class="form-form" method="POST" action="?/newOrg">
             <h1> Create New Organization</h1>
-            <input class="input-name" name="name" type="text" placeholder="Organization Name">
-            <input class="input-name" name="contact_phone" type="text" placeholder="Contact Phone">
-            <input class="input-email" name="contact_email" type="text"  placeholder="Contact Email">
+            <input class="input-name input" name="name" type="text" placeholder="Organization Name">
+            <input class="input-name input" name="contact_phone" type="text" placeholder="Contact Phone">
+            <input class="input-email input" name="contact_email" type="text"  placeholder="Contact Email">
             <div class="checkbox-div">
                 <input class="checkbox" type="checkbox" name="terms">
                 <label for="terms"> I agree to terms and conditions</label>

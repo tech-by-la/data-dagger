@@ -4,6 +4,7 @@
     import FaMinus from "svelte-icons/fa/FaMinus.svelte";
     import { slide } from 'svelte/transition';
     import {page} from "$app/stores";
+	import Button from "$lib/Components/Button.svelte";
 
     let nextId = 0;
 
@@ -24,120 +25,72 @@
     const focus = (e: HTMLInputElement) => e.focus();
 </script>
 
-<div class="form-wrapper">
+    <div class="invite-members-div">
 
-    <h1>Invite Members</h1>
+        <div class="title">
+            <h1>Invite Members</h1>
+        </div>
+        
 
-    {#each selector as email, index (email.id)}
-        <div transition:slide|local>
+        {#each selector as email, index (email.id)}
 
-            <div class="input-wrapper">
-                <IconButton on:click={() => handleRemoveInput(index)}>
-                    <div class="minus-icon"><FaMinus /></div>
-                </IconButton>
-                <input class="input-name" type="email" placeholder="E-mail address" bind:value={email.email}  use:focus>
+            <div class="email-div" transition:slide|local>
+                    <Button btnClick={() => handleRemoveInput(index)} btnTitle={""} ><li class="icon"><FaMinus /></li></Button>
+                <input class="input-name input" type="email" placeholder="E-mail address" bind:value={email.email} >
             </div>
             {#if email.error === 'invalid'}
                 <div class="error">Invalid email</div>
             {/if}
+            
+        {/each}
+
+        <div class="add-email-div">
+            <Button btnClick={handleAddInput} btnTitle={""} >
+                <div class="inside-add-btn">
+                    <li class="icon">
+                        <FaPlus/>
+                    </li>
+                    <p class="add-email-text">Add email</p>
+                </div>
+            </Button>  
         </div>
-    {/each}
-
-    <IconButton on:click={handleAddInput}>
-        <FaPlus/>
-    </IconButton>
-
-    <form method="post">
-        <div class="input-wrapper">
+        
+        <div class="form-div">
+            <form method="post">
                 <input name="emails" type="hidden" bind:value={emails}>
-                <button class="btn" type="reset" on:click={handleReset}>Reset</button>
-                <button class="btn" type="submit" on:click={() => loading = true}>Submit</button>
+                <div class="buttons">
+                    <Button btnClick={handleReset} btnTitle={"Reset"} width="40%"></Button>
+                    <Button btnClick={() => loading = true} btnTitle={"Submit"} width="40%"></Button>
+                </div>
+            </form>
         </div>
-    </form>
+    
 
-    {#if loading}
-        <div class="loading-wrapper">
-            <ProgressRing size={60}/>
-        </div>
-    {/if}
-</div>
+        {#if loading}
+            <div class="loading-div">
+                <ProgressRing size={60}/>
+            </div>
+        {/if}
+    </div>
 
 <style>
-    .loading-wrapper {
+    .loading-div {
         position: fixed;
         display: flex;
         justify-content: center;
         align-items: center;
-        top: 0;
+        top: 25%;
         bottom: 0;
         left: 0;
         right: 0;
         background-color: #000000B3;
     }
 
-    .minus-icon {
-        color: #c40606
-    }
-
-    .form-wrapper, form {
-        display: flex;
-        flex-direction: column;
-        border: 2px;
-        border-color: black;
-        justify-content: space-evenly;
-        position: relative;
-    }
-    .input-wrapper {
-        width: 100%;
-        display: flex;
-    }
-
-
-    input, .btn{
-        font-size: 15px;
-        line-height: 20px;
-        padding: 10px;
-
-        font-family: 'Oswald';
-        font-weight: normal;
-        font-style: normal;
-        font-variant: normal;
-        text-transform: none;
-
-        display: inline-block;
-        color: rgb(255, 255, 255);
-
-    }
-
     input {
-        background:#1e184453;
-        margin: 5px;
-        width: 100%;
-        border: 2px solid #798AC5;
+        width: 82%;
     }
 
-    input:focus{
-        background: #798AC5;
-        outline: 3px solid #252e62;
-        color: #ffffff
-    }
 
-    .btn {
-        background: 0;
-        margin: 5px;
-        width: 50%;
-        border: 3px solid #798AC5;
-        border-radius: 10px;
-    }
-
-    .btn:hover {
-        cursor: pointer;
-        background: #798AC5;
-    }
-
-    .btn:active {
-        background: #144E75;
-    }
     h1 {
         text-align: center;
         margin-top: 0;
@@ -147,5 +100,41 @@
         margin: 0 0 20px 40px;
         color: red;
     }
+    .buttons {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+    }
+    .add-email-div {
+        display: flex;
+        justify-content: center;
+        margin: 5px;
+    }
+    .inside-add-btn {
+        font-size: 15px;
+        display: flex;
+        width: 100px;
+        font-family: 'Oswald';
+        font-weight: normal;
+        font-style: normal;
+        font-variant: normal;
+        justify-content: space-around;
+        height: 20px;
+        align-items: center;
+
+    }
+    .email-div {
+        display: flex;
+        justify-content: center;
+    }
+    .icon {
+        height: 20px;
+        padding: 0 5px;
+    }
+
+   
+
+    
+    
 
 </style>

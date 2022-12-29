@@ -41,17 +41,17 @@
 
 
 
-    var kmTileWmsSource = new TileWMS({
-        url: geoserverWmsUrl,
-        params: { 'LAYERS': geoserverWorkspace + ':' + kmTilesLayerName, 'TILED': true },
-        serverType: 'geoserver',
-        visible: false
-    })
+    // var kmTileWmsSource = new TileWMS({
+    //     url: geoserverWmsUrl,
+    //     params: { 'LAYERS': geoserverWorkspace + ':' + kmTilesLayerName, 'TILED': true },
+    //     serverType: 'geoserver',
+    //     visible: false
+    // })
 
-    var kmTileWmsLayer = new TileLayer({
-        title: "1 km Tiles",
-        source: kmTileWmsSource
-    });
+    // var kmTileWmsLayer = new TileLayer({
+    //     title: "1 km Tiles",
+    //     source: kmTileWmsSource
+    // });
 
     let kmTileWfsSource = new VectorSource({
         format: new GeoJSON(),

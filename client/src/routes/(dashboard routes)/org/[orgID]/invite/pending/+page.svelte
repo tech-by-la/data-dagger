@@ -9,7 +9,7 @@
 
     const { invites } = $page.data;
 
-    let selected = [];
+    let selected: string[] = [];
     $: allSelected = invites.length > 0 && selected.length === invites.length;
 
     let promptOpen = false;
@@ -17,7 +17,7 @@
     let loading = false;
     let oneSelected = '';
 
-    const handleClickInvite = (invite) => {
+    const handleClickInvite = (invite: { email: string; }) => {
         selected = selected.includes(invite.email)
             ? selected.filter(s => s !== invite.email)
             : selected = [...selected, invite.email];
@@ -26,7 +26,7 @@
     const handleSelectAll = () => {
         selected = selected.length === invites.length
             ? []
-            : invites.map(i => i.email);
+            : invites.map((i: { email: string; }) => i.email);
     }
 
     const handleTrash = (email: string) => {
@@ -48,6 +48,7 @@
     {:else}
 
         <!--  Header  -->
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div class="list-icon grid-left" on:click={handleSelectAll}>
             {#if allSelected}
                 <CheckSquare/>
@@ -61,7 +62,8 @@
 
         <!--  Delete All Button  -->
         {#if selected.length > 0}
-            <div class="grid-right" style="padding-right: 2px;" on:click={promptOpen = !promptOpen}>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <div class="grid-right" style="padding-right: 2px;" on:click={ () => promptOpen = !promptOpen}>
                 <IconButton
                     variant="accent"
                     style="background-color: {hover ? '#c30000' : 'red'}; color: white; font-weight: bold; position: absolute; cursor: pointer;"
@@ -85,7 +87,8 @@
         <div class="grid-row">
 
             <!--  Dynamic Check Icon  -->
-            <div class="grid-left {selected.includes(invite.email) ? 'selected' : ''}" on:click={() => handleClickInvite(invite, index)}>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <div class="grid-left {selected.includes(invite.email) ? 'selected' : ''}" on:click={() => handleClickInvite(invite)}>
                 <div class="list-icon" >
                     {#if selected.includes(invite.email)}
                             <CheckSquare/>
@@ -103,6 +106,7 @@
             </div>
 
             <!--  Trash Icon  -->
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div class="grid-right {selected.includes(invite.email) ? 'selected' : ''}" on:click={() => handleTrash(invite.email)}>
                 <div class="list-icon"><Trash/></div>
             </div>
@@ -115,6 +119,7 @@
 </div>
 
 {#if promptOpen}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <span class="confirmation-background" on:click={handleClosePrompt} transition:fade={{duration: 200}}></span>
 
     {#if loading}
@@ -202,14 +207,6 @@
 
     .selected {
         background-color: #394c8f;
-    }
-
-    .line {
-        height: 1px;
-        width: 100%;
-        background-color: white;
-        margin-top: 10px;
-        padding: 0;
     }
 
     .list-icon {

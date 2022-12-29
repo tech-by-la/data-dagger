@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Text from './Text.svelte';
+
 
   import { page } from '$app/stores';
   import Button from '$lib/Components/Button.svelte';
@@ -30,14 +32,7 @@
 
   <div class="panels">
     <div class="left-panel">
-      <Container>
-        <div class="info-text">
-          <p> - These are the organizations you are a part of. </p>
-          <p> - Go to an organization dashboard to see available projects</p>
-          <p> - To create a new click the link below to open a create new Organization form</p>
-          <p> - To delete a Organization (that you are an owner of) please contact Data Dagger Support</p>
-        </div>
-      </Container>
+      <Text></Text>
       
       <Container>
         <h1>Invites</h1>
@@ -131,10 +126,6 @@
     flex: 1;
     justify-content: center;
   }
-  .info-text {
-    font-size: 20px;
-    font-weight: 100;
-  }
   .top-panel {
     display: flex;
     justify-content: space-around;
@@ -162,14 +153,10 @@
     align-items: center;
   }
   .org-info, .org-nav-btn, .org-title, .invite-info, .invite-decline, .invite-accept{
-    /* width: 33%; */
     flex: 1;
     text-align: center;
   }
 
-    .nav-btns{
-        display: flex;
-    }
 
 
 
