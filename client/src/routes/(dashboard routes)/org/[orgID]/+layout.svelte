@@ -11,6 +11,7 @@
 	  import { IconButton } from "fluent-svelte";
 	  import FaPlus from "svelte-icons/fa/FaPlus.svelte";
     import Line from "$lib/Components/Line.svelte";
+	import GoBackBtn from '$lib/Components/GoBackBtn.svelte';
 
     const { organization, isMod, isOwner, user, projects} = $page.data;
     const hasAccess = isOwner || isMod;
@@ -35,7 +36,9 @@
   
       <div class="title">
         <h1> - {organization.name} Dashboard - </h1>
-  
+      </div>
+      <div class="back-div">
+        <GoBackBtn url ="/user/{user.sub}"></GoBackBtn>
       </div>
     </div>
   </Container>
@@ -93,5 +96,20 @@
     .left-panel{
     flex: 2;
     }
+    .back-div{
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+    font-size: 15px;
+    width: 50%;
+    padding: 5px;
+  }
+  .user-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+  }
 
 </style>

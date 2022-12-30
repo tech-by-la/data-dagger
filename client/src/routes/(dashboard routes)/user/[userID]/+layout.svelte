@@ -9,6 +9,7 @@
   import {IconButton} from "fluent-svelte";
   import Line from '$lib/Components/Line.svelte';   
   import NavButtonsUser from './NavButtonsUser.svelte';
+	import GoBackBtn from '$lib/Components/GoBackBtn.svelte';
 	const { userOrgs, invites, user } = $page.data;
 
 </script>
@@ -24,8 +25,8 @@
         <h1> - User Dashboard - </h1>
 
       </div>
-      <div class="empty-div">
-        <!-- For spacing title div corectly -->
+      <div class="back-div">
+        <GoBackBtn url ="/"></GoBackBtn>
       </div>
     </div>
   </Container>
@@ -145,9 +146,7 @@
     align-items: center;
     justify-content: space-evenly;
   }
-  .empty-div{
-    flex: 1;
-  }
+  
   .single-org-card {
     display: flex;
     align-items: center;
@@ -155,6 +154,15 @@
   .org-info, .org-nav-btn, .org-title, .invite-info, .invite-decline, .invite-accept{
     flex: 1;
     text-align: center;
+  }
+  .back-div{
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+    font-size: 15px;
+    width: 50%;
+    padding: 5px;
   }
 
 
