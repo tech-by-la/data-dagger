@@ -1,19 +1,16 @@
 <script lang="ts">
-	
-  import Container from '$lib/Components/Container.svelte';
-  import { page } from '$app/stores';
+
+    import Container from '$lib/Components/Container.svelte';
+    import { page } from '$app/stores';
 	import GoBackBtn from '$lib/Components/GoBackBtn.svelte';
-  import { fly, slide } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing';
-	import DashboardHeader from '$lib/Components/DashboardHeader.svelte';
+    import { fly, slide } from 'svelte/transition';
+    import { quintOut } from 'svelte/easing';
 
     const { user, project, org} = $page.data
-    const { url } = $page;
-
 </script>
 
 <div class="proj-page-wrapper" in:fly="{{delay: 500, duration: 500, x: -2000, y: 0, opacity: 0.5}}" out:slide="{{delay: 0, duration: 500}}">
-  
+
 
   <Container>
     <div class="top-panel">
@@ -32,7 +29,7 @@
           <b>Project:</b> {project.name}
         </div>
         {/if}
-        
+
       </div>
 
       <div class="title">
@@ -40,7 +37,7 @@
       </div>
 
       <div class="back-div">
-        <GoBackBtn url={url.pathname.endsWith('workzone') ? `/project/${project.id}` : `/org/${org.id}`}></GoBackBtn>
+        <GoBackBtn url={`/org/${org.id}`}></GoBackBtn>
       </div>
 
     </div>
