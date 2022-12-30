@@ -3,38 +3,28 @@
     import {ProgressRing} from "fluent-svelte";
 
     let loading = false;
-
-    let name = '';
-    let description = '';
-
-    const handleReset = () => {
-        name = '';
-        description = '';
-    }
-
 </script>
 
 <div class="form-wrapper">
     <form method="post">
         <h1>Create Project</h1>
 
-        <input name="organization_id" type="hidden" bind:value={$page.data.organization.id}>
+        <input name="organization_id" type="hidden" value={$page.data.organization.id}>
         <div class="input-wrapper">
             <div >Project Name</div>
-            <input name="name" class="input" type="text" placeholder="Project Name" bind:value={name}>
+            <input name="name" class="input" type="text" placeholder="Project Name">
 
             <div>Project Description</div>
-            <input name="description " class="input-long input" type="text" placeholder="Project Description" bind:value={description}>
+            <input name="description" class="input-long input" type="text" placeholder="Project Description">
 
             <div>Project Type</div>
             <select name="type" class="drop-down-box">
                 <option value="GeoProject" >GeoProject</option>
             </select>
             <div class="flex-box">
-                <button class="btn" type="reset" on:click|preventDefault={handleReset}>Reset</button>
+                <button class="btn" type="reset" >Reset</button>
                 <button class="btn" type="submit" on:submit={() => loading = true}>Submit</button>
             </div>
-
         </div>
 
 
