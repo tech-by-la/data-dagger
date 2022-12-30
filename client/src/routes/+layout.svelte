@@ -5,12 +5,13 @@
     import "@fontsource/oswald/300.css";
     import Transition from "$lib/Components/Transition.svelte";
     import { page } from '$app/stores'
-    import { fade } from 'svelte/transition';
+    import { fade, fly } from 'svelte/transition';
     import { onMount } from 'svelte';
     import { beforeNavigate, afterNavigate } from '$app/navigation';
     import {tweened} from "svelte/motion";
     import {cubicOut} from "svelte/easing";
     import {ProgressBar} from "fluent-svelte";
+    import { quintOut } from 'svelte/easing';
 
     let progress = tweened(0);
     let loading = false;
@@ -33,8 +34,8 @@
             });
     });
 
-    let ready = false;
-    onMount(() => ready = true);
+    // let ready = false;
+    // onMount(() => ready = true);
 </script>
 
 <style global>
@@ -135,12 +136,15 @@
             <Navbar />
         </div>
 
-        <div class="slot">
-            {#if ready}
-            <Transition url = {$page.url}>
-                <slot />
-            </Transition>
-            {/if}
+        <div class="slot"  >
+            <!-- {#if ready} -->
+            <!-- <Transition url = {$page.url}> -->
+                <!-- <div class="div"  > -->
+                    <slot />
+                <!-- </div> -->
+                
+            <!-- </Transition> -->
+            <!-- {/if} -->
         </div>
 
         <div class="footer">

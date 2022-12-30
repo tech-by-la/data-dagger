@@ -5,8 +5,11 @@
     import { slide } from 'svelte/transition';
     import {page} from "$app/stores";
 	import Button from "$lib/Components/Button.svelte";
+	import { goto } from "$app/navigation";
+    import MdClose from 'svelte-icons/md/MdClose.svelte';
 
     let nextId = 0;
+    let { organization } = $page.data
 
     let loading = false;
     let selector = [{id: nextId++, email: '', error: null}];
@@ -25,7 +28,8 @@
     const focus = (e: HTMLInputElement) => e.focus();
 </script>
 
-    <div class="invite-members-div">
+    <div class="invite-members-div" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
+        <Button btnClick= {() => goto(`/org/${organization.id}`)} btnTitle="" width = "50px"><li class="icon"><MdClose/></Button>
 
         <div class="title">
             <h1>Invite Members</h1>

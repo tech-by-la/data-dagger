@@ -3,16 +3,20 @@
     import { page } from "$app/stores"
 	import { goto } from "$app/navigation";
     import MdClose from 'svelte-icons/md/MdClose.svelte';
+	import { slide } from "svelte/transition";
     const  { user } = $page.data
 </script>
-<Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="" width = "50px"><li class="icon"><MdClose/></Button>
-<div class="content">
-    
-    <form method="post" action="?/logoutEverywhere">
-        <button class="btn" type="submit">Logout Everywhere</button>
-    </form>
-
+<div class="setting-div" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
+    <Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="" width = "50px"><li class="icon"><MdClose/></Button>
+        <div class="content" >
+            
+            <form method="post" action="?/logoutEverywhere">
+                <button class="btn" type="submit">Logout Everywhere</button>
+            </form>
+        
+        </div>
 </div>
+
 
 <style>
     .content {

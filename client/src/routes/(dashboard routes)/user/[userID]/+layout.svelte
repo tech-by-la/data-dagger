@@ -10,14 +10,16 @@
   import Line from '$lib/Components/Line.svelte';   
   import NavButtonsUser from './NavButtonsUser.svelte';
 	import GoBackBtn from '$lib/Components/GoBackBtn.svelte';
+  import { fly, slide } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
 	const { userOrgs, invites, user } = $page.data;
 
 </script>
 
-<div class="user-dashboard-wrapper">
+<div class="user-dashboard-wrapper" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
   <Container>
     <div class="top-panel">
-      <div class="user-info">
+      <div class="user-info" >
         <div class="user">
           <b> User: </b> {user.email} 
         </div>
@@ -72,7 +74,10 @@
       <Container>
         <NavButtonsUser />
         <Line />
-        <slot></slot>
+        <div class="tabs" transition:fly="{{delay: 250, duration: 250, x: 0, y: 500, opacity: 0.5}}" >
+          <slot></slot>
+        </div>
+        
       </Container>
     
       <Container>   

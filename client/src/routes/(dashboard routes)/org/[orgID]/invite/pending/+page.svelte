@@ -1,6 +1,6 @@
 <script lang="ts">
     import { page } from '$app/stores';
-    import {fade} from 'svelte/transition';
+    import {fade, slide} from 'svelte/transition';
     import Square from 'svelte-icons/fa/FaRegSquare.svelte';
     import CheckSquare from 'svelte-icons/fa/FaCheckSquare.svelte';
     import Trash from 'svelte-icons/fa/FaTrash.svelte';
@@ -39,117 +39,119 @@
         promptOpen = false;
     }
 </script>
+ <div class="pending-div" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
+    <h1>Pending Invites</h1>
 
-<h1>Pending Invites</h1>
-
-<div class="content">
-    {#if invites.length < 1}
-        <h2 class="grid-full">No pending invites</h2>
-    {:else}
-
-        <!--  Header  -->
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <div class="list-icon grid-left" on:click={handleSelectAll}>
-            {#if allSelected}
-                <CheckSquare/>
-            {:else}
-                <Square/>
-            {/if}
-
-        </div>
-        <div class="grid-left-center">Email</div>
-        <div class="grid-right-center">Invited at</div>
-
-        <!--  Delete All Button  -->
-        {#if selected.length > 0}
+    <div class="content">
+        {#if invites.length < 1}
+            <h2 class="grid-full">No pending invites</h2>
+        {:else}
+    
+            <!--  Header  -->
             <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div class="grid-right" style="padding-right: 2px;" on:click={ () => promptOpen = !promptOpen}>
-                <IconButton
-                    variant="accent"
-                    style="background-color: {hover ? '#c30000' : 'red'}; color: white; font-weight: bold; position: absolute; cursor: pointer;"
-                    on:mouseenter={() => hover = true}
-                    on:mouseleave={() => hover = false}
-                >
-                    <Trash/>
-                </IconButton>
+            <div class="list-icon grid-left" on:click={handleSelectAll}>
+                {#if allSelected}
+                    <CheckSquare/>
+                {:else}
+                    <Square/>
+                {/if}
+    
             </div>
-        {/if}
-
-        
-    {/if}
-    <div class="grid-full">
-        <Line />
-    </div>
+            <div class="grid-left-center">Email</div>
+            <div class="grid-right-center">Invited at</div>
     
-    <!--  List of Invites  -->
-    {#each invites as invite, index}
-    
-        <div class="grid-row">
-
-            <!--  Dynamic Check Icon  -->
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div class="grid-left {selected.includes(invite.email) ? 'selected' : ''}" on:click={() => handleClickInvite(invite)}>
-                <div class="list-icon" >
-                    {#if selected.includes(invite.email)}
-                            <CheckSquare/>
-                    {:else}
-                            <Square/>
-                    {/if}
+            <!--  Delete All Button  -->
+            {#if selected.length > 0}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <div class="grid-right" style="padding-right: 2px;" on:click={ () => promptOpen = !promptOpen}>
+                    <IconButton
+                        variant="accent"
+                        style="background-color: {hover ? '#c30000' : 'red'}; color: white; font-weight: bold; position: absolute; cursor: pointer;"
+                        on:mouseenter={() => hover = true}
+                        on:mouseleave={() => hover = false}
+                    >
+                        <Trash/>
+                    </IconButton>
                 </div>
-            </div>
-
-            <div class="invite-email grid-left-center {selected.includes(invite.email) ? 'selected' : ''}">
-                {invite.email}
-            </div>
-            <div class="invite-date grid-right-center {selected.includes(invite.email) ? 'selected' : ''}">
-                {invite.sent_at.toLocaleDateString()}
-            </div>
-
-            <!--  Trash Icon  -->
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div class="grid-right {selected.includes(invite.email) ? 'selected' : ''}" on:click={() => handleTrash(invite.email)}>
-                <div class="list-icon"><Trash/></div>
-            </div>
-        </div>
+            {/if}
+    
+            
+        {/if}
         <div class="grid-full">
             <Line />
         </div>
-
-    {/each}
-</div>
-
-{#if promptOpen}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <span class="confirmation-background" on:click={handleClosePrompt} transition:fade={{duration: 200}}></span>
-
-    {#if loading}
-        <div class="loading-spinner"><ProgressRing size={50}/></div>
-    {:else}
-        <div class="confirmation-wrapper" transition:fade={{duration: 200}}>
-            <h3>Confirm Uninvite {allSelected ? "All" : "Selected"}</h3>
-            <div class="flex-row">
-                <Button style="cursor: pointer;" on:click={handleClosePrompt}>Cancel</Button>
-                <form method="post" on:submit>
-                    <Button
-                        variant="accent"
-                        type="submit"
-                        style="background-color: {hover ? '#c30000' : 'red'}; color: white; font-weight: bold; cursor: pointer;"
-                        on:mouseenter={() => hover = true}
-                        on:mouseleave={() => hover = false}
-                        on:click={() => loading = true}
-                    >
-                        Delete
-                    </Button>
-                    {#if oneSelected}
-                        <input name="selected" type="hidden" bind:value={oneSelected}>
-                    {:else}
-                        <input name="selected" type="hidden" bind:value={selected}>
-                    {/if}
-                </form>
+        
+        <!--  List of Invites  -->
+        {#each invites as invite, index}
+        
+            <div class="grid-row">
+    
+                <!--  Dynamic Check Icon  -->
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <div class="grid-left {selected.includes(invite.email) ? 'selected' : ''}" on:click={() => handleClickInvite(invite)}>
+                    <div class="list-icon" >
+                        {#if selected.includes(invite.email)}
+                                <CheckSquare/>
+                        {:else}
+                                <Square/>
+                        {/if}
+                    </div>
+                </div>
+    
+                <div class="invite-email grid-left-center {selected.includes(invite.email) ? 'selected' : ''}">
+                    {invite.email}
+                </div>
+                <div class="invite-date grid-right-center {selected.includes(invite.email) ? 'selected' : ''}">
+                    {invite.sent_at.toLocaleDateString()}
+                </div>
+    
+                <!--  Trash Icon  -->
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <div class="grid-right {selected.includes(invite.email) ? 'selected' : ''}" on:click={() => handleTrash(invite.email)}>
+                    <div class="list-icon"><Trash/></div>
+                </div>
             </div>
-        </div>
+            <div class="grid-full">
+                <Line />
+            </div>
+    
+        {/each}
+    </div>
+    
+    {#if promptOpen}
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <span class="confirmation-background" on:click={handleClosePrompt} transition:fade={{duration: 200}}></span>
+    
+        {#if loading}
+            <div class="loading-spinner"><ProgressRing size={50}/></div>
+        {:else}
+            <div class="confirmation-wrapper" transition:fade={{duration: 200}}>
+                <h3>Confirm Uninvite {allSelected ? "All" : "Selected"}</h3>
+                <div class="flex-row">
+                    <Button style="cursor: pointer;" on:click={handleClosePrompt}>Cancel</Button>
+                    <form method="post" on:submit>
+                        <Button
+                            variant="accent"
+                            type="submit"
+                            style="background-color: {hover ? '#c30000' : 'red'}; color: white; font-weight: bold; cursor: pointer;"
+                            on:mouseenter={() => hover = true}
+                            on:mouseleave={() => hover = false}
+                            on:click={() => loading = true}
+                        >
+                            Delete
+                        </Button>
+                        {#if oneSelected}
+                            <input name="selected" type="hidden" bind:value={oneSelected}>
+                        {:else}
+                            <input name="selected" type="hidden" bind:value={selected}>
+                        {/if}
+                    </form>
+                </div>
+            </div>
+        {/if}
     {/if}
-{/if}
+ </div>
+
 
 <style>
     h1 {

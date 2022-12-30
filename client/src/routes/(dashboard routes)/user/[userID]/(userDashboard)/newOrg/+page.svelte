@@ -3,12 +3,14 @@
     import { page } from '$app/stores';
     import Button from '$lib/Components/Button.svelte';
     import MdClose from 'svelte-icons/md/MdClose.svelte';
+	import { slide } from 'svelte/transition';
+    import { quintOut } from 'svelte/easing';
 
     const { user } = $page.data;
     let userEmail = user.email
 </script>
 
-<div class="form-wrapper">
+<div class="form-wrapper" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
     <Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="" width = "50px"><li class="icon"><MdClose/></Button>
     <form class="form-form" method="POST" action="?/newOrg">
             <h1> Create New Organization</h1>

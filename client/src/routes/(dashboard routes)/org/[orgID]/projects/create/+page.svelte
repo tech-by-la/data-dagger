@@ -1,11 +1,12 @@
 <script>
     import { page } from '$app/stores';
     import {ProgressRing} from "fluent-svelte";
+	import { slide } from 'svelte/transition';
 
     let loading = false;
 </script>
 
-<div class="form-wrapper">
+<div class="form-wrapper" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
     <form method="post">
         <h1>Create Project</h1>
 
