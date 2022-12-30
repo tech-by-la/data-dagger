@@ -4,6 +4,7 @@
     import {Button} from "fluent-svelte";
 
     const { user, project, features, org } = $page.data;
+
     enum Status {
         PENDING = 'PENDING',
         STARTED = 'STARTED',
@@ -19,10 +20,10 @@
     let disableJoin   = false;
     let disableDemo   = false;
     let disableDelete = false;
-    let disableExport = false;
 
     const isMember = project.members.includes(user.sub);
     const isMod = org.members[0].org_role_id === 'OWNER' || org.members[0].org_role_id === 'MODERATOR';
+    const isAdmin = user.roles.includes('SUPER_ADMIN') || user.roles.includes('ADMIN');
 
     const checkedFeatures = features.filter((f: { properties: { status: string; }; }) => f.properties.status !== 'ready').length;
     const approvedFeatures = features.filter((f: { properties: { status: string; }; }) => f.properties.status === 'ok').length;
@@ -31,14 +32,7 @@
     let demoSize = 30;
 
     const handleExport = async () => {
-        disableExport = true;
-
-        const response = await fetch(`/api/export/${project.id}`);
-        if (!response.ok) {
-            window.location.reload();
-            return;
-        }
-        const blob: Blob = await response.blob();
+        const blob: Blob = new Blob([JSON.stringify(features)], { type: "application/json" });
         const fileUrl = URL.createObjectURL(blob);
         const link: HTMLAnchorElement = document.createElement('a');
 
@@ -51,8 +45,6 @@
         link.download = `${fileName}.geojson`;
         link.click();
         URL.revokeObjectURL(fileUrl);
-
-        disableExport = false;
     }
 </script>
 
@@ -74,9 +66,9 @@
         <p>Joined Workers:</p><p>{project.members.length}</p>
         <p>Status:</p><p>{status}</p>
 
-        {#if status === Status.FINISHED}
+        {#if (isAdmin || isMod) && status === Status.FINISHED}
             <div class="grid-span">
-                <Button disabled={disableExport} on:click={handleExport}>Export Data</Button>
+                <Button on:click={handleExport}>Export Data</Button>
             </div>
         {/if}
 
@@ -110,9 +102,9 @@
             </form>
         {/if}
 
-        {#if features.length > 0}
+        {#if isAdmin && features.length > 0}
             <hr class="grid-span">
-            <h3>Dev Menu</h3>
+            <h3>Admin Menu</h3>
             <form class="grid-span" method="post" action="?/delete">
                 <Button disabled={disableDelete} on:click={() => disableDelete = true}>
                     Delete all features

@@ -21,6 +21,12 @@ export const load: PageServerLoad = async ({parent, params}) => {
         }
 
         const data = await response.json();
+        for (const feature of data.features) {
+            delete feature.id;
+            delete feature.geometry_name;
+            delete feature.properties.project_id;
+        }
+
         return data?.features || [];
     }
 

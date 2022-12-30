@@ -1,5 +1,5 @@
 import type {Feature} from "$lib/server/util/interfaces";
-import geojson from "$lib/assets/geojson/1KM_tiles.json";
+import geojson from "$lib/server/geoserver/json/1KM_tiles.json";
 
 interface IDemo {
     generateDemo(size: number): Feature[];
