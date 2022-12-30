@@ -6,21 +6,22 @@
     import InputForm from "$lib/Components/InputForm.svelte";
     import { page } from "$app/stores";
     import type { Map } from "ol";
-    import OSM from "ol/source/OSM";
-    import proj4 from 'proj4';
-    import {register} from 'ol/proj/proj4';
-    import {get as getProjection, Projection} from 'ol/proj';
-    import TileLayer from "ol/layer/Tile";
-	import { onMount } from "svelte";
+    // import OSM from "ol/source/OSM";
+    // import proj4 from 'proj4';
+    // import {register} from 'ol/proj/proj4';
+    // import {get as getProjection, Projection} from 'ol/proj';
+    // import TileLayer from "ol/layer/Tile";
+	// import { onMount } from "svelte";
     import MapCom from "$lib/Components/MapCom.svelte";
-	import ImageLayer from "ol/layer/Image";
-    import ImageWMS from 'ol/source/ImageWMS';
-	import VectorSource from "ol/source/Vector";
-    import GeoJSON from "ol/format/GeoJSON";
-	import VectorLayer from "ol/layer/Vector";
-    import {bbox as bboxStrategy} from 'ol/loadingstrategy';
-    import TileWMS from 'ol/source/TileWMS';
+	// import ImageLayer from "ol/layer/Image";
+    // import ImageWMS from 'ol/source/ImageWMS';
+	// import VectorSource from "ol/source/Vector";
+    // import GeoJSON from "ol/format/GeoJSON";
+	// import VectorLayer from "ol/layer/Vector";
+    // import {bbox as bboxStrategy} from 'ol/loadingstrategy';
+    // import TileWMS from 'ol/source/TileWMS';
     import MdClose from 'svelte-icons/md/MdClose.svelte';
+	import { fly, slide } from "svelte/transition";
 
 
     const pageText = $page.data.text
@@ -34,10 +35,10 @@
 
     let map: Map;
 
-    var serverPort = "localhost:8080";
-    var geoserverWorkspace = "qqc";
-    var geoserverWmsUrl = 'http://' + serverPort + '/geoserver/' + geoserverWorkspace + '/wms'
-    var kmTilesLayerName = "qqc_km_tiles"
+    // var serverPort = "localhost:8080";
+    // var geoserverWorkspace = "qqc";
+    // var geoserverWmsUrl = 'http://' + serverPort + '/geoserver/' + geoserverWorkspace + '/wms'
+    // var kmTilesLayerName = "qqc_km_tiles"
 
 
 
@@ -53,42 +54,42 @@
     //     source: kmTileWmsSource
     // });
 
-    let kmTileWfsSource = new VectorSource({
-        format: new GeoJSON(),
-        url: function (extent) {
-            return ( "http://localhost:9090/geoserver/datadagger/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=poly3&outputFormat=json"
-                // 'http://localhost:8080/geoserver/qqc/ows?service=WFS&' +
-                // 'version=2.0.0&request=GetFeature&typename=qqc:qqc_km_tiles&' +
-                // 'outputFormat=application/json&srsname=EPSG:25832&' +
-                // 'bbox=' +
-                // extent.join(',') +
-                // ',EPSG:25832' +
-                // "&id=" + 8000
-            );
-        },
-      strategy: bboxStrategy,
-    });
+    // let kmTileWfsSource = new VectorSource({
+    //     format: new GeoJSON(),
+    //     url: function (extent) {
+    //         return ( "http://localhost:9090/geoserver/datadagger/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=poly3&outputFormat=json"
+    //             // 'http://localhost:8080/geoserver/qqc/ows?service=WFS&' +
+    //             // 'version=2.0.0&request=GetFeature&typename=qqc:qqc_km_tiles&' +
+    //             // 'outputFormat=application/json&srsname=EPSG:25832&' +
+    //             // 'bbox=' +
+    //             // extent.join(',') +
+    //             // ',EPSG:25832' +
+    //             // "&id=" + 8000
+    //         );
+    //     },
+    //   strategy: bboxStrategy,
+    // });
 
 
-let kmTileWfsLayer = new VectorLayer({
-  source: kmTileWfsSource,
-  style: {
-    'stroke-width': 0.75,
-    'stroke-color': 'white',
-    'fill-color': 'rgba(100,100,100,0.25)',
-  },
-});
+// let kmTileWfsLayer = new VectorLayer({
+//   source: kmTileWfsSource,
+//   style: {
+//     'stroke-width': 0.75,
+//     'stroke-color': 'white',
+//     'fill-color': 'rgba(100,100,100,0.25)',
+//   },
+// });
 
-    const addTiles = () => {
-        map.addLayer(kmTileWfsLayer)
-        console.log("Hello");
+//     const addTiles = () => {
+//         map.addLayer(kmTileWfsLayer)
+//         console.log("Hello");
 
-    }
-    const addTile2 = () => {
-        map.addLayer(kmTileWmsLayer)
-        console.log("Hello");
+//     }
+//     const addTile2 = () => {
+//         map.addLayer(kmTileWmsLayer)
+//         console.log("Hello");
 
-    }
+    // }
     // onMount(()=> {
     //     map.addLayer(kmTileWfsLayer)
     // }
@@ -107,7 +108,7 @@ let kmTileWfsLayer = new VectorLayer({
     </Prompt>
 {/if}
 
-<div class="page-con">
+<div class="page-con" in:fly="{{delay: 500, duration: 500, x: -2000, y: 0, opacity: 0.5}}" out:slide="{{delay: 0, duration: 500}}">
 
     <div class="main-con">
         <Container>
@@ -133,8 +134,8 @@ let kmTileWfsLayer = new VectorLayer({
             <div class="map-con">
 
                 <div class="map-left-panel">
-                    <Button btnClick ={addTiles} btnTitle="Layer 1"></Button>
-                    <Button btnClick ={addTile2} btnTitle="layer 2"></Button>
+                    <Button btnClick ={hello} btnTitle="Layer 1"></Button>
+                    <Button btnClick ={hello} btnTitle="layer 2"></Button>
                     <Button btnClick ={hello} btnTitle="layer 3"></Button>
                     <Button btnClick ={hello} btnTitle="Next Point"></Button>
                     <Button btnClick ={hello} btnTitle="Skip Point"></Button>

@@ -1,8 +1,11 @@
 <script lang="ts">
+	
   import ProjectList from './ProjectList.svelte';
 
   import MemberList from './MemberList.svelte';
   import NavButtons from './NavButtons.svelte'
+  import { fly, slide } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
 
     import { page } from "$app/stores";
     import { goto } from '$app/navigation';
@@ -12,6 +15,7 @@
 	  import FaPlus from "svelte-icons/fa/FaPlus.svelte";
     import Line from "$lib/Components/Line.svelte";
 	import GoBackBtn from '$lib/Components/GoBackBtn.svelte';
+	import { onMount } from 'svelte';
 
     const { organization, isMod, isOwner, user, projects} = $page.data;
     const hasAccess = isOwner || isMod;
@@ -22,27 +26,38 @@
         if (!unix || isNaN(date.getTime())) return 'Not set';
         return date.toLocaleDateString();
     }
+    // export let orgTransition: boolean = true
+    
+    // let nav = () => {
+    //   orgTransition=false;
+    //   goto(`/user/${user.sub}`)
+
+    // }
 
 </script>
 
 
 
-<div class="org-page-wrapper">
+<div class="org-page-wrapper" in:fly="{{delay: 500, duration: 500, x: -2000, y: 0, opacity: 0.5}}" out:slide="{{delay: 0, duration: 500}}">
   <Container>
     <div class="top-panel">
-      <div class="user-info">
+      <div class="user-info" >
         <div class="user">
           <b>User:</b> {user.email} 
         </div>
-        <div class="org">
+        <!-- {#if organization.name} -->
+        <div class="org" transition:fly="{{delay: 0, duration: 500, x: -500, y: 0, opacity: 0.5, easing:quintOut}}" >
           <b>Organization:</b> {organization.name}
         </div>
+        <!-- {/if} -->
+        
       </div>
   
       <div class="title">
-        <h1> - {organization.name} Dashboard - </h1>
+        <h1> - Organization Dashboard - </h1>
       </div>
       <div class="back-div">
+        <!-- <button class="btn"  on:click={nav} >Back</button> -->
         <GoBackBtn url ="/user/{user.sub}"></GoBackBtn>
       </div>
     </div>
