@@ -13,11 +13,19 @@
     <div class="top-panel">
 
       <div class="user-info">
-        Logged in as {user.email}
+        <div class="user">
+          <b>User:</b> {user.email} 
+        </div>
+        <div class="org">
+          <b>Organization:</b> {org.name}
+        </div>
+        <div class="project">
+          <b>Project:</b> {project.name}
+        </div>
       </div>
 
       <div class="title">
-        <h1> - {project.name} Dashboard - </h1>
+        <h1> -  Dashboard - </h1>
       </div>
 
       <div class="back-div">
@@ -38,7 +46,7 @@
   .title {
     display: flex;
     align-items: center;
-    flex: 2;
+    flex: 1;
     justify-content: center;
     font-size: 15px;
 
@@ -47,7 +55,7 @@
     display: flex;
     align-items: center;
     flex: 1;
-    justify-content: center;
+    justify-content: right;
     font-size: 15px;
     width: 50%;
     padding: 5px;
@@ -56,6 +64,10 @@
     display: flex;
     align-items: center;
     flex: 1;
-    justify-content: center;
+    justify-content: left;
+    
+  }
+  .user-info div{
+    padding-right: 10px;
   }
 </style>

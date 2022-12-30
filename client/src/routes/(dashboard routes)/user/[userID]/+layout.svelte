@@ -18,12 +18,12 @@
   <Container>
     <div class="top-panel">
       <div class="user-info">
-        Logged in as {user.email}
-      </div>
-
+        <div class="user">
+          <b> User: </b> {user.email} 
+        </div>
+      </div>                 
       <div class="title">
         <h1> - User Dashboard - </h1>
-
       </div>
       <div class="back-div">
         <GoBackBtn url ="/"></GoBackBtn>
@@ -117,7 +117,7 @@
   .title {
     display: flex;
     align-items: center;
-    flex: 2;
+    flex: 1;
     justify-content: center;
     font-size: 15px;
   }
@@ -125,7 +125,7 @@
     display: flex;
     align-items: center;
     flex: 1;
-    justify-content: center;
+    justify-content: left;
   }
   .top-panel {
     display: flex;
@@ -159,7 +159,7 @@
     display: flex;
     align-items: center;
     flex: 1;
-    justify-content: center;
+    justify-content: right;
     font-size: 15px;
     width: 50%;
     padding: 5px;
