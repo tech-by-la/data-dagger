@@ -3,9 +3,9 @@
 // and what to do when importing types
 
 declare namespace App {
-    import type {UserPayload} from "$lib/server/interfaces/interfaces";
+    import type {JwtUserPayload} from "$lib/server/util/interfaces";
 	interface Locals {
-        user: UserPayload;
+        user: JwtUserPayload;
     }
 	// interface PageData {}
 	// interface Error {}

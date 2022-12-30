@@ -1,16 +1,19 @@
-import type {Feature} from "$lib/server/util/interfaces";
+import type {CommentFeature, Feature} from "$lib/server/util/interfaces";
 import {GEOSERVER_HOST, GEOSERVER_PASS, GEOSERVER_USER} from "$env/static/private";
-import {generateWfsDeleteRequest, generateWfsInsertRequest, generateWfsUpdateRequest} from "$lib/server/geoserver/xml";
+import {
+    generateWfsCommentInsertRequest,
+    generateWfsDeleteRequest,
+    generateWfsInsertRequest,
+    generateWfsUpdateRequest
+} from "$lib/server/geoserver/xml";
 import {FeatureStatus, GeoServerProps} from "$lib/server/util/enums";
-import OLWFS from 'ol/format/WFS';
 
 interface IWFS {
     insertFeatures(tileData: Feature[], project_id: string): Promise<Response | null>;
     fetchFeaturesByProject(project_id: string): Promise<Response>;
     fetchNextFeature(project_id: string): Promise<Response>;
-
     updateFeature(feature_id: string, project_id: string, status: FeatureStatus): Promise<Response>;
-    getNextProjectTile(project_id: string): Promise<Response>;
+    insertComments(comments: []): Promise<Response>;
     deleteProjectData(project_id: string): Promise<Response>;
 }
 
@@ -46,22 +49,6 @@ class WFS implements IWFS {
     }
 
     public async fetchNextFeature(fid: string): Promise<Response> {
-        // `http://localhost:9090/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typenames=sf:bugsites
-        // &filter=%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%3E%3C
-        // fes:ResourceId%20rid=%22bugsites.3%22/%3E%3C/fes:Filter%3E`
-
-        // `\`<PropertyIsEqualTo>\` +
-        //                 \`<PropertyName>project_id</PropertyName><Literal>${project_id}</Literal>\` +
-        //             \`</PropertyIsEqualTo>\` +
-        //             \`<PropertyIsEqualTo>\` +
-        //                 \`<PropertyName>status</PropertyName><Literal>${FeatureStatus.ready}</Literal>\` +
-        //             \`</PropertyIsEqualTo>\` +`
-
-        // `&filter=` +
-        // `<Filter>` +
-        // `<FeatureId fid=poly.1071 />` +
-        // `</Filter>` +
-
         const URL =
             `${GEOSERVER_HOST}/${GeoServerProps.Workspace}/wfs?service=WFS&version=2.0.0` +
             `&request=GetFeature` +
@@ -78,12 +65,12 @@ class WFS implements IWFS {
         return await this.sendRequest(xml);
     }
 
-    // TODO
-    public async getNextProjectTile(project_id: string): Promise<any> {
-        return Promise.resolve(undefined);
+    public async insertComments(comments: CommentFeature[]): Promise<Response> {
+        const xml = generateWfsCommentInsertRequest(comments);
+        return await this.sendRequest(xml);
     }
 
-    public async deleteProjectData(project_id: string): Promise<any> {
+    public async deleteProjectData(project_id: string): Promise<Response> {
         const xml = generateWfsDeleteRequest(project_id);
         return await this.sendRequest(xml);
     }

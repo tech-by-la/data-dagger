@@ -96,3 +96,19 @@ export interface Feature {
         result?:    string;
     };
 }
+
+export interface CommentFeature {
+    name: string;
+    status: string;
+    org_proj: string;
+    description: string;
+    action: string;
+    reported_by: string;
+    feature: {
+        values_: {
+            geometry: {
+                flatCoordinates: number[];
+            }
+        }
+    }
+}

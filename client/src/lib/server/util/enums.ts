@@ -102,6 +102,7 @@ export enum GeoServerProps {
     Workspace = "datadagger",
     DataStore = "geodata",
     Layer     = "poly",
+    Comment   = "comment",
     EPSG      =  3857
 }
 

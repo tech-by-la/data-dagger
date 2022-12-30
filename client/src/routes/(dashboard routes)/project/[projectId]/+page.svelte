@@ -2,6 +2,7 @@
     import { page } from '$app/stores';
     import {goto} from '$app/navigation';
     import {Button} from "fluent-svelte";
+    import GeoJSON from "ol/format/GeoJSON";
 
     const { user, project, features, org } = $page.data;
 
@@ -36,8 +37,8 @@
         const fileUrl = URL.createObjectURL(blob);
         const link: HTMLAnchorElement = document.createElement('a');
 
-        const org_name = org.name.replace(/[^\w ]/g, '').replace(' ', '').toLowerCase();
-        const proj_name = project.name.replace(/[^\w ]/g, '').replace(' ', '').toLowerCase();
+        const org_name = org.name.replaceAll(/[^\w ]/g, '').replaceAll(' ', '').toLowerCase();
+        const proj_name = project.name.replaceAll(/[^\w ]/g, '').replaceAll(' ', '').toLowerCase();
         const date = new Date().toISOString().replaceAll('-', '').replaceAll('_', '').replaceAll(':', '').replaceAll('T', '').split('.')[0]
         const fileName = `${org_name}_${proj_name}_${date}`;
 

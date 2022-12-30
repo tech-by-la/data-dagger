@@ -4,7 +4,8 @@
 	import GoBackBtn from '$lib/Components/GoBackBtn.svelte';
 
     const { user, project, org} = $page.data
-    
+    const { url } = $page;
+
 </script>
 
 <div class="proj-page-wrapper">
@@ -14,7 +15,7 @@
 
       <div class="user-info">
         <div class="user">
-          <b>User:</b> {user.email} 
+          <b>User:</b> {user.email}
         </div>
         <div class="org">
           <b>Organization:</b> {org.name}
@@ -29,7 +30,7 @@
       </div>
 
       <div class="back-div">
-        <GoBackBtn url ="/org/{org.id}"></GoBackBtn>
+        <GoBackBtn url={url.pathname.endsWith('workzone') ? `/project/${project.id}` : `/org/${org.id}`}></GoBackBtn>
       </div>
 
     </div>
@@ -65,7 +66,7 @@
     align-items: center;
     flex: 1;
     justify-content: left;
-    
+
   }
   .user-info div{
     padding-right: 10px;

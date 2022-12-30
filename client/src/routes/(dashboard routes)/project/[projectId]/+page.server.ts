@@ -107,7 +107,6 @@ export const actions: Actions = {
             .filter(f => f.includes(`${GeoServerProps.Layer}.`));
 
         await db.fidRepo.insertMany(project_id, fids);
-        console.log(await db.fidRepo.findAllByProject(project_id))
 
         if (!isNaN(inserted) && inserted > 0) {
             project.status = ProjectStatus.STARTED;

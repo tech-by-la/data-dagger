@@ -1,4 +1,4 @@
-import type {Feature} from "$lib/server/util/interfaces";
+import type {CommentFeature, Feature} from "$lib/server/util/interfaces";
 import {Geometries, GeoServerProps, FeatureStatus} from "$lib/server/util/enums";
 
 /*
@@ -95,6 +95,45 @@ export const generateWfsDeleteRequest = (project_id: string) => {
     `;
 }
 
+export const generateWfsCommentInsertRequest = (comments: CommentFeature[]) => {
+    let xml = transactionOpenTag + insertOpenTag;
+
+    for (const comment of comments) {
+        const coordinates = comment.feature.values_.geometry.flatCoordinates;
+
+        let insert = commentOpenTag;
+
+        // geometry
+        insert += geomOpenTags;
+        let coords = ''
+        for (const [index, coord] of coordinates.entries()) {
+            coords += index === coordinates.length - 1
+                ? coord
+                : index % 2 === 0
+                ? `${coord},`
+                : `${coord} `;
+        }
+
+        insert += coords.trim() + geomCloseTags;
+
+        // properties
+        insert += `
+            <name>${comment.name}</name>
+            <status>${comment.status}</status>
+            <org_proj>${comment.org_proj}</org_proj>
+            <description>${comment.description}</description>
+            <action>${comment.action}</action>
+            <reported_by>${comment.reported_by}</reported_by>
+        `;
+
+        insert += commentCloseTag;
+        xml    += insert;
+    }
+
+    xml += insertCloseTag + transactionCloseTag;
+    return xml;
+}
+
 // ===== DEFAULT XML STRINGS ===== //
 
 const transactionOpenTag = `
@@ -115,6 +154,8 @@ const insertCloseTag  = `</wfs:Insert>`;
 
 const featureOpenTag  = `<${GeoServerProps.Layer}>`
 const featureCloseTag = `</${GeoServerProps.Layer}>`
+const commentOpenTag  = `<${GeoServerProps.Comment}>`
+const commentCloseTag = `</${GeoServerProps.Comment}>`
 
 const geomOpenTags = `
     <the_geom>

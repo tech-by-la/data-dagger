@@ -5,6 +5,7 @@ import workspace from "$lib/server/geoserver/json/workspace.json";
 import {webkit} from "playwright";
 import datastore from "$lib/server/geoserver/json/datastore.json";
 import featureType from "$lib/server/geoserver/json/feature-type.json";
+import commentType from "$lib/server/geoserver/json/comment-type.json";
 
 interface IRest {
     init(): Promise<void>;
@@ -34,7 +35,9 @@ class REST implements IRest {
         const dsResponse = await this.fetchDatastore(GeoServerProps.DataStore);
         if (!dsResponse.ok) await this.createDatastore();
         const ftResponse = await this.fetchFeatureType('poly');
-        if (!ftResponse.ok) await this.createFeatureType(); // TODO: feature type def is hardcoded, it shouldn't be.
+        if (!ftResponse.ok) await this.createFeatureType(featureType); // TODO: feature type def is hardcoded, it shouldn't be.
+        const cmResponse = await this.fetchFeatureType('comment');
+        if (!cmResponse.ok) await this.createFeatureType(commentType); // TODO: feature type def is hardcoded, it shouldn't be.
         Logger.log('GeoServer:', 'Finished initializing!');
     }
 
@@ -120,7 +123,7 @@ class REST implements IRest {
         return response;
     }
 
-    private async createFeatureType(): Promise<Response> {
+    private async createFeatureType(featureType: any): Promise<Response> {
         Logger.log('GeoServer:', 'Creating feature-type...');
         const URL = `${GEOSERVER_HOST}/rest/workspaces/${GeoServerProps.Workspace}/datastores/${GeoServerProps.DataStore}/featuretypes`
         const response = await fetch(URL, {
