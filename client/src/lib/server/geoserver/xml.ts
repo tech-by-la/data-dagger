@@ -7,7 +7,7 @@ import {Geometries, GeoServerProps, FeatureStatus} from "$lib/server/util/enums"
  * @params tileData Feature[]
  * @returns: XML string or undefined
  */
-export const generateWfsInsertRequest = (tileData: Feature[], project_id: string) => {
+export const generateWfsInsertRequest = (tileData: Feature[], project_id: string, org_proj: string) => {
 
     let xml = transactionOpenTag + insertOpenTag;
 
@@ -45,6 +45,7 @@ export const generateWfsInsertRequest = (tileData: Feature[], project_id: string
             <ogc_fid>${properties.ogc_fid}</ogc_fid>
             <ogr_fid>${properties.ogr_fid}</ogr_fid>
             <name>${properties.name || properties.navn}</name>
+            <org_proj>${org_proj}</org_proj>
             <status>${FeatureStatus.ready}</status>
         `;
 
@@ -80,10 +81,10 @@ export const generateWfsUpdateRequest = (fid: string, status: string, checked_by
  * @params project_id: string
  * @returns: XML string
  */
-export const generateWfsDeleteRequest = (project_id: string) => {
+export const generateWfsDeleteRequest = (featureType: string, project_id: string) => {
     return `
         ${transactionOpenTag}
-            <wfs:Delete typeName="${GeoServerProps.Layer}">
+            <wfs:Delete typeName="${featureType}">
                 <ogc:Filter>
                     <ogc:PropertyIsEqualTo>
                         <ogc:PropertyName>project_id</ogc:PropertyName>
@@ -121,6 +122,7 @@ export const generateWfsCommentInsertRequest = (comments: CommentFeature[]) => {
             <name>${comment.name}</name>
             <status>${comment.status}</status>
             <org_proj>${comment.org_proj}</org_proj>
+            <project_id>${comment.project_id}</project_id>
             <description>${comment.description}</description>
             <action>${comment.action}</action>
             <reported_by>${comment.reported_by}</reported_by>

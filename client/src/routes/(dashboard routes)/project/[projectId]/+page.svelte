@@ -2,9 +2,11 @@
     import { page } from '$app/stores';
     import {goto} from '$app/navigation';
     import {Button} from "fluent-svelte";
-    import GeoJSON from "ol/format/GeoJSON";
 
-    const { user, project, features, org } = $page.data;
+    const { user, project, org, projectData, projectComments } = $page.data;
+
+    const features = projectData.features;
+    const comments = projectComments.features;
 
     enum Status {
         PENDING = 'PENDING',
@@ -32,15 +34,25 @@
 
     let demoSize = 30;
 
-    const handleExport = async () => {
-        const blob: Blob = new Blob([JSON.stringify(features)], { type: "application/json" });
+    const handleExport = async (exportComments: boolean) => {
+        const timestamp = new Date();
+
+        exportComments
+            ? projectComments.timeStamp = timestamp.toISOString()
+            : projectData.timeStamp = timestamp.toISOString();
+
+        const blob: Blob = new Blob(
+            [JSON.stringify(exportComments ? projectComments : projectData)],
+            { type: "application/json" }
+        );
         const fileUrl = URL.createObjectURL(blob);
         const link: HTMLAnchorElement = document.createElement('a');
 
         const org_name = org.name.replaceAll(/[^\w ]/g, '').replaceAll(' ', '').toLowerCase();
         const proj_name = project.name.replaceAll(/[^\w ]/g, '').replaceAll(' ', '').toLowerCase();
-        const date = new Date().toISOString().replaceAll('-', '').replaceAll('_', '').replaceAll(':', '').replaceAll('T', '').split('.')[0]
-        const fileName = `${org_name}_${proj_name}_${date}`;
+        const date = timestamp.toLocaleString('fr-ca').replaceAll(/[^0-9]/g, '');
+        const type = exportComments ? '_comments' : '';
+        const fileName = `${org_name}_${proj_name}_${date}${type}`;
 
         link.href = fileUrl;
         link.download = `${fileName}.geojson`;
@@ -50,7 +62,18 @@
 </script>
 
 <div class="content">
-    <div class="action-button">
+    <div>
+        {#if project.members.includes(user.sub) && status === Status.STARTED}
+            <Button on:click={() => goto(`${$page.url.pathname}/workzone`)}>Workzone</Button>
+        {/if}
+    </div>
+
+    <div style="text-align: center">
+        <h1>Project {project.name}</h1>
+        <p>{project.description}</p>
+    </div>
+
+    <div style="justify-self: flex-end">
         <form method="post" action="?/joinOrLeave">
             <Button disabled={disableJoin} on:click={() => disableJoin = true}>
                 {isMember ? 'Leave Project' : 'Join Project'}
@@ -58,7 +81,9 @@
             <input name="project_id" type="hidden" value={project.id}>
         </form>
     </div>
+</div>
 
+<div class="consoles">
     <div class="mod-console">
         <h3>Details</h3>
         <p>Organization:</p><p>{org.name}</p>
@@ -66,24 +91,35 @@
         <p>Project Created:</p><p>{new Date(project.created_at).toLocaleDateString()}</p>
         <p>Joined Workers:</p><p>{project.members.length}</p>
         <p>Status:</p><p>{status}</p>
+    </div>
 
-        {#if (isAdmin || isMod) && status === Status.FINISHED}
-            <div class="grid-span">
-                <Button on:click={handleExport}>Export Data</Button>
-            </div>
-        {/if}
-
-        {#if features.length > 0}
-            <hr class="grid-span">
+    {#if features.length > 0}
+        <div class="mod-console">
             <h3>Features</h3>
             <p>Total:</p><p>{features.length}</p>
             <p>Checked:</p><p>{checkedFeatures} / {features.length}</p>
             <p>Approved:</p><p>{approvedFeatures}</p>
             <p>Failed:</p><p>{failedFeatures}</p>
-        {/if}
+            {#if (isAdmin || isMod)}
+                <div class="grid-span" style="margin-top: 12px">
+                    <Button on:click={() => handleExport(false)}>Export Features</Button>
+                </div>
+            {/if}
+        </div>
+        <div class="mod-console">
+            <h3>Comments</h3>
+            <p>Total:</p><p>{comments.length}</p>
+            {#if (isAdmin || isMod) && comments.length > 0}
+                <div class="grid-span" style="margin-top: 12px">
+                    <Button on:click={() => handleExport(true)}>Export Comments</Button>
+                </div>
+            {/if}
+        </div>
+    {/if}
 
-        {#if isMod && status === Status.PENDING}
-            <hr class="grid-span">
+    {#if isMod && status === Status.PENDING}
+        <div class="mod-console">
+            <h3>Start Project</h3>
             <p class="grid-span">Upload project data to start the project!</p>
             <p class="grid-span">You can upload a .geojson or generate a demo project</p>
             <div class="button"><Button disabled>Upload</Button></div>
@@ -95,16 +131,17 @@
                 </div>
                 <div class="slider-con">
                     <label for="size">Size:</label>
-                    <input name="size" type="range" min="10" max="100" bind:value={demoSize} class="slider">
+                    <input name="size" type="range" min="1" max="100" bind:value={demoSize} class="slider">
                     <span>{demoSize}</span>
                 </div>
                 <input name="project_id" type="hidden" value={project.id}>
 
             </form>
-        {/if}
+        </div>
+    {/if}
 
-        {#if isAdmin && features.length > 0}
-            <hr class="grid-span">
+    {#if isAdmin && features.length > 0}
+        <div class="mod-console">
             <h3>Admin Menu</h3>
             <form class="grid-span" method="post" action="?/delete">
                 <Button disabled={disableDelete} on:click={() => disableDelete = true}>
@@ -112,30 +149,31 @@
                 </Button>
                 <input name="project_id" type="hidden" value={project.id}>
             </form>
-        {/if}
-    </div>
-
-    <div style="text-align: center">
-        <h1>Project {project.name}</h1>
-        <h2>{project.description}</h2>
-        {#if project.members.includes(user.sub) && status === Status.STARTED}
-            <Button on:click={() => goto(`${$page.url.pathname}/workzone`)}>Workzone</Button>
-        {/if}
-    </div>
-    <div style="width: 250px"></div>
+        </div>
+    {/if}
 </div>
 
 <style>
     .content {
         position: relative;
-        display: flex;
+        display: grid;
+        grid-template-columns: 150px auto 150px;
         justify-content: space-between;
+        align-items: center;
+        margin: 0 30px
+    }
+
+    .consoles {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        margin: 0 20px;
     }
 
     .mod-console {
         width: 250px;
-        margin-left: 10px;
-        margin-top: 10px;
+        height: fit-content;
+        margin: 10px;
         padding: 16px;
         border-radius: 8px;
         background-color: #1f2029cc;
@@ -143,7 +181,7 @@
         grid-template-columns: auto auto;
     }
 
-    .mod-console h1, h2, h3 {
+    .mod-console h3 {
         margin: 10px;
         grid-column: 1 / span 2;
         text-align: center;
@@ -154,20 +192,9 @@
         margin: 0 0 10px 25px;
     }
 
-    .mod-console hr {
-        width: 100%;
-        border-top: 1px;
-    }
-
     .grid-span {
         grid-column: 1 / span 2;
         text-align: center;
-    }
-
-    .action-button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
     }
 
     .slider {

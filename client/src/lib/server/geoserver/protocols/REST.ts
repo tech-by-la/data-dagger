@@ -9,19 +9,6 @@ import commentType from "$lib/server/geoserver/json/comment-type.json";
 
 interface IRest {
     init(): Promise<void>;
-
-    // getWorkspace(workspace: string): Promise<Response>;
-    // createWorkspace(workspace: string): Promise<Response>;
-    //
-    // getWfsSettings(workspace: string): Promise<Response>;
-    // enableWfs(workspace: string): Promise<void>;
-    //
-    // getDatastore(store: string): Promise<Response>;
-    // createDatastore(store: string): Promise<Response>;
-    //
-    // getFeatureType(typeName: string): Promise<Response>;
-    // createFeatureType(): Promise<Response>;
-    // deleteFeatureType(featureType: string): Promise<Response>;
 }
 
 class REST implements IRest {
@@ -135,10 +122,17 @@ class REST implements IRest {
         return response;
     }
 
-    // private async deleteFeatureType(featureType: string): Promise<Response> {
-    //     const URL = `${GEOSERVER_HOST}/rest//workspaces/${GeoServerProps.Workspace}/datastores/${GeoServerProps.DataStore}/featuretypes/${featureType}?recurse=true`
-    //     return await fetch(URL, { method: "DELETE", headers: this.headers });
-    // }
+    public async updateFeatureType(featureType: any): Promise<Response> {
+        Logger.log('GeoServer:', 'Updating feature-type...');
+        const URL = `${GEOSERVER_HOST}/rest/workspaces/${GeoServerProps.Workspace}/datastores/${GeoServerProps.DataStore}/featuretypes/${featureType.featureType.name}`
+        const response = await fetch(URL, {
+            method: "PUT",
+            headers: this.headers,
+            body: JSON.stringify(featureType),
+        });
+        Logger.log('GeoServer:', response.ok ? 'Successfully updated feature-type!' : 'Could not update feature-type!');
+        return response;
+    }
 }
 
 export default new REST();

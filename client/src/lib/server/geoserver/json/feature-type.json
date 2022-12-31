@@ -88,6 +88,13 @@
           "binding": "java.lang.String"
         },
         {
+          "name": "org_proj",
+          "minOccurs": 0,
+          "maxOccurs": 1,
+          "nillable": false,
+          "binding": "java.lang.String"
+        },
+        {
           "name": "checked_by",
           "minOccurs": 0,
           "maxOccurs": 1,

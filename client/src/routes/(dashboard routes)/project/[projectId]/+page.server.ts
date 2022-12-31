@@ -11,27 +11,76 @@ import Logger from "$lib/server/util/Logger";
 export const load: PageServerLoad = async ({parent, params}) => {
     await parent();
 
-    const fetchProjectData = async () => {
-        const response = await GeoServer.WFS.fetchFeaturesByProject(params.projectId);
+    // TODO: remove any data that isn't necessary for non-mods/owners.
+    const fetchFeatures = async () => {
 
+        // fetch feature from GeoServer over WFS
+        const response = await GeoServer.WFS.fetchFeaturesByProject(params.projectId);
         if (!response.ok) {
             Logger.error(await response.text().catch());
-            // return [];
             throw error(StatusCode.INTERNAL_SERVER_ERROR, {message: StatusMessage.INTERNAL_SERVER_ERROR});
         }
 
         const data = await response.json();
+
+        // remove unnecessary data.
+        delete data.numberMatched;
+        delete data.numberReturned;
         for (const feature of data.features) {
             delete feature.id;
             delete feature.geometry_name;
             delete feature.properties.project_id;
         }
 
-        return data?.features || [];
+        // project data
+        const project = await db.projectRepo.findEnabledById(params.projectId);
+        if (!project) {
+            throw error(StatusCode.NOT_FOUND, { message: StatusMessage.NOT_FOUND });
+        }
+
+        // Update project status
+        // This is the best place to do this because all events that would alter the status redirect here.
+        // This way we avoid extra WFS calls (WFS is slow)
+        project.status = data.features.length === 0
+            ? ProjectStatus.PENDING
+            : data.features.filter((f: {properties: {status: string}, features: []}) =>
+                f.properties.status !== 'ready').length === data.features.length
+            ? ProjectStatus.FINISHED
+            : ProjectStatus.STARTED;
+
+        await db.projectRepo.update(project);
+
+        data.name = project.name.replaceAll(/[^\w ]/g, '').replaceAll(' ', '').toLowerCase();
+        data.crs = { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::3857" } }; // TODO: get this with the WFS call if possible?
+
+        return data;
+    }
+
+    // TODO: consider if this fetch is needed for non-mod/owners and if it is, only fetch a count.
+    const fetchComments = async () => {
+        const response = await GeoServer.WFS.fetchCommentsByProject(params.projectId);
+        if (!response.ok) {
+            Logger.error(await response.text().catch());
+            throw error(StatusCode.INTERNAL_SERVER_ERROR, {message: StatusMessage.INTERNAL_SERVER_ERROR});
+        }
+
+        const data = await response.json();
+
+        // remove unnecessary data.
+        delete data.numberMatched;
+        delete data.numberReturned;
+        for (const feature of data.features) {
+            delete feature.id;
+            delete feature.geometry_name;
+            delete feature.properties.project_id;
+        }
+
+        return data
     }
 
     return {
-        features: fetchProjectData(),
+        projectData: fetchFeatures(),
+        projectComments: fetchComments(),
     }
 }
 
@@ -80,12 +129,16 @@ export const actions: Actions = {
             (m.org_role_id === OrgRoles.OWNER || m.org_role_id === OrgRoles.MODERATOR)
         );
 
-        if (!project || !mod) {
+        if (!project || !org || !mod) {
             return fail(StatusCode.FORBIDDEN, { message: StatusMessage.FORBIDDEN });
         }
 
+        const org_name = org.name.replaceAll(/[^\w ]/g, '').replaceAll(' ', '').toLowerCase();
+        const proj_name = project.name.replaceAll(/[^\w ]/g, '').replaceAll(' ', '').toLowerCase();
+        const org_proj = `${org_name}_${proj_name}`;
+
         const features = Demo.generateDemo(Number.parseInt(size));
-        const response = await GeoServer.WFS.insertFeatures(features, project_id);
+        const response = await GeoServer.WFS.insertFeatures(features, project_id, org_proj);
         if (!response) {
             // this only happens if the geojson is formatted badly
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
@@ -97,9 +150,6 @@ export const actions: Actions = {
 
         const data = await response.text();
 
-        const insertedQuery = `<wfs:totalInserted>`;
-        const inserted = Number.parseInt(data.slice(data.indexOf(insertedQuery) + insertedQuery.length).split('<')[0]);
-
         // find inserted fids
         const fids = data
             .split("wfs:InsertResults")[1]
@@ -107,11 +157,6 @@ export const actions: Actions = {
             .filter(f => f.includes(`${GeoServerProps.Layer}.`));
 
         await db.fidRepo.insertMany(project_id, fids);
-
-        if (!isNaN(inserted) && inserted > 0) {
-            project.status = ProjectStatus.STARTED;
-            await db.projectRepo.update(project);
-        }
     },
 
     // Dev action
@@ -128,7 +173,6 @@ export const actions: Actions = {
             return fail(StatusCode.NOT_FOUND, { message: StatusMessage.NOT_FOUND });
         }
 
-        project.status = ProjectStatus.PENDING;
         await GeoServer.WFS.deleteProjectData(project_id);
         await db.fidRepo.deleteByProject(project_id);
         await db.projectRepo.update(project);

@@ -55,9 +55,10 @@ export const actions: Actions = {
         // validate comment layer
         for (const comment of comments) {
             if (
-                !comment.feature    || !comment.name ||
+                !comment.feature     || !comment.name ||
                 !comment.status      || !comment.org_proj ||
-                !comment.description || !comment.action || !comment.reported_by ||
+                !comment.description || !comment.action ||
+                !comment.reported_by || !comment.project_id ||
                 !comment.feature.values_.geometry?.flatCoordinates ||
                 !Array.isArray(comment.feature.values_.geometry.flatCoordinates) ||
                 comment.feature.values_?.geometry?.flatCoordinates?.length % 2 !== 0

@@ -15,9 +15,9 @@ export enum ProjectType {
 }
 
 export enum ProjectStatus {
-    PENDING = "PENDING",
-    STARTED = "STARTED",
-    ENDED   = "ENDED"
+    PENDING    = "PENDING",
+    STARTED    = "STARTED",
+    FINISHED   = "FINISHED"
 }
 
 export enum Cookies {

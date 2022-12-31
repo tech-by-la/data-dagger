@@ -80,7 +80,7 @@
     });
 
     // unlock feature
-    beforeNavigate(() => fetch(`/api/features/${nextFeature.id}/unlock`));
+    beforeNavigate(() => fetch(`/api/features/unlock/${nextFeature.id}`));
 
     const resetMapView = () => {
         const coordinates = nextFeature.geometry.coordinates[0];
@@ -116,6 +116,7 @@
                 name: nextFeature.properties.name,
                 status: 'found',
                 org_proj: org_proj,
+                project_id: project.id,
                 description: '',
                 action: '',
                 reported_by: user.email,

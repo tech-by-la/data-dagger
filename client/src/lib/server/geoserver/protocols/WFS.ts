@@ -9,12 +9,13 @@ import {
 import {FeatureStatus, GeoServerProps} from "$lib/server/util/enums";
 
 interface IWFS {
-    insertFeatures(tileData: Feature[], project_id: string): Promise<Response | null>;
+    insertFeatures(tileData: Feature[], project_id: string, org_proj: string): Promise<Response | null>;
     fetchFeaturesByProject(project_id: string): Promise<Response>;
+    fetchCommentsByProject(project_id: string): Promise<Response>;
     fetchNextFeature(project_id: string): Promise<Response>;
     updateFeature(feature_id: string, project_id: string, status: FeatureStatus): Promise<Response>;
     insertComments(comments: []): Promise<Response>;
-    deleteProjectData(project_id: string): Promise<Response>;
+    deleteProjectData(project_id: string): Promise<void>;
 }
 
 class WFS implements IWFS {
@@ -29,8 +30,8 @@ class WFS implements IWFS {
         });
     }
 
-    public async insertFeatures(tileData: Feature[], project_id: string): Promise<Response | null> {
-        const xml = generateWfsInsertRequest(tileData, project_id);
+    public async insertFeatures(tileData: Feature[], project_id: string, org_proj: string): Promise<Response | null> {
+        const xml = generateWfsInsertRequest(tileData, project_id, org_proj);
         if (!xml) return null;
         return await this.sendRequest(xml);
     }
@@ -44,6 +45,19 @@ class WFS implements IWFS {
                 `<Filter><PropertyIsEqualTo>` +
                     `<PropertyName>project_id</PropertyName><Literal>${project_id}</Literal>` +
                 `</PropertyIsEqualTo></Filter>`
+
+        return await fetch(URL, { headers: this.headers });
+    }
+
+    public async fetchCommentsByProject(project_id: string): Promise<Response> {
+        const URL =
+            `${GEOSERVER_HOST}/${GeoServerProps.Workspace}/ows?service=WFS&version=2.0.0&request=GetFeature` +
+            `&outputFormat=json` +
+            `&typeNames=${GeoServerProps.Comment}` +
+            `&Filter=` +
+            `<Filter><PropertyIsEqualTo>` +
+            `<PropertyName>project_id</PropertyName><Literal>${project_id}</Literal>` +
+            `</PropertyIsEqualTo></Filter>`
 
         return await fetch(URL, { headers: this.headers });
     }
@@ -70,9 +84,11 @@ class WFS implements IWFS {
         return await this.sendRequest(xml);
     }
 
-    public async deleteProjectData(project_id: string): Promise<Response> {
-        const xml = generateWfsDeleteRequest(project_id);
-        return await this.sendRequest(xml);
+    public async deleteProjectData(project_id: string): Promise<void> {
+        const main = generateWfsDeleteRequest(GeoServerProps.Layer, project_id);
+        const comment = generateWfsDeleteRequest(GeoServerProps.Comment, project_id);
+        await this.sendRequest(main);
+        await this.sendRequest(comment);
     }
 }
 

@@ -101,6 +101,7 @@ export interface CommentFeature {
     name: string;
     status: string;
     org_proj: string;
+    project_id: string;
     description: string;
     action: string;
     reported_by: string;

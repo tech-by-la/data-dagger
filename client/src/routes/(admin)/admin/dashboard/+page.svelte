@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type { PageData } from './$types';
+    import { page } from '$app/stores';
     import { goto } from '$app/navigation';
     import Card from "$lib/Components/Card.svelte";
     import Separator from "$lib/Components/Separator.svelte";
+    import {Button} from "fluent-svelte";
 
-    export let data: PageData;
-    const { allUsers, allOrganizations, allProjects } = data;
+    const { allUsers, allOrganizations, allProjects } = $page.data;
 </script>
 
 <style>
@@ -31,6 +31,11 @@
         display: flex;
         justify-content: space-between;
         width: 160px;
+    }
+
+    .error {
+        color: #c40606;
+        font-weight: bold;
     }
 </style>
 
@@ -65,5 +70,15 @@
             </Card>
         </div>
     </div>
+    <div style="margin-top: 20px">
+        <form method="post">
+            <Button disabled={true}>Update Main Feature Type</Button>
+        </form>
+    </div>
+    {#if $page.form}
+        <div class="error">
+            <p>{$page.form.message}</p>
+        </div>
+    {/if}
 
 </div>
