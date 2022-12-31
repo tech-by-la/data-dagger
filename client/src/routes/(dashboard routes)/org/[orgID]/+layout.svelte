@@ -17,7 +17,7 @@
 	import GoBackBtn from '$lib/Components/GoBackBtn.svelte';
 	import { onMount } from 'svelte';
 
-    const { organization, isMod, isOwner, user, projects} = $page.data;
+    const { organization, isMod, isOwner, user, projects, colors} = $page.data;
     const hasAccess = isOwner || isMod;
 		const { members } = organization;
 
@@ -43,22 +43,27 @@
     <div class="top-panel">
       <div class="user-info" >
         <div class="user">
-          <b>User:</b> {user.email} 
+          <b style="color: var(--greenLight);">User:</b> {user.email} 
         </div>
-        <!-- {#if organization.name} -->
-        <div class="org" transition:fly="{{delay: 0, duration: 500, x: -500, y: 0, opacity: 0.5, easing:quintOut}}" >
-          <b>Organization:</b> {organization.name}
+        
+        <div class="org">
+          <b style="color: var(--yellowLight);">Organization:</b> {organization.name}
         </div>
-        <!-- {/if} -->
         
       </div>
   
       <div class="title">
-        <h1> - Organization Dashboard - </h1>
+        <h1> <b style="color: var(--yellowLight);">-</b> Organization Dashboard <b style="color: var(--yellowLight);">-</b> </h1>
       </div>
       <div class="back-div">
-        <!-- <button class="btn"  on:click={nav} >Back</button> -->
-        <GoBackBtn url ="/user/{user.sub}"></GoBackBtn>
+        <Button 
+          btnClick= {() => goto(`/user/${user.sub}`)} 
+          btnTitle="Back" 
+          colorLight={colors.yellowLight} 
+          colorMedium={colors.yellowMedium} 
+          colorDark={colors.yellowDark}
+          >
+        </Button>
       </div>
     </div>
   </Container>
@@ -81,7 +86,7 @@
     <div class="right-panel">
         <Container>
           <NavButtons></NavButtons>
-          <Line />
+          <Line color={colors.yellowLight}/>
           <slot>
             
           </slot>

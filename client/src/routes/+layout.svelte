@@ -65,51 +65,10 @@
         right: 0;
     }
     .icon {
-        list-style-type: none;
-        height: 35px;
-        margin: -8px;
+    height: 100%;
+    position: absolute;
     }
-    .btn {
-        color: rgb(255, 255, 255);
-        font-size: 20px;
-        line-height: 20px;
-        padding: 10px;
-        font-family: 'Oswald';
-        font-weight: normal;
-        font-style: normal;
-        font-variant: normal;
-        text-transform: none;
-        border: 3px solid #798AC5;
-        display: inline-block;
-        background: 0;
-        margin: 5px;
-        border-radius: 15px;
-    }
-    .input {
-        font-size: 15px;
-        line-height: 20px;
-        padding: 10px;
-        font-family: 'Oswald';
-        font-weight: normal;  
-        font-style: normal; 
-        font-variant: normal; 
-        text-transform: none;   
-        display: inline-block;
-        color: rgb(255, 255, 255);
-        background:#1e1844ab;
-        margin: 5px;
-        width: auto;
-        border: 2px solid #798AC5; 
-    }
-    .input:focus{
-        background: #798AC5; 
-        outline: 5px solid #1e1844ab;
-        color: #ffffff
-    }
-    .btn:hover {
-        cursor: pointer;
-        background: #798AC5;
-    }
+    
     input:-webkit-autofill,
     input:-webkit-autofill:hover, 
     input:-webkit-autofill:focus,
@@ -124,6 +83,35 @@
         -webkit-box-shadow: 0 0 0px 1000px rgb(101, 103, 143) inset;
         transition: background-color 5000s ease-in-out 0s;
     }
+    :root {
+        --purpleLight:#798AC5;
+        --putpleMedium: #43448d;
+        --purpleDark: #282158;
+
+        --blueLight:#79b6c5;
+        --blueMedium: #43668d;
+        --blueDark: #214d58;
+
+        --greenLight:#79c58c;
+        --greenLightTransparent:#79c58c7e;
+        --greenMedium: #438d47;
+        --greenMediumTransparent: #438d4780;
+        --greenDark: #1a4d1f;
+
+        --yellowLight:#c0c579;
+        --yellowMedium: #828d43;
+        --yellowMediumTransparent: #828d4386;
+        --yellowDark: #545821;
+
+        --redLight:#c57979;
+        --redMedium: #8d4343;
+        --redDark: #582121;
+
+        --orangeLight:#c5a279;
+        --orangeMedium: #8d6a43;
+        --orangeDark: #583c21;
+
+    }
     
 
 </style>
@@ -137,14 +125,7 @@
         </div>
 
         <div class="slot"  >
-            <!-- {#if ready} -->
-            <!-- <Transition url = {$page.url}> -->
-                <!-- <div class="div"  > -->
                     <slot />
-                <!-- </div> -->
-                
-            <!-- </Transition> -->
-            <!-- {/if} -->
         </div>
 
         <div class="footer">

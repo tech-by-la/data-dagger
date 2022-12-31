@@ -5,26 +5,28 @@
     import MdClose from 'svelte-icons/md/MdClose.svelte';
 	import { slide } from 'svelte/transition';
     import { quintOut } from 'svelte/easing';
+    import InputField from '$lib/Components/InputField.svelte';
+    import { Checkbox } from "fluent-svelte";
 
-    const { user } = $page.data;
+    const { user, colors } = $page.data;
     let userEmail = user.email
 </script>
 
-<div class="form-wrapper" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
-    <Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="" width = "50px"><li class="icon"><MdClose/></Button>
+<div class="form-wrapper" in:slide="{{delay: 250, duration: 250}}" out:slide="{{delay: 0, duration: 250}}">
+    <Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="" width = "50px" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}> <div class="icon"><MdClose /></div></Button>
     <form class="form-form" method="POST" action="?/newOrg">
             <h1> Create New Organization</h1>
-            <input class="input-name input" name="name" type="text" placeholder="Organization Name">
-            <input class="input-name input" name="contact_phone" type="text" placeholder="Contact Phone">
-            <input class="input-email input" name="contact_email" type="text"  placeholder="Contact Email">
+            <InputField name="name" type="text" placeholder="Organization Name" colorLight={colors.greenLight} colorMedium={colors.greenMediumTransparent} colorDark={'0'}></InputField>
+            <InputField name="contact_email" type="text"  placeholder="Contact Email" colorLight={colors.greenLight} colorMedium={colors.greenMediumTransparent} colorDark={'0'}></InputField>
+            <InputField name="contact_phone" type="text" placeholder="Contact Phone" colorLight={colors.greenLight} colorMedium={colors.greenMediumTransparent} colorDark={'0'}></InputField>
             <div class="checkbox-div">
                 <input class="checkbox" type="checkbox" name="terms">
                 <label for="terms"> I agree to terms and conditions</label>
             </div>
 
             <div class="inner-btn-div">
-            <button class="btn" type="reset">Reset</button>
-            <button class="btn" type="submit">Create</button>
+                <Button btnType ="reset" btnTitle="Reset" width="100%" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}></Button>
+                <Button btnType ="submit" btnTitle="Create" width="100%" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}></Button>
         </div>
 
     </form>
@@ -34,64 +36,13 @@
     .form-wrapper, form {
         display: flex;
         flex-direction: column;
-        border: 2px;
-        border-color: black;
+        /* border: 2px; */
+        /* border-color: black; */
         justify-content: space-evenly;
     }
     .inner-btn-div {
         display: flex;
         flex-direction: row;
-    }
-    .btn {
-        font-size: 20px;
-    }
-    input {
-        font-size: 15px;
-    }
-
-
-    input, .btn{
-    
-    line-height: 20px;
-    padding: 10px;
-
-    font-family: 'Oswald';
-    font-weight: normal;
-    font-style: normal;
-    font-variant: normal;
-    text-transform: none;
-
-    display: inline-block;
-    color: rgb(255, 255, 255);
-
-    }
-
-    input {
-    background:#1e1844ab;
-    margin: 5px;
-    width: auto;
-    border: 2px solid #798AC5;
-    }
-    input:focus{
-        background: #798AC5;
-        outline: 5px solid #1e1844ab;
-        color: #ffffff
-    }
-
-    .btn {
-    background: 0;
-    margin: 5px;
-    width: 50%;
-    border: 3px solid #798AC5;
-
-    }
-
-    .btn:hover {
-        background: #798AC5;
-    }
-
-    .btn:active {
-        background: #144E75;
     }
     h1 {
         text-align: center;
@@ -102,11 +53,13 @@
         display: flex;
         justify-content: center;
         margin: 5px;
+        font-family: inherit;
     }
     .checkbox {
         display: grid;
         grid-template-columns: 2em auto;
         gap: 0.5em;
     }
+    
 
 </style>

@@ -6,8 +6,11 @@
     import Trash from 'svelte-icons/fa/FaTrash.svelte';
     import {Button, IconButton, ProgressRing} from "fluent-svelte";
     import Line from "$lib/Components/Line.svelte";
+	import { goto } from '$app/navigation';
+    import MdClose from 'svelte-icons/md/MdClose.svelte';
+    import Btn from '$lib/Components/Button.svelte';
 
-    const { invites } = $page.data;
+    const { invites, colors, organization } = $page.data;
 
     let selected: string[] = [];
     $: allSelected = invites.length > 0 && selected.length === invites.length;
@@ -40,7 +43,20 @@
     }
 </script>
  <div class="pending-div" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
+    <Btn 
+        btnClick= {() => goto(`/org/${organization.id}`)} 
+        btnTitle="" 
+        width = "50px"
+        colorLight={colors.yellowLight} 
+        colorMedium={colors.yellowMedium} 
+        colorDark={colors.yellowDark}
+        >
+            <div class="icon">
+                <MdClose/>
+            </div>
+    </Btn>
     <h1>Pending Invites</h1>
+    
 
     <div class="content">
         {#if invites.length < 1}
@@ -78,7 +94,7 @@
             
         {/if}
         <div class="grid-full">
-            <Line />
+            <Line color={colors.yellowLight}/>
         </div>
         
         <!--  List of Invites  -->
@@ -168,7 +184,7 @@
     }
 
     .grid-row:hover div {
-        background-color: #394c8f;
+        background-color: var(--yellowMediumTransparent);
     }
 
     .grid-left {

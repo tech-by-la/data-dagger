@@ -7,7 +7,7 @@
 	import FaPlus from "svelte-icons/fa/FaPlus.svelte";
     import Line from "$lib/Components/Line.svelte";
 
-    const { organization, isMod, isOwner, user, projects} = $page.data;
+    const { organization, isMod, isOwner, user, projects, colors} = $page.data;
     const hasAccess = isOwner || isMod;
 		const { members } = organization;
 
@@ -28,7 +28,7 @@
 					<div class="grid-3">Role:</div>
 					<div class="grid-4"></div>
 			
-					<div class="grid-full"> <Line /> </div>
+					<div class="grid-full"> <Line color={colors.yellowLight}/> </div>
 			
 					<!--  List of Members  -->
 					{#each members as member}
@@ -40,14 +40,20 @@
 											{#if isOwner && member.org_role_id !== 'OWNER'}
 											<!-- The form action /members needs to be moved to (actions) folder -->
 													<form method="post" action="/members">
-														<button type="submit" class="btn">Remove</button>
+                                                        <Button  
+                                                            btnTitle="Remove" 
+                                                            colorLight={colors.yellowLight} 
+                                                            colorMedium={colors.yellownMedium} 
+                                                            colorDark={colors.yellowDark}
+                                                            >
+                                                        </Button>
 															<input name="org_id input" type="hidden" value={organization.id}>
 															<input name="user_id input" type="hidden" value={member.user_id}>
 													</form>
 											{/if}
 									</div>
 							</div>
-              <div class="grid-full"> <Line /> </div>
+              <div class="grid-full"> <Line color={colors.yellowLight}/> </div>
 					{/each}
 			</div>
 

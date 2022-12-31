@@ -5,7 +5,7 @@
     import Container from "$lib/Components/Container.svelte";
     import Line from "$lib/Components/Line.svelte";
 
-    const { organization, isMod, isOwner, user, projects} = $page.data;
+    const { organization, isMod, isOwner, user, projects, colors} = $page.data;
     const hasAccess = isOwner || isMod;
 		const { members } = organization;
 
@@ -21,7 +21,7 @@
           <div class="proj-cards">
 						<div class="proj-cards-title">
 								<h1>Projects</h1>
-								<Line />
+								<Line color={colors.yellowLight}/>
 						</div>
             
 						{#each projects as proj, i }
@@ -38,10 +38,17 @@
 								</div>
 
 								<div class="proj-nav-btn">
-									<Button btnClick= {() => goto(`/project/${proj.id}`)} btnTitle={"Go to"} width = "50%"></Button>
+									<Button 
+                                    btnClick= {() => goto(`/project/${proj.id}`)} 
+                                    btnTitle={"Go to"} 
+                                    width = "50%"
+                                    colorLight={colors.yellowLight} 
+                                    colorMedium={colors.yellowMedium} 
+                                    colorDark={colors.yellowDark}
+                                    ></Button>
 								</div>
             	</div>
-            	<Line />
+            	<Line color={colors.yellowLight}/>
             {/each}
 
         	</div>

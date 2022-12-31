@@ -1,7 +1,10 @@
 <script>
     import { page } from '$app/stores';
+	import Button from '$lib/Components/Button.svelte';
+	import InputField from '$lib/Components/InputField.svelte';
     import {ProgressRing} from "fluent-svelte";
 	import { slide } from 'svelte/transition';
+    const { colors } = $page.data;
 
     let loading = false;
 </script>
@@ -11,24 +14,51 @@
         <h1>Create Project</h1>
 
         <input name="organization_id" type="hidden" value={$page.data.organization.id}>
-        <div class="input-wrapper">
-            <div >Project Name</div>
-            <input name="name" class="input" type="text" placeholder="Project Name">
+        
+            <InputField 
+                name="name" 
+                type="text" 
+                placeholder="Project Name"
+                colorLight={colors.yellowLight} 
+                colorMedium={colors.yellowMediumTransparent} 
+                colorDark={"0"}
+                >
+            </InputField>
 
-            <div>Project Description</div>
-            <input name="description" class="input-long input" type="text" placeholder="Project Description">
+            <InputField 
+                name="description" 
+                type="text" 
+                placeholder="Project description"
+                colorLight={colors.yellowLight} 
+                colorMedium={colors.yellowMediumTransparent} 
+                colorDark={"0"}
+                >
+            </InputField>
 
-            <div>Project Type</div>
             <select name="type" class="drop-down-box">
                 <option value="GeoProject" >GeoProject</option>
             </select>
-            <div class="flex-box">
-                <button class="btn" type="reset" >Reset</button>
-                <button class="btn" type="submit" on:submit={() => loading = true}>Submit</button>
-            </div>
+        
+        <div class="buttons">
+            <Button 
+                type="reset" 
+                btnTitle="Reset"
+                colorLight={colors.yellowLight} 
+                colorMedium={colors.yellowMedium} 
+                colorDark={colors.yellowDark}
+                width="40%"
+                >
+            </Button>
+            <Button 
+                btnTitle="Create"
+                btnClick={() => loading = true}
+                colorLight={colors.yellowLight} 
+                colorMedium={colors.yellowMedium} 
+                colorDark={colors.yellowDark}
+                width="40%"
+                >
+            </Button>
         </div>
-
-
     </form>
 
     {#if loading}
@@ -51,19 +81,22 @@
         background-color: #000000B3;
     }
 
-    .form-wrapper, form {
+    form {
         display: flex;
         flex-direction: column;
         border: 2px black;
-        justify-content: space-evenly;
-        position: relative;
+        justify-content: center;
+        /* position: relative; */
     }
 
     .input-wrapper {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 20% auto;
-        align-items: center;
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        /* justify-content: center; */
+        justify-content: space-evenly;
+        align-content: center;
+        
     }
 
     /* input, .btn{
@@ -86,9 +119,9 @@
         font-size: 15px;
         line-height: 20px;
         padding: 8px;
-        background:#1e184453;
+        background:0;
         margin: 5px;
-        border: 2px solid #798AC5;
+        border: 2px solid var(--yellowLight);
         display: inline-block;
         color: rgb(255, 255, 255);
         font-family: 'Oswald';
@@ -98,22 +131,20 @@
         text-transform: none;
     }
     .drop-down-box:focus{
-        background: #798AC5;
-        outline: 5px solid #1e1844ab;
+        background: var(--yellowMediumTransparent);
+        outline: 0;
         color: #ffffff
     }
 
-    .btn {
-        width: 50%;
-    }
+    
     h1 {
         text-align: center;
         margin-top: 0;
     }
-
-    .flex-box {
+    .buttons {
         display: flex;
-        grid-column: 2;
+        flex-direction: row;
     }
+
 
 </style>

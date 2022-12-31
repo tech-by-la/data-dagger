@@ -12,7 +12,8 @@
 	import GoBackBtn from '$lib/Components/GoBackBtn.svelte';
   import { fly, slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-	const { userOrgs, invites, user } = $page.data;
+  import MdRemove from 'svelte-icons/md/MdRemove.svelte'
+	const { userOrgs, invites, user, colors } = $page.data;
 
 </script>
 
@@ -21,14 +22,22 @@
     <div class="top-panel">
       <div class="user-info" >
         <div class="user">
-          <b> User: </b> {user.email} 
+          <b style="color: var(--greenLight);"> User: </b> {user.email} 
         </div>
       </div>                 
       <div class="title">
-        <h1> - User Dashboard - </h1>
+        
+        <h1 > <b style="color: var(--greenLight);">-</b>  User Dashboard <b style="color: var(--greenLight);">-</b> </h1>
       </div>
       <div class="back-div">
-        <GoBackBtn url ="/"></GoBackBtn>
+        <Button 
+          btnClick= {() => goto("/")} 
+          btnTitle="Back" 
+          colorLight={colors.greenLight} 
+          colorMedium={colors.greenMedium} 
+          colorDark={colors.greenDark}
+          >
+        </Button>
       </div>
     </div>
   </Container>
@@ -43,7 +52,7 @@
         {#if invites.length < 1}
           <h2>No invites to show</h2>
         {:else}
-        <Line/>
+        <Line color={colors.greenLight}/>
           {#each invites as invite, index}
             <div class="invite">
               <div class="invite-info">
@@ -51,19 +60,19 @@
               </div>
               <div class="invite-accept">
                 <form method="post" action={`/user/${user.sub}/handle-invite?/accept`}>
-                  <button type="submit" class="btn">Accept</button>
+                  <Button btnTitle="Accept" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}></Button>
                   <input name="org_id" type="hidden" value={invite.organization_id}>
                 </form>
               </div>
               <div class="invite-decline">
                 <form method="post" action={`/user/${user.sub}/handle-invite?/decline`}>
-                  <button type="submit" class="btn">Decline</button>
+                  <Button btnTitle="Decline" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}></Button>
                   <input name="org_id" type="hidden" value={invite.organization_id}>
                 </form>
               </div>
               
             </div>
-            <Line/>
+            <Line color={colors.greenLight}/>
           {/each}
         {/if}
       </Container>
@@ -73,7 +82,7 @@
 
       <Container>
         <NavButtonsUser />
-        <Line />
+        <Line color={colors.greenLight}/>
         <div class="tabs" transition:fly="{{delay: 250, duration: 250, x: 0, y: 500, opacity: 0.5}}" >
           <slot></slot>
         </div>
@@ -87,7 +96,7 @@
           {:else}
             <div class="org-cards-title">
                 <h1>Organizations</h1>
-                <Line/>
+                <Line color={colors.greenLight}/>
                 
             </div>
             
@@ -102,10 +111,10 @@
                   <p>Nr of Projects: {org.projectCount}</p>
                 </div>
                 <div class="org-nav-btn">
-                  <Button btnClick= {() => goto(`/org/${org.id}`)} btnTitle={"Go to"} width = "50%"></Button>
+                  <Button btnClick= {() => goto(`/org/${org.id}`)} btnTitle={"Go to"} width = "50%" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}></Button>
                 </div>
               </div>
-              <Line/>
+              <Line color={colors.greenLight}/>
               
             {/each}
           {/if}

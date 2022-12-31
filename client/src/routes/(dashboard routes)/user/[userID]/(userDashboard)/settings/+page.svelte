@@ -4,14 +4,14 @@
 	import { goto } from "$app/navigation";
     import MdClose from 'svelte-icons/md/MdClose.svelte';
 	import { slide } from "svelte/transition";
-    const  { user } = $page.data
+    const  { user, colors } = $page.data
 </script>
 <div class="setting-div" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
-    <Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="" width = "50px"><li class="icon"><MdClose/></Button>
+    <Button btnClick= {() => goto(`/user/${user.sub}`)} btnTitle="" width = "50px" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}><div class="icon"><MdClose/></div></Button>
         <div class="content" >
             
             <form method="post" action="?/logoutEverywhere">
-                <button class="btn" type="submit">Logout Everywhere</button>
+                <Button btnType="submit" btnTitle="Logout Everywhere" width = "50%" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}></Button>
             </form>
         
         </div>
