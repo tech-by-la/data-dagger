@@ -2,6 +2,7 @@
     import { page } from '$app/stores';
     import {goto} from '$app/navigation';
     import {Button} from "fluent-svelte";
+    import GeoJSON from "ol/format/GeoJSON";
 
     const { user, project, org, projectData, projectComments } = $page.data;
 
@@ -41,10 +42,10 @@
             ? projectComments.timeStamp = timestamp.toISOString()
             : projectData.timeStamp = timestamp.toISOString();
 
-        const blob: Blob = new Blob(
-            [JSON.stringify(exportComments ? projectComments : projectData)],
-            { type: "application/json" }
-        );
+        // const data = new GeoJSON().readFeatures(exportComments ? projectComments : projectData);
+        const data = exportComments ? projectComments : projectData;
+
+        const blob: Blob = new Blob([JSON.stringify(data)], { type: "application/json" });
         const fileUrl = URL.createObjectURL(blob);
         const link: HTMLAnchorElement = document.createElement('a');
 
