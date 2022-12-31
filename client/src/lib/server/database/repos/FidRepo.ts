@@ -1,4 +1,4 @@
-import {Connection, Schema, type SchemaDefinition, type SchemaDefinitionType} from "mongoose";
+import {type Connection, Schema, type SchemaDefinition, type SchemaDefinitionType} from "mongoose";
 import type {FeatureClone} from "$lib/server/util/interfaces";
 
 export default class FidRepo {

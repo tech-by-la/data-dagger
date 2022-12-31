@@ -1,13 +1,11 @@
 <script lang="ts">
-    import { page } from "$app/stores";
-    import { Map, Tile, View } from "ol";
+    import { Map, View } from "ol";
     import OSM from "ol/source/OSM";
     import proj4 from 'proj4';
     import {register} from 'ol/proj/proj4';
-    import {get as getProjection, Projection} from 'ol/proj';
+    import {get as getProjection} from 'ol/proj';
     import TileLayer from "ol/layer/Tile";
     import { onMount } from "svelte";
-    import type { ProjectionLike } from "openlayers";
 	import ImageLayer from "ol/layer/Image";
     import ImageWMS from 'ol/source/ImageWMS';
 

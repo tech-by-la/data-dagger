@@ -14,18 +14,22 @@ interface IRest {
 class REST implements IRest {
 
     public async init() {
-        Logger.log('GeoServer:', 'Initializing...');
-        const wsResponse = await this.fetchWorkspace(GeoServerProps.Workspace);
-        if (!wsResponse.ok) await this.createWorkspace();
-        const wfsResponse = await this.fetchWfsSettings(GeoServerProps.Workspace);
-        if (!wfsResponse.ok) await this.enableWfs(GeoServerProps.Workspace)
-        const dsResponse = await this.fetchDatastore(GeoServerProps.DataStore);
-        if (!dsResponse.ok) await this.createDatastore();
-        const ftResponse = await this.fetchFeatureType('poly');
-        if (!ftResponse.ok) await this.createFeatureType(featureType); // TODO: feature type def is hardcoded, it shouldn't be.
-        const cmResponse = await this.fetchFeatureType('comment');
-        if (!cmResponse.ok) await this.createFeatureType(commentType); // TODO: feature type def is hardcoded, it shouldn't be.
-        Logger.log('GeoServer:', 'Finished initializing!');
+        try {
+            Logger.log('GeoServer:', 'Initializing...');
+            const wsResponse = await this.fetchWorkspace(GeoServerProps.Workspace);
+            if (!wsResponse.ok) await this.createWorkspace();
+            const wfsResponse = await this.fetchWfsSettings(GeoServerProps.Workspace);
+            if (!wfsResponse.ok) await this.enableWfs(GeoServerProps.Workspace)
+            const dsResponse = await this.fetchDatastore(GeoServerProps.DataStore);
+            if (!dsResponse.ok) await this.createDatastore();
+            const ftResponse = await this.fetchFeatureType('poly');
+            if (!ftResponse.ok) await this.createFeatureType(featureType); // TODO: feature type def is hardcoded, it shouldn't be.
+            const cmResponse = await this.fetchFeatureType('comment');
+            if (!cmResponse.ok) await this.createFeatureType(commentType); // TODO: feature type def is hardcoded, it shouldn't be.
+            Logger.log('GeoServer:', 'Finished initializing!');
+        } catch (e) {
+            Logger.error('GeoServer:', 'Could not initialize!');
+        }
     }
 
     private readonly headers = {
