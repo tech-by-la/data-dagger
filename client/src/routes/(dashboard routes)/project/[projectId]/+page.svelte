@@ -3,8 +3,12 @@
     import {goto} from '$app/navigation';
     import {Button} from "fluent-svelte";
     import GeoJSON from "ol/format/GeoJSON";
+    import Container from '$lib/Components/Container.svelte';
+    import Line from "$lib/Components/Line.svelte";
+    import { fly, slide, blur } from 'svelte/transition';
+    import Btn from '$lib/Components/Button.svelte';
 
-    const { user, project, org, projectData, projectComments } = $page.data;
+    const { user, project, org, projectData, projectComments, colors } = $page.data;
 
     const features = projectData.features;
     const comments = projectComments.features;
@@ -62,122 +66,191 @@
     }
 </script>
 
-<div class="content">
-    <div>
-        {#if project.members.includes(user.sub) && status === Status.STARTED}
-            <Button on:click={() => goto(`${$page.url.pathname}/workzone`)}>Workzone</Button>
+<div class="panels">
+
+    <div class="info-panel">
+      <Container color={colors.redDark}>
+				<div class="info-text">
+                    <div style="text-align: center">
+                        <h1>{project.name}</h1>
+                        <p>{project.description}</p>
+                    </div>
+                    <Line color={colors.redLight}></Line>
+          <p> - Welcome to the Projects dashboard. </p>
+          <p> - Go to a project to start working on it</p>
+          <p> - Below is a list of active members in your orginization</p>
+          <p> - You can add new members by clicking on the link to the right</p>
+        </div>
+			</Container>
+            
+      
+      
+			
+
+    </div>
+
+        <div class="panel">
+            <Container color={colors.redDark}>
+            
+            <div class="mod-console">
+                <h3>Details</h3>
+                <h3><Line color={colors.redLight}></Line></h3>
+                <p>Organization:</p><p>{org.name}</p>
+                <p>Project Type:</p><p>{project.type}</p>
+                <p>Project Created:</p><p>{new Date(project.created_at).toLocaleDateString()}</p>
+                <p>Joined Workers:</p><p>{project.members.length}</p>
+                <p>Status:</p><p>{status}</p>
+            </div>
+            </Container>
+        </div>
+        {#if features.length > 0}
+        <div class="panel">
+            
+            <Container color={colors.redDark}>
+                
+                <div class="mod-console">
+                    <h3>Features</h3>
+                    <h3><Line color={colors.redLight}></Line></h3>
+                    <p>Total:</p><p>{features.length}</p>
+                    <p>Checked:</p><p>{checkedFeatures} / {features.length}</p>
+                    <p>Approved:</p><p>{approvedFeatures}</p>
+                    <p>Failed:</p><p>{failedFeatures}</p>
+                    {#if (isAdmin || isMod)}
+                        <div class="grid-span" style="margin-top: 12px">
+                            <Button on:click={() => handleExport(false)}>Export Features</Button>
+                        </div>
+                    {/if}
+                </div>
+                
+            
+            </Container>
+            
+        </div>
         {/if}
-    </div>
-
-    <div style="text-align: center">
-        <h1>Project {project.name}</h1>
-        <p>{project.description}</p>
-    </div>
-
-    <div style="justify-self: flex-end">
-        <form method="post" action="?/joinOrLeave">
-            <Button disabled={disableJoin} on:click={() => disableJoin = true}>
-                {isMember ? 'Leave Project' : 'Join Project'}
-            </Button>
-            <input name="project_id" type="hidden" value={project.id}>
-        </form>
-    </div>
-</div>
-
-<div class="consoles">
-    <div class="mod-console">
-        <h3>Details</h3>
-        <p>Organization:</p><p>{org.name}</p>
-        <p>Project Type:</p><p>{project.type}</p>
-        <p>Project Created:</p><p>{new Date(project.created_at).toLocaleDateString()}</p>
-        <p>Joined Workers:</p><p>{project.members.length}</p>
-        <p>Status:</p><p>{status}</p>
-    </div>
-
-    {#if features.length > 0}
-        <div class="mod-console">
-            <h3>Features</h3>
-            <p>Total:</p><p>{features.length}</p>
-            <p>Checked:</p><p>{checkedFeatures} / {features.length}</p>
-            <p>Approved:</p><p>{approvedFeatures}</p>
-            <p>Failed:</p><p>{failedFeatures}</p>
-            {#if (isAdmin || isMod)}
-                <div class="grid-span" style="margin-top: 12px">
-                    <Button on:click={() => handleExport(false)}>Export Features</Button>
+        {#if features.length > 0}
+        <div class="panel">
+            
+            <Container color={colors.redDark}>
+               
+                
+                <div class="mod-console">
+                    <h3>Comments</h3>
+                    <h3><Line color={colors.redLight}></Line></h3>
+                    <p>Total:</p><p>{comments.length}</p>
+                    {#if (isAdmin || isMod) && comments.length > 0}
+                        <div class="grid-span" style="margin-top: 12px">
+                            <Button on:click={() => handleExport(true)}>Export Comments</Button>
+                        </div>
+                    {/if}
                 </div>
-            {/if}
+            </Container>
+            
         </div>
-        <div class="mod-console">
-            <h3>Comments</h3>
-            <p>Total:</p><p>{comments.length}</p>
-            {#if (isAdmin || isMod) && comments.length > 0}
-                <div class="grid-span" style="margin-top: 12px">
-                    <Button on:click={() => handleExport(true)}>Export Comments</Button>
-                </div>
-            {/if}
-        </div>
-    {/if}
+        {/if}
 
-    {#if isMod && status === Status.PENDING}
-        <div class="mod-console">
+        {#if isMod && status === Status.PENDING}
+        <div class="panel">
+            
+            <Container color={colors.redDark}>  
+            <div class="mod-console">
             <h3>Start Project</h3>
-            <p class="grid-span">Upload project data to start the project!</p>
+            <h3><Line color={colors.redLight}></Line></h3>
+            <p class="grid-span">Upload project data to start the project!(Disabled for now)</p>
             <p class="grid-span">You can upload a .geojson or generate a demo project</p>
-            <div class="button"><Button disabled>Upload</Button></div>
-            <form method="post" action="?/startDemo">
-                <div class="longbutton">
-                    <Button disabled={disableDemo} on:click={() => disableDemo = true}>
-                        Use Demo
-                    </Button>
-                </div>
-                <div class="slider-con">
-                    <label for="size">Size:</label>
-                    <input name="size" type="range" min="1" max="100" bind:value={demoSize} class="slider">
-                    <span>{demoSize}</span>
-                </div>
-                <input name="project_id" type="hidden" value={project.id}>
+            <h3><Line color={colors.redLight}></Line></h3>
+            <!-- <div class="button"><Button disabled>Upload</Button></div> -->
+            <!-- {#if !disableDemo} -->
+            <div class="grid-span">
+                <form method="post" action="?/startDemo">
+                    <div class="longbutton">
+                        <Btn 
+                        btnTitle="Use Demo"
+                        colorLight={colors.redLight} 
+                        colorMedium={colors.redMedium} 
+                        colorDark={colors.redDark}
+                        btnType="submit"
+                        width="60%"
+                        ></Btn>
+                        <!-- <Button on:click={() => disableDemo = true}>
+                            Use Demo
+                        </Button> -->
+                    </div>
+                    <div class="slider-con">
+                        <label for="size">Size:</label>
+                        <input name="size" type="range" min="1" max="100" bind:value={demoSize} class="slider">
+                        <span>{demoSize}</span>
+                    </div>
+                    <input name="project_id" type="hidden" value={project.id}>
+                </form> 
+            </div>
+            
+            <!-- {/if} -->
+            
+             </div>
+            </Container>
+            </div>
+        {/if}
 
-            </form>
+        <div class="btns-panel">
+            <Container color={colors.redDark}>
+    
+                <form class="form-btn" method="post" action="?/joinOrLeave">
+                    <Btn 
+                        btnClick={() => disableJoin = true}
+                        btnType="submit"
+                        btnTitle={isMember ? 'Leave Project' : 'Join Project'}
+                        colorLight={colors.redLight} 
+                        colorMedium={colors.redMedium} 
+                        colorDark={colors.redDark}
+                        width="100%"
+                        >
+                    </Btn>
+                    <input name="project_id" type="hidden" value={project.id}>
+                </form>
+    
+                <div class="proj-btn" >
+                    {#if project.members.includes(user.sub) && status === Status.STARTED}
+                        <Btn 
+                            btnClick={() => goto(`${$page.url.pathname}/workzone`)}
+                            btnTitle="Work Zone"
+                            colorLight={colors.redLight} 
+                            colorMedium={colors.redMedium} 
+                            colorDark={colors.redDark}
+                            width="100%"
+                            >
+                        </Btn>
+                    {/if}
+                </div>
+        
+                {#if isAdmin && features.length > 0}
+                    <form class="form-btn" method="post" action="?/delete"> 
+                        <Btn    
+                                btnType="submit"
+                                btnClick={() => disableDelete = true}
+                                btnTitle="Delete all features"
+                                colorLight={colors.redLight} 
+                                colorMedium={colors.redMedium} 
+                                colorDark={colors.redDark}
+                                width="100%"
+                                >
+                            </Btn>
+                        <input name="project_id" type="hidden" value={project.id}>
+                    </form>
+                {/if}
+          </Container>
         </div>
-    {/if}
-
-    {#if isAdmin && features.length > 0}
-        <div class="mod-console">
-            <h3>Admin Menu</h3>
-            <form class="grid-span" method="post" action="?/delete">
-                <Button disabled={disableDelete} on:click={() => disableDelete = true}>
-                    Delete all features
-                </Button>
-                <input name="project_id" type="hidden" value={project.id}>
-            </form>
-        </div>
-    {/if}
-</div>
+        
+  </div>
 
 <style>
-    .content {
-        position: relative;
-        display: grid;
-        grid-template-columns: 150px auto 150px;
-        justify-content: space-between;
-        align-items: center;
-        margin: 0 30px
-    }
-
-    .consoles {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-evenly;
-        margin: 0 20px;
-    }
 
     .mod-console {
         width: 250px;
         height: fit-content;
         margin: 10px;
-        padding: 16px;
+        /* padding: 16px; */
         border-radius: 8px;
-        background-color: #1f2029cc;
+        /* background-color: #1f2029cc; */
         display: grid;
         grid-template-columns: auto auto;
     }
@@ -202,5 +275,23 @@
         width: 50px;
         margin-top: 10px;
     }
+    .panel {
+    flex: 1;
+    }
+    .panels {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    .proj-btn{
+        display: flex;
+    }
+    .form-btn {
+        display: flex;
+    }
+    .btns-panel, .info-panel {
+        flex: 3;
+    }
+    
 </style>
 
