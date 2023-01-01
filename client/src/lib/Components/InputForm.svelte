@@ -1,5 +1,7 @@
 <script>
 	// import { enhance } from "$app/forms";
+    import Button from "./Button.svelte";
+    import InputField from "./InputField.svelte";
 
     /**
 	 * @type {any}
@@ -16,15 +18,15 @@
         {#if formName != "Logout"}
             {#if formName == "Register"}
             <h1> Register Now</h1>
-            <input class="input-name input" name="first_name" type="text" placeholder="First Name">   
-            <input class="input-name input" name="last_name" type="text" placeholder="Last Name"> 
+            <InputField name="first_name" type="text" placeholder="First Name" colorDark="0" ></InputField>
+            <InputField name="last_name" type="text" placeholder="Last Name" colorDark="0" ></InputField>
             {:else}
             <h1> Login </h1>
             {/if} 
-            <input class="input-email input" name="email" type="text" placeholder="Email">
-            <input class="input-password input" name="password" type="password" placeholder="Password">
+            <InputField name="email" type="text" placeholder="Email" colorDark="0" ></InputField>
+            <InputField name="password" type="password" placeholder="Password" colorDark="0" ></InputField>
             {#if formName == "Register"}
-            <input class="input-password input" name="confirm_password" type="password" placeholder="Confirm Password">
+            <InputField name="confirm_password" type="password" placeholder="Confirm Password" colorDark="0" ></InputField>
             <div class="checkbox-div">
                 <input class="checkbox" type="checkbox" name="terms">
                 <label for="terms"> I agree to all ther terms and conditions</label>
@@ -37,9 +39,9 @@
             {/if} 
             <div class="inner-btn-div">
             {#if formName != "Logout"}
-            <button class="btn" type="reset">Reset</button>
+            <Button btnType="reset" btnTitle="Reset" width="50%"></Button>
             {/if}
-            <button class="btn" type="submit">{formName}</button>
+            <Button btnTitle="{formName}" width="50%"></Button>
         </div>
 
     </form>    
@@ -57,10 +59,6 @@
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
-    }
-
-    .btn {
-        width: 50%;
     }
 
     h1 {
