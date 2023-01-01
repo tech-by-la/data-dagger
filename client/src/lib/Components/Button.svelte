@@ -7,8 +7,8 @@
     export let width = "auto"
     export let active = false;
     export let colorLight = '#798AC5'
-    export let colorMedium = '#1e1844ab'
-    export let colorDark = '#43448d'
+    export let colorMedium = '#43448d'
+    export let colorDark = '#282158'
     export let btnType = "submit"
 </script>
 
@@ -32,13 +32,13 @@
   border-radius: 50%;
   background: var(--color1);
   position: absolute;
-  transition: all .5s ease-Out;
+  transition: all .25s ease-Out;
 }
 
 .button:hover #circle {
   width: 150%;
   height: 150%;
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
 .button, .active{
@@ -46,7 +46,7 @@
   display: inline-flex;
   height: 40px;
   width: 150px;
-  border: 3px solid var(--color1);
+  border: 2px solid var(--color1);
   margin: 20px 20px 20px 20px;
   color: #BFC0C0;
   text-decoration: none;
@@ -79,8 +79,12 @@
   
 }
 .button:hover {
-  border: 3px solid var(--color3);
-  box-shadow:0px 0px 0px 2px var(--color3) inset;
+  /* border: 3px solid var(--color3) inset; */
+  border: 0;
+  padding: 2px;
+  /* box-shadow:0px 0px 0px 2px var(--color3) ; */
+  box-shadow: 0px 0px 15px 2px var(--color2) ;
+  transition: all 0.4s ease-in-out;
 }
 .button:active {
   background: var(--color2);
