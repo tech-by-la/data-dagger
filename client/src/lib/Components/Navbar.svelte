@@ -38,7 +38,7 @@
     <div class="links-container">
         <div class="links">
             {#if $page.data.user}
-                <a href="/user/{userID}" data-sveltekit-preload-data>Profile</a>
+                <a href="/user/{userID}" data-sveltekit-preload-data>Dashboard</a>
                 <p> / </p>
                 {#if $page.data.user.roles.includes('ADMIN') || $page.data.user.roles.includes("SUPER_ADMIN")}
                     <a href="/admin" data-sveltekit-preload-data>Admin</a>
@@ -49,7 +49,7 @@
             <a href="/" data-sveltekit-preload-data>Home</a>
         </div>
         {#if $page.data.user}
-        <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Logout"}></Button>
+        <Button btnClick={toggleTheLogoutPrompt} btnTitle={"Logout"} width="100px"></Button>
         {:else}
         <Button btnClick={toggleTheLoginPrompt} btnTitle={"Login"}></Button>
         <Button btnClick={toggleTheRegisterPrompt} btnTitle={"Register"}></Button>
@@ -60,30 +60,25 @@
 
 {#if loginPromptController}
     <Prompt toggle={toggleTheLoginPrompt} >
-        <Button btnClick={toggleTheLoginPrompt} btnTitle={""}><li class="icon"><MdClose/></li></Button>
+        <Button btnClick={toggleTheLoginPrompt} btnTitle={""}><div class="icon"><MdClose/></div></Button>
        <InputForm formFunction="/login" formName="Login" />
     </Prompt>
 
 {/if}
 {#if logoutPromptController}
     <Prompt toggle={toggleTheLogoutPrompt} >
-        <Button btnClick={toggleTheLogoutPrompt} btnTitle={""}><li class="icon"><MdClose/></li></Button>
+        <Button btnClick={toggleTheLogoutPrompt} btnTitle={""}><div class="icon"><MdClose/></div></Button>
        <InputForm formFunction="/logout" formName="Logout" />
     </Prompt>
 {/if}
 {#if registerPromptController}
     <Prompt toggle={toggleTheRegisterPrompt}>
-        <Button btnClick={toggleTheRegisterPrompt} btnTitle={""}><li class="icon"><MdClose/></li></Button>
+        <Button btnClick={toggleTheRegisterPrompt} btnTitle={""}><div class="icon"><MdClose/></div></Button>
         <InputForm formFunction="/register" formName="Register" />
     </Prompt>
 {/if}
 
 <style>
-    .icon {
-        list-style-type: none;
-        height: 35px;
-        margin: -8px;
-    }
 
 .navbar-wrapper {
     height: 80px;

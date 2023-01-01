@@ -78,15 +78,19 @@
     select:-webkit-autofill,
     select:-webkit-autofill:hover,
     select:-webkit-autofill:focus {
-        border: 2px solid rgb(91, 99, 173);
+        border: 2px solid var(--greyDark);
         -webkit-text-fill-color: rgb(255, 255, 255);
-        -webkit-box-shadow: 0 0 0px 1000px rgb(101, 103, 143) inset;
+        -webkit-box-shadow: 0 0 0px 1000px var(--greyMedium) inset;
         transition: background-color 5000s ease-in-out 0s;
     }
     :root {
         --purpleLight:#798AC5;
         --putpleMedium: #43448d;
         --purpleDark: #282158;
+
+        --greyLight:#c9c9c9;
+        --greyMedium: #878788;
+        --greyDark: #464646;
 
         --blueLight:#79b6c5;
         --blueMedium: #43668d;
