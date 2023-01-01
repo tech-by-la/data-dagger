@@ -128,7 +128,7 @@
                 </div>
             </div>
             <div class="grid-full">
-                <Line />
+                <Line color={colors.yellowlight}/>
             </div>
     
         {/each}

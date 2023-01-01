@@ -17,7 +17,7 @@
 
 </script>
 
-<Container color={colors.yellowDark}>   
+<Container color={colors.yellowDark} color2={colors.yellowMediumTransparent}>   
           <div class="proj-cards">
 						<div class="proj-cards-title">
 								<h1>Projects</h1>

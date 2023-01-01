@@ -21,31 +21,5 @@
 <style>
     .content {
         text-align: center;
-    }
-    .btn{
-    font-size: 20px;
-    line-height: 20px;
-    padding: 10px;
-     
-    font-family: 'Oswald';
-    font-weight: normal;  
-    font-style: normal; 
-    font-variant: normal; 
-    text-transform: none;   
-    
-    display: inline-block;
-    color: rgb(255, 255, 255); 
-    background: 0;
-    margin: 5px;
-    width: 50%;
-    border: 3px solid #798AC5; 
-    
-    }
-    .btn:hover {
-        background: #798AC5; 
-    }
-
-    .btn:active {
-        background: #144E75; 
     } 
 </style>

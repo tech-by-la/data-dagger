@@ -8,7 +8,7 @@
 
 </script>
 
-<Container color={colors.greenDark}>
+<Container color={colors.greenDark} color2={colors.greenMediumTransparent}>
         <div class="info-text">
           <p> - These are the organizations you are a part of. </p>
           <p> - Go to an organization dashboard to see available projects</p>

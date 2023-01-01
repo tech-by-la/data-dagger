@@ -15,7 +15,7 @@
 </script>
 
 <div class="user-dashboard-wrapper" in:slide="{{delay: 500, duration: 500}}" out:blur="{{delay: 0, duration: 500}}">
-  <Container color={colors.greenDark}>
+  <Container color={colors.greenDark} color2={colors.greenMediumTransparent}>
     <div class="top-panel">
       <div class="user-info" >
         <div class="user">
@@ -44,7 +44,7 @@
     <div class="left-panel">
       <Text></Text>
       
-      <Container color={colors.greenDark}>
+      <Container color={colors.greenDark} color2={colors.greenMediumTransparent}>
         <h1>Invites</h1>
         
         {#if invites.length < 1}
@@ -78,7 +78,7 @@
 
     <div class="right-panel">
 
-      <Container color={colors.greenDark}>
+      <Container color={colors.greenDark} color2={colors.greenMediumTransparent}>
         <NavButtonsUser />
         <Line color={colors.greenLight}/>
         <div class="tabs" transition:fly="{{delay: 250, duration: 250, x: 0, y: 500, opacity: 0.5}}" >
@@ -87,7 +87,7 @@
         
       </Container>
     
-      <Container color={colors.greenDark}>   
+      <Container color={colors.greenDark} color2={colors.greenMediumTransparent}>   
         <div class="org-cards">
           {#if userOrgs.length < 1}
           <h2>No Organizations yet</h2>

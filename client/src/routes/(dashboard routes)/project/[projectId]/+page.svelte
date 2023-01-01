@@ -69,7 +69,7 @@
 <div class="panels">
 
     <div class="info-panel">
-      <Container color={colors.redDark}>
+      <Container color={colors.redDark} color2={colors.redMediumTransparent}>
 				<div class="info-text">
                     <div style="text-align: center">
                         <h1>{project.name}</h1>
@@ -90,7 +90,7 @@
     </div>
 
         <div class="panel">
-            <Container color={colors.redDark}>
+            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
             
             <div class="mod-console">
                 <h3>Details</h3>
@@ -106,7 +106,7 @@
         {#if features.length > 0}
         <div class="panel">
             
-            <Container color={colors.redDark}>
+            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
                 
                 <div class="mod-console">
                     <h3>Features</h3>
@@ -130,7 +130,7 @@
         {#if features.length > 0}
         <div class="panel">
             
-            <Container color={colors.redDark}>
+            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
                
                 
                 <div class="mod-console">
@@ -151,7 +151,7 @@
         {#if isMod && status === Status.PENDING}
         <div class="panel">
             
-            <Container color={colors.redDark}>  
+            <Container color={colors.redDark} color2={colors.redMediumTransparent}>  
             <div class="mod-console">
             <h3>Start Project</h3>
             <h3><Line color={colors.redLight}></Line></h3>
@@ -192,7 +192,7 @@
         {/if}
 
         <div class="btns-panel">
-            <Container color={colors.redDark}>
+            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
     
                 <form class="form-btn" method="post" action="?/joinOrLeave">
                     <Btn 

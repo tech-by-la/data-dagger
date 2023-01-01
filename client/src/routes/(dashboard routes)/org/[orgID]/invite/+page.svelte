@@ -151,7 +151,6 @@
     .add-email-div {
         display: flex;
         justify-content: center;
-        /* margin: 5px; */
     }
 
     .email-div {
@@ -172,7 +171,6 @@
     color: rgb(255, 255, 255);
     background:0;
     margin: 5px;
-    /* width: auto; */
     border: 2px solid var(--yellowLight); 
     height: 20px;
     width: 80%;

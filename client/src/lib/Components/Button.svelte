@@ -83,10 +83,50 @@
   border: 0;
   padding: 2px;
   /* box-shadow:0px 0px 0px 2px var(--color3) ; */
-  box-shadow: 0px 0px 15px 2px var(--color2) ;
+  box-shadow: 0px 0px 10px 5px var(--color2) ;
   transition: all 0.4s ease-in-out;
+  animation: pulse 1s linear infinite;
 }
 .button:active {
   background: var(--color2);
+}
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+		box-shadow: 1px 0 10px 5px var(--color2);
+	}
+	12.5% {
+		transform: scale(1);
+		box-shadow: 0.5px 0.5px 10px 5px var(--color2);
+	}
+	25% {
+		transform: scale(1);
+		box-shadow: 0 1px 10px 5px var(--color2);
+	}
+	37.5% {
+		transform: scale(1);
+		box-shadow: -0.5px 0.5px 10px 5px var(--color2);
+	}
+	50% {
+		transform: scale(1);
+		box-shadow: -1px 0 10px 5px var(--color2);
+	}
+	62.5% {
+		transform: scale(1);
+		box-shadow: -0.5px -0.5px 10px 5px var(--color2);
+	}
+	
+	75% {
+		transform: scale(1);
+		box-shadow: 0 -1px 10px 5px var(--color2);
+	}
+	88.5% {
+		transform: scale(1);
+		box-shadow: 0.5px -0.5px 10px 5px var(--color2);
+	}
+	100% {
+		transform: scale(1);
+		box-shadow: 1px 0px 10px 5px var(--color2);
+	}
 }
 </style>

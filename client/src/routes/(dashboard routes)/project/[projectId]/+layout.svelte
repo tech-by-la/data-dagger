@@ -14,7 +14,7 @@
 <div class="proj-page-wrapper" in:slide="{{delay: 500, duration: 500}}" out:blur="{{delay: 0, duration: 500}}">
 
 
-  <Container color={colors.redDark}>
+  <Container color={colors.redDark} color2={colors.redMediumTransparent}>
     <div class="top-panel">
 
       <div class="user-info">
@@ -54,44 +54,8 @@
 
     </div>
   </Container>
-
-
-  <!-- <div class="panels">
-
-    <div class="left-panel">
-      <Container color={colors.redDark}>
-				<div class="info-text">
-          <p> - Welcome to the Projects dashboard. </p>
-          <p> - Go to a project to start working on it</p>
-          <p> - Below is a list of active members in your orginization</p>
-          <p> - You can add new members by clicking on the link to the right</p>
-        </div>
-			</Container>
-      <Container color={colors.redDark}>
-      
-      </Container>
-			
-
-    </div>
-
-    <div class="right-panel">
-        <Container color={colors.redDark}>
-          <div style="text-align: center">
-            <h1>{project.name}</h1>
-            <p>{project.description}</p>
-        </div>
-          <Line color={colors.redLight}/>
-          <slot>
-            
-          </slot>
-        </Container>
-        
-          
-    </div>
-  </div> -->
-  <!-- <div class="slot" in:slide="{{delay: 500, duration: 500}}" out:blur="{{delay: 0, duration: 500}}" > -->
     <slot></slot>
-  <!-- </div> -->
+
   
 </div>
 <style>

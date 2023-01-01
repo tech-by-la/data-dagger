@@ -36,7 +36,7 @@
 
 
 <div class="org-page-wrapper" in:slide="{{delay: 500, duration: 500}}" out:blur="{{delay: 0, duration: 500}}">
-  <Container color={colors.yellowDark}>
+  <Container color={colors.yellowDark} color2={colors.yellowMediumTransparent}>
     <div class="top-panel">
       <div class="user-info" >
         <div class="user">
@@ -69,7 +69,7 @@
   <div class="panels">
 
     <div class="left-panel">
-      <Container color={colors.yellowDark}>
+      <Container color={colors.yellowDark} color2={colors.yellowMediumTransparent}>
 				<div class="info-text">
           <p> - Welcome to the Organization dashboard. </p>
           <p> - Go to a project to start working on it</p>
@@ -82,7 +82,7 @@
     </div>
 
     <div class="right-panel">
-        <Container color={colors.yellowDark}>
+        <Container color={colors.yellowDark} color2={colors.yellowMediumTransparent}>
           <NavButtons></NavButtons>
           <Line color={colors.yellowLight}/>
           <slot>

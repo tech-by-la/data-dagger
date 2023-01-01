@@ -19,7 +19,7 @@
 
 </script>
 
-<Container color={colors.yellowDark}>
+<Container color={colors.yellowDark} color2={colors.yellowMediumTransparent}>
 				<div class="member-list">
 					<h2 class="grid-full">Members in {organization.name}</h2>
 			
@@ -95,31 +95,6 @@
         display: grid;
         width: 100%;
         grid-template-columns: auto auto auto 60px;
-    }
-    .btn {
-        color: rgb(255, 255, 255);
-        font-size: 20px;
-        line-height: 20px;
-        padding: 10px;
-        font-family: 'Oswald';
-        font-weight: normal;
-        font-style: normal;
-        font-variant: normal;
-        text-transform: none;
-        border: 3px solid #798AC5;
-        display: inline-block;
-        background: 0;
-        margin: 5px;
-        
-    }
-
-    .btn:hover {
-        cursor: pointer;
-        background: #798AC5;
-    }
-
-    .btn:active {
-        background: #144E75;
     }
 
 </style>

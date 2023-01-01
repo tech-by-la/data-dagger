@@ -82,44 +82,8 @@
     .form-wrapper, form {
         display: flex;
         flex-direction: column;
-        /* border: 2px; */
-        /* border-color: black; */
         justify-content: space-evenly;
     }
-
-    /* form {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        
-    } */
-
-    /* .input-div {
-        width: 80%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        justify-content: space-around;
-        align-items: center;
-        
-        
-    } */
-
-    /* input, .btn{
-        font-size: 15px;
-        line-height: 20px;
-        padding: 10px;
-
-        font-family: 'Oswald';
-        font-weight: normal;
-        font-style: normal;
-        font-variant: normal;
-        text-transform: none;
-
-        display: inline-block;
-        color: rgb(255, 255, 255);
-
-    } */
 
     .drop-down-box {
         font-size: 15px;
@@ -150,7 +114,6 @@
     .buttons {
         display: flex;
         flex-direction: row;
-        /* justify-content: center; */
     }
 
 
