@@ -1,7 +1,5 @@
 <script lang="ts">
   import Text from './Text.svelte';
-
-
   import { page } from '$app/stores';
   import Button from '$lib/Components/Button.svelte';
   import { goto } from '$app/navigation';
@@ -9,16 +7,15 @@
   import {IconButton} from "fluent-svelte";
   import Line from '$lib/Components/Line.svelte';   
   import NavButtonsUser from './NavButtonsUser.svelte';
-	import GoBackBtn from '$lib/Components/GoBackBtn.svelte';
-  import { fly, slide } from 'svelte/transition';
+  import { fly, slide, blur } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
   import MdRemove from 'svelte-icons/md/MdRemove.svelte'
 	const { userOrgs, invites, user, colors } = $page.data;
 
 </script>
 
-<div class="user-dashboard-wrapper" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
-  <Container>
+<div class="user-dashboard-wrapper" in:slide="{{delay: 500, duration: 500}}" out:blur="{{delay: 0, duration: 500}}">
+  <Container color={colors.greenDark}>
     <div class="top-panel">
       <div class="user-info" >
         <div class="user">
@@ -36,6 +33,7 @@
           colorLight={colors.greenLight} 
           colorMedium={colors.greenMedium} 
           colorDark={colors.greenDark}
+          width="100px"
           >
         </Button>
       </div>
@@ -46,7 +44,7 @@
     <div class="left-panel">
       <Text></Text>
       
-      <Container>
+      <Container color={colors.greenDark}>
         <h1>Invites</h1>
         
         {#if invites.length < 1}
@@ -80,7 +78,7 @@
 
     <div class="right-panel">
 
-      <Container>
+      <Container color={colors.greenDark}>
         <NavButtonsUser />
         <Line color={colors.greenLight}/>
         <div class="tabs" transition:fly="{{delay: 250, duration: 250, x: 0, y: 500, opacity: 0.5}}" >
@@ -89,7 +87,7 @@
         
       </Container>
     
-      <Container>   
+      <Container color={colors.greenDark}>   
         <div class="org-cards">
           {#if userOrgs.length < 1}
           <h2>No Organizations yet</h2>

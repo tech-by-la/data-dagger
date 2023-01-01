@@ -10,14 +10,14 @@
           btnClick= {() => goto(`/user/${user.sub}/newOrg`)} 
           colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}
           btnTitle="Create New Organization" 
-          width = "100%"
+          width = "45%"
           active={$page.url.pathname.endsWith(`/user/${user.sub}/newOrg`)}
           />
           <Button 
           btnClick= {() => goto(`/user/${user.sub}/settings`)} 
           colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}
           btnTitle="Settings" 
-          width = "100%"
+          width = "45%"
           active={$page.url.pathname.endsWith(`/user/${user.sub}/settings`)}
           />
       </div>

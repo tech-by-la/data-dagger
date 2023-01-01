@@ -12,7 +12,7 @@
     <Button
         btnClick={() => goto(`/org/${organization.id}/invite`)}
         btnTitle="Invite Members"
-        width="100%"
+        width="30%"
         colorLight={colors.yellowLight} 
         colorMedium={colors.yellowMedium} 
         colorDark={colors.yellowDark}
@@ -21,7 +21,7 @@
     <Button
         btnClick={() => goto(`/org/${organization.id}/invite/pending`)}
         btnTitle="Pending Invites"
-        width="100%"
+        width="30%"
         colorLight={colors.yellowLight} 
           colorMedium={colors.yellowMedium} 
           colorDark={colors.yellowDark}
@@ -30,7 +30,7 @@
     <Button
         btnClick={() => goto(`/org/${organization.id}/projects/create`)}
         btnTitle="Create Project"
-        width="100%"
+        width="30%"
         colorLight={colors.yellowLight} 
           colorMedium={colors.yellowMedium} 
           colorDark={colors.yellowDark}

@@ -25,8 +25,8 @@
             </div>
 
             <div class="inner-btn-div">
-                <Button btnType ="reset" btnTitle="Reset" width="100%" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}></Button>
-                <Button btnType ="submit" btnTitle="Create" width="100%" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}></Button>
+                <Button btnType ="reset" btnTitle="Reset" width="45%" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}></Button>
+                <Button btnType ="submit" btnTitle="Create" width="45%" colorLight={colors.greenLight} colorMedium={colors.greenMedium} colorDark={colors.greenDark}></Button>
         </div>
 
     </form>

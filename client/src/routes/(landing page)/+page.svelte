@@ -1,5 +1,4 @@
 <script lang="ts">
-    import FillerText from "$lib/Components/FillerText.svelte"
     import Button from "$lib/Components/Button.svelte";
     import Container from "$lib/Components/Container.svelte";
     import Prompt from "$lib/Components/Prompt.svelte";
@@ -21,7 +20,7 @@
     // import {bbox as bboxStrategy} from 'ol/loadingstrategy';
     // import TileWMS from 'ol/source/TileWMS';
     import MdClose from 'svelte-icons/md/MdClose.svelte';
-	import { fly, slide } from "svelte/transition";
+	import { fly, slide, blur } from "svelte/transition";
 
 
     const pageText = $page.data.text
@@ -101,14 +100,14 @@
 {#if pagePromptController}
     <Prompt toggle={toggleThePrompt}>
         <div class="xBtn">
-        <Button btnClick={toggleThePrompt} btnTitle={""}><li class="icon"><MdClose/></Button>
+        <Button btnClick={toggleThePrompt} btnTitle={""}><div class="icon"><MdClose/></div></Button>
         </div>
         <InputForm formFunction="/register" formName="Register" />
 
     </Prompt>
 {/if}
 
-<div class="page-con" in:fly="{{delay: 500, duration: 500, x: -2000, y: 0, opacity: 0.5}}" out:slide="{{delay: 0, duration: 500}}">
+<div class="page-con" in:slide="{{delay: 500, duration: 500}}" out:blur="{{delay: 0, duration: 500}}">
 
     <div class="main-con">
         <Container>

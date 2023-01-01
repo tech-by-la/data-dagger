@@ -2,11 +2,13 @@
 
   import { page } from '$app/stores';
   import Container from '$lib/Components/Container.svelte';
+  const { colors } = $page.data
+
 
 
 </script>
 
-<Container>
+<Container color={colors.greenDark}>
         <div class="info-text">
           <p> - These are the organizations you are a part of. </p>
           <p> - Go to an organization dashboard to see available projects</p>

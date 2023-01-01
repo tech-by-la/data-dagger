@@ -1,21 +1,18 @@
 <script lang="ts">
 	
   import ProjectList from './ProjectList.svelte';
-
   import MemberList from './MemberList.svelte';
   import NavButtons from './NavButtons.svelte'
-  import { fly, slide } from 'svelte/transition';
+  import { fly, slide, blur } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-
-    import { page } from "$app/stores";
-    import { goto } from '$app/navigation';
-    import Button from '$lib/Components/Button.svelte';
-    import Container from "$lib/Components/Container.svelte";
-	  import { IconButton } from "fluent-svelte";
-	  import FaPlus from "svelte-icons/fa/FaPlus.svelte";
-    import Line from "$lib/Components/Line.svelte";
-	import GoBackBtn from '$lib/Components/GoBackBtn.svelte';
-	import { onMount } from 'svelte';
+  import { page } from "$app/stores";
+  import { goto } from '$app/navigation';
+  import Button from '$lib/Components/Button.svelte';
+  import Container from "$lib/Components/Container.svelte";
+  import { IconButton } from "fluent-svelte";
+  import FaPlus from "svelte-icons/fa/FaPlus.svelte";
+  import Line from "$lib/Components/Line.svelte";
+  import { onMount } from 'svelte';
 
     const { organization, isMod, isOwner, user, projects, colors} = $page.data;
     const hasAccess = isOwner || isMod;
@@ -38,8 +35,8 @@
 
 
 
-<div class="org-page-wrapper" in:fly="{{delay: 500, duration: 500, x: -2000, y: 0, opacity: 0.5}}" out:slide="{{delay: 0, duration: 500}}">
-  <Container>
+<div class="org-page-wrapper" in:slide="{{delay: 500, duration: 500}}" out:blur="{{delay: 0, duration: 500}}">
+  <Container color={colors.yellowDark}>
     <div class="top-panel">
       <div class="user-info" >
         <div class="user">
@@ -62,6 +59,7 @@
           colorLight={colors.yellowLight} 
           colorMedium={colors.yellowMedium} 
           colorDark={colors.yellowDark}
+          width="100px"
           >
         </Button>
       </div>
@@ -71,9 +69,9 @@
   <div class="panels">
 
     <div class="left-panel">
-      <Container>
+      <Container color={colors.yellowDark}>
 				<div class="info-text">
-          <p> - Welcome to the Projects dashboard. </p>
+          <p> - Welcome to the Organization dashboard. </p>
           <p> - Go to a project to start working on it</p>
           <p> - Below is a list of active members in your orginization</p>
           <p> - You can add new members by clicking on the link to the right</p>
@@ -84,7 +82,7 @@
     </div>
 
     <div class="right-panel">
-        <Container>
+        <Container color={colors.yellowDark}>
           <NavButtons></NavButtons>
           <Line color={colors.yellowLight}/>
           <slot>

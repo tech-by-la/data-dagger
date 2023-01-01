@@ -9,7 +9,7 @@
 
     const { organization, isMod, isOwner, user, projects, colors} = $page.data;
     const hasAccess = isOwner || isMod;
-		const { members } = organization;
+	const { members } = organization;
 
     const formatDate = (unix: number) => {
         let date = new Date(unix);
@@ -19,7 +19,7 @@
 
 </script>
 
-<Container>
+<Container color={colors.yellowDark}>
 				<div class="member-list">
 					<h2 class="grid-full">Members in {organization.name}</h2>
 			

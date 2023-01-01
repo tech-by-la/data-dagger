@@ -12,41 +12,40 @@
 <div class="form-wrapper" in:slide="{{delay: 500, duration: 500}}" out:slide="{{delay: 0, duration: 500}}">
     <form method="post">
         <h1>Create Project</h1>
-
         <input name="organization_id" type="hidden" value={$page.data.organization.id}>
+        <InputField 
+            name="name" 
+            type="text" 
+            placeholder="Project Name"
+            colorLight={colors.yellowLight} 
+            colorMedium={colors.yellowMediumTransparent} 
+            colorDark={"0"}
+            >
+        </InputField>
+        <InputField 
+            name="description" 
+            type="text" 
+            placeholder="Project description"
+            colorLight={colors.yellowLight} 
+            colorMedium={colors.yellowMediumTransparent} 
+            colorDark={"0"}
+            >
+        </InputField>
+
+        <select name="type" class="drop-down-box">
+            <option value="GeoProject" >GeoProject</option>
+        </select>
         
-            <InputField 
-                name="name" 
-                type="text" 
-                placeholder="Project Name"
-                colorLight={colors.yellowLight} 
-                colorMedium={colors.yellowMediumTransparent} 
-                colorDark={"0"}
-                >
-            </InputField>
-
-            <InputField 
-                name="description" 
-                type="text" 
-                placeholder="Project description"
-                colorLight={colors.yellowLight} 
-                colorMedium={colors.yellowMediumTransparent} 
-                colorDark={"0"}
-                >
-            </InputField>
-
-            <select name="type" class="drop-down-box">
-                <option value="GeoProject" >GeoProject</option>
-            </select>
+            
         
         <div class="buttons">
             <Button 
-                type="reset" 
+                btnType="reset" 
                 btnTitle="Reset"
                 colorLight={colors.yellowLight} 
                 colorMedium={colors.yellowMedium} 
                 colorDark={colors.yellowDark}
-                width="40%"
+                width="45%"
                 >
             </Button>
             <Button 
@@ -55,7 +54,7 @@
                 colorLight={colors.yellowLight} 
                 colorMedium={colors.yellowMedium} 
                 colorDark={colors.yellowDark}
-                width="40%"
+                width="45%"
                 >
             </Button>
         </div>
@@ -80,24 +79,31 @@
         right: -10px;
         background-color: #000000B3;
     }
-
-    form {
+    .form-wrapper, form {
         display: flex;
         flex-direction: column;
-        border: 2px black;
-        justify-content: center;
-        /* position: relative; */
+        /* border: 2px; */
+        /* border-color: black; */
+        justify-content: space-evenly;
     }
 
-    .input-wrapper {
+    /* form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        
+    } */
+
+    /* .input-div {
         width: 80%;
         display: flex;
         flex-direction: column;
-        /* justify-content: center; */
-        justify-content: space-evenly;
-        align-content: center;
+        justify-content: center;
+        justify-content: space-around;
+        align-items: center;
         
-    }
+        
+    } */
 
     /* input, .btn{
         font-size: 15px;
@@ -144,6 +150,7 @@
     .buttons {
         display: flex;
         flex-direction: row;
+        /* justify-content: center; */
     }
 
 
