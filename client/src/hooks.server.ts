@@ -23,8 +23,8 @@ export const handle = (async ({ event, resolve }) => {
             const verified = await validateRefreshToken(refreshToken);
 
             if (!verified) {
-                event.cookies.delete(Cookies.ID_TOKEN, { path: '/' });
-                event.cookies.delete(Cookies.REFRESH_TOKEN, { path: '/' });
+                event.cookies.delete(Cookies.ID_TOKEN, { path: '/', httpOnly: true, secure: false });
+                event.cookies.delete(Cookies.REFRESH_TOKEN, { path: '/', httpOnly: true, secure: false });
                 return;
             }
 
@@ -33,8 +33,8 @@ export const handle = (async ({ event, resolve }) => {
             const newIdToken = await Jwt.signIdToken(verifiedUser);
 
             if (!newIdToken || !newRefreshToken) {
-                event.cookies.delete(Cookies.ID_TOKEN, { path: '/' });
-                event.cookies.delete(Cookies.REFRESH_TOKEN, { path: '/' });
+                event.cookies.delete(Cookies.ID_TOKEN, { path: '/', httpOnly: true, secure: false });
+                event.cookies.delete(Cookies.REFRESH_TOKEN, { path: '/', httpOnly: true, secure: false });
                 return;
             }
 
