@@ -101,7 +101,7 @@
 {#if pagePromptController}
     <Prompt toggle={toggleThePrompt}>
         <div class="xBtn">
-        <Button btnClick={toggleThePrompt} btnTitle={""}><div class="icon"><MdClose/></div></Button>
+        <Button btnClick={toggleThePrompt} btnTitle={""} width="50px"><div class="icon"><MdClose/></div></Button>
         </div>
         <InputForm formFunction="/register" formName="Register" />
 
