@@ -21,8 +21,9 @@
     // import TileWMS from 'ol/source/TileWMS';
     import MdClose from 'svelte-icons/md/MdClose.svelte';
 	import { fly, slide, blur } from "svelte/transition";
+	import { goto } from "$app/navigation";
 
-
+    const { user } = $page.data
     const pageText = $page.data.text
 
 
@@ -161,11 +162,20 @@
 
     <div class="side-con">
         <Container>
+            {#if user}
+            <h1>Hello {user.name}</h1>
+            <p>Navigate to the User Dashboard to get started</p>
+            <div class="button-con">
+                <Button btnClick ={() => goto(`/user/${user.sub}`)} btnTitle="Get Started"></Button>
+                </div>
+            {:else}
             <h1>Excited?</h1>
-           <p>Well then get started right away. register</p>
-           <div class="button-con">
-            <Button btnClick ={toggleThePrompt} btnTitle="Get Started"></Button>
-            </div>
+            <p>Well then get started right away. register</p>
+            <div class="button-con">
+             <Button btnClick ={toggleThePrompt} btnTitle="Get Started"></Button>
+             </div>
+            {/if}
+            
         </Container>
     </div>
 

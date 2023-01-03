@@ -1,8 +1,8 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import { fade } from "svelte/transition";
+    import { fade, slide, blur } from "svelte/transition";
     import { page } from '$app/stores';
-    import {beforeNavigate} from "$app/navigation";
+    import {beforeNavigate, goto} from "$app/navigation";
     import {ProgressRing} from "fluent-svelte";
 
     import {Draw, Modify, Snap} from "ol/interaction";
@@ -12,16 +12,18 @@
     import GeoJSON from "ol/format/GeoJSON";
     import {Fill, Stroke, Style, Text} from 'ol/style';
     import {Map, View} from "ol";
+    import Container from '$lib/Components/Container.svelte';
 
     import MapCom from '$lib/Components/MapCom.svelte';
     import Button from "$lib/Components/Button.svelte";
+    import Prompt from "$lib/Components/Prompt.svelte";
 
     enum DrawAction {
         ADD = "Draw Comment",
         RESET = "Stop Drawing"
     }
 
-    const { user, nextFeature, project, org } = $page.data;
+    const { user, nextFeature, project, org, colors } = $page.data;
 
     const org_name = org.name.replaceAll(/[^\w ]/g, '').replaceAll(' ', '').toLowerCase();
     const proj_name = project.name.replaceAll(/[^\w ]/g, '').replaceAll(' ', '').toLowerCase();
@@ -180,56 +182,138 @@
 
 </script>
 
-<div class="project-page-wrapper default">
-    <div class="con-1 default">
-        Project con-1
+<div class="project-page-wrapper"  in:slide="{{delay: 500, duration: 500}}" out:blur="{{delay: 0, duration: 500}}">
+    <Container color={colors.blueDark}>
+    <div class="top-panel">
+
+      <div class="user-info">
+        <div class="user">
+          <b style="color: var(--greenLight)">User:</b> 
+          <p>{user.email}</p>
+        </div>
+        
+        <div class="org" >
+          <b style="color: var(--yellowLight)">Organization:</b>
+          <p> {org.name}</p>
+        </div>
+        
+        
+        <div class="project">
+          <b style="color: var(--redLight)">Project:</b>
+          <p> {project.name}</p>
+        </div>
+        
+
+      </div>
+
+      <div class="title">
+        <h1> <b style="color: var(--blueLight);">-</b>  WorkZone <b style="color: var(--blueLight);">-</b> </h1>
+      </div>
+
+      <div class="back-div">
+        <div class="back-div">
+        <Button 
+          btnClick= {() => goto(`/project/${project.id}`)} 
+          btnTitle="Back" 
+          colorLight={colors.blueLight} 
+          colorMedium={colors.blueMedium} 
+          colorDark={colors.blueDark}
+          width="100px"
+          >
+        </Button>
+      </div>
+      </div>
+
     </div>
-    <div class="con-2 default">
-        <div class="con-2-1 default">
-          <Button btnClick={drawInteraction === DrawAction.ADD ? addDrawInteraction : resetInteractions}>{drawInteraction}</Button>
-          <Button btnClick={handleClear}>Clear All Comments</Button>
-          <Button btnClick={resetMapView}>Reset Map View</Button>
-          {#if loading}
-              <div class="loading"></div>
-          {/if}
+  </Container>
+    <div class="panels default">
+        
+        <div class="left-panel default">
+            <Container color={colors.blueLight}>
+            <div>
+                <Button 
+                    btnClick={drawInteraction === DrawAction.ADD ? addDrawInteraction : resetInteractions} 
+                    btnTitle="{drawInteraction}" 
+                    colorLight={colors.blueLight} 
+                    colorMedium={colors.blueMedium} 
+                    colorDark={colors.blueDark}
+                    width="85%"
+                    >
+                </Button>
+                <Button 
+                    btnClick={handleClear} 
+                    btnTitle="Clear All Comments" 
+                    colorLight={colors.blueLight} 
+                    colorMedium={colors.blueMedium} 
+                    colorDark={colors.blueDark}
+                    width="85%"
+                    >
+                </Button>
+                <Button 
+                    btnClick={resetMapView} 
+                    btnTitle="Reset Map View" 
+                    colorLight={colors.blueLight} 
+                    colorMedium={colors.blueMedium} 
+                    colorDark={colors.blueDark}
+                    width="85%"
+                    >
+                </Button>
+                {#if loading}
+                    <div class="loading"></div>
+                {/if}
+            </div>
+          
+        </Container>
         </div>
-        <div class="con-2-2 default">
-            <MapCom bind:map={map}></MapCom>
-            {#if showCommentBox}
-                <div class="comment-box default" transition:fade={{duration: 100}}>
-                    <h2>Comment</h2>
-                    <label for="description">Description</label>
-                    <textarea name="description" class="comment input" rows="8"
-                        placeholder="Please write a comment to specify the issue within the polygon you have drawn"
-                        bind:value={drawings[activeIndex].description}
-                    ></textarea>
-                    <label for="action">Action</label>
-                    <input name="action" class="action input" type="text"
-                        placeholder="What should be done about this?"
-                        bind:value={drawings[activeIndex].action}
-                    />
-                    <span>
-                        <Button btnClick={handleCancel}>Cancel</Button>
-                        <Button btnClick={handleSave}>Save</Button>
-                    </span>
-                </div>
-            {/if}
-            {#if loading}
-              <div class="loading">
-                  <ProgressRing size={60}/>
-              </div>
-          {/if}
+    
+    
+        <div class="map-div default">
+            <Container color={colors.blueLight}>
+                <div class="map-overlay">
+
+                
+                <MapCom bind:map={map}></MapCom>
+                
+                {#if loading}
+                  <div class="loading">
+                      <ProgressRing size={60}/>
+                  </div>
+              {/if}
+            </div>
+            </Container> 
         </div>
-        <div class="con-2-3 default">
+        
+    
+        <div class="right-panel">
+            <Container color={colors.blueLight}>
+                <div>
+
+                <h2 class="text">Tile Action</h2>
             <form method="post">
-                <Button btnClick={() => loading = true}>OK</Button>
+                <Button 
+                    btnClick={() => loading = true}
+                    btnTitle="Accept" 
+                    colorLight={colors.blueLight} 
+                    colorMedium={colors.blueMedium} 
+                    colorDark={colors.blueDark}
+                    width="85%"
+                    >
+                </Button>
                 <input name="status" type="hidden" value="ok">
                 <input name="project_id" type="hidden" value={project.id}>
                 <input name="feature_id" type="hidden" value={nextFeature.id}>
                 <input name="comments" type="hidden" bind:value={json}>
             </form>
             <form method="post">
-                <Button btnClick={() => loading = true}>FAIL</Button>
+                <Button 
+                    btnClick={() => loading = true}
+                    btnTitle="Fail" 
+                    colorLight={colors.blueLight} 
+                    colorMedium={colors.blueMedium} 
+                    colorDark={colors.blueDark}
+                    width="85%"
+                    >
+                </Button>
                 <input name="status" type="hidden" value="fail">
                 <input name="project_id" type="hidden" value={project.id}>
                 <input name="feature_id" type="hidden" value={nextFeature.id}>
@@ -238,9 +322,12 @@
             {#if loading}
             <div class="loading"></div>
             {/if}
+        </div>
+        </Container>
       </div>
     </div>
-    <div class="con-3 default">
+    <div class="comment-promp">
+        
         <div class="comments-grid">
             {#if comments.length > 0}
                 <h2>Comments</h2>
@@ -261,11 +348,80 @@
     </div>
 </div>
 
-{#if showCommentBox}
-    <div class="overlay" transition:fade={{duration: 100}}></div>
-{/if}
+    
+        {#if showCommentBox}
+        <div class="overlay" transition:fade={{duration: 100}}>
+        <Prompt ConColor={colors.blueLight}>
+            <div class="inside-prompt">
+                <h2 class="text">Add Comment</h2>
+                <h3 class="text" >Description</h3>
+                <textarea  class="input" rows="8"
+                    placeholder="Please write a comment to specify the issue within the polygon you have drawn"
+                    bind:value={drawings[activeIndex].description}
+                ></textarea>
+                <h3 class="text">Action</h3>
+                <input class="input" type="text"
+                    placeholder="What should be done about this?"
+                    bind:value={drawings[activeIndex].action}
+                />
+                <div class="btns-prompt">
+                    <Button 
+                        btnClick={handleCancel} 
+                        btnTitle="Cancel" 
+                        colorLight={colors.blueLight} 
+                        colorMedium={colors.blueMedium} 
+                        colorDark={colors.blueDark}
+                        width="50%"
+                        >
+                    </Button>
+                    <Button 
+                    btnClick={handleSave} 
+                        btnTitle="Save" 
+                        colorLight={colors.blueLight} 
+                        colorMedium={colors.blueMedium} 
+                        colorDark={colors.blueDark}
+                        width="50%"
+                        >
+                    </Button>
+                </div>
+                    
+            </div>  
+        </Prompt>
+        </div>
+        {/if}
+
+
 
 <style>
+    .text{
+        display: flex;
+        justify-content: center;
+    }
+    .btns-prompt{
+        display: flex;
+
+    }
+    .input {
+    font-size: 15px;
+    line-height: 20px;
+    padding: 10px;
+    font-family: 'Oswald';
+    font-weight: normal;  
+    font-style: normal; 
+    font-variant: normal; 
+    text-transform: none;   
+    display: inline-block;
+    color: rgb(255, 255, 255);
+    background:var(--color3);
+    margin: 5px;
+    width: auto;
+    border: 2px solid var(--blueLight); 
+    }
+    .input:focus{
+    background: var(--blueMediumTransparent); 
+    outline: 0;
+    color: #ffffff;
+}
     .comment-head {
         font-weight: bold;
     }
@@ -277,16 +433,16 @@
         padding: 0 20px;
     }
 
-    .comments-grid label {
+    /* .comments-grid label {
         align-self: flex-start;
-    }
+    } */
 
     .comments-grid h2 {
         grid-column: 1 / span 4;
         text-align: center;
     }
 
-    .comment-box {
+    /* .comment-box {
         position: absolute;
         top: calc(40% - 150px);
         left: calc(50% - 250px);
@@ -321,7 +477,7 @@
 
     .action {
         width: 99%;
-    }
+    } */
 
     .overlay {
         position: fixed;
@@ -329,15 +485,9 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background-color: #00000080;
-        z-index: 9;
     }
 
-    .default {
-      border: 5px #1e18444b solid;
-      padding: 10px;
-      margin: 0;
-    }
+    
 
     .project-page-wrapper {
       display: flex;
@@ -346,41 +496,31 @@
       padding: 0;
       border: 0;
     }
-    .con-2  {
+    .panels  {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      padding: 0;
-      border: 0;
+      /* padding: 0; */
+      /* border: 0; */
     }
-    .con-2 div{
+    .panels div{
       height: 70vh;
     }
-    .con-2-1 {
+    .left-panel {
         position: relative;
-        margin-left: 0;
+        /* margin-left: 0; */
         flex: 1;
-        height: 100px;
+        /* height: 100px; */
     }
-    .con-2-2 {
+    .map-div {
         position: relative;
         flex: 4;
     }
-    .con-2-3 {
+    .right-panel {
         position: relative;
-        margin-right: 0;
+        /* margin-right: 0; */
         flex:1;
     }
-     .con-1 {
-         position: relative;
-         flex: 2;
-     }
-     .con-2 {
-         flex: 6;
-     }
-     .con-3 {
-         flex: 1;
-     }
 
      .loading {
          position: absolute;
@@ -393,5 +533,49 @@
          justify-content: center;
          align-items: center;
      }
+     .top-panel {
+    display: flex;
+    justify-content: space-around;
+    height: 30px;
+  }
+  .title {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+    font-size: 15px;
+
+    }
+  .back-div{
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: right;
+    font-size: 15px;
+    width: 50%;
+    padding: 5px;
+  }
+  .user-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: space-around;
+
+  }
+  .user-info p, .user-info b{
+    margin: 0;
+  }
+  .user, .org, .project {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .inside-prompt{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    
+  }
 
 </style>

@@ -137,7 +137,16 @@
     display: flex;
     align-items: center;
     flex: 1;
-    justify-content: left;
+    justify-content: space-around;
+
+  }
+  .user-info b{
+    margin: 0;
+  }
+  .user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .top-panel {
     display: flex;

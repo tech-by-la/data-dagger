@@ -132,10 +132,16 @@
     display: flex;
     align-items: center;
     flex: 1;
-    justify-content: left;
+    justify-content: space-around;
+
   }
-  .user-info div{
-    padding-right: 10px;
+  .user-info b{
+    margin: 0;
+  }
+  .user, .org {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
 </style>

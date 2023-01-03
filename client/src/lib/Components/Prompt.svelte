@@ -5,14 +5,15 @@
     /**
 	 * @type {any}
 	 */
-     export let toggle;
+     export let toggle = null;
+     export let ConColor = "#282158"
 </script>
 
 <div class="prompt-div">
     <div class="shader" transition:fade on:click={toggle} on:keypress={toggle}/>
     
     <div class="prompt-box" transition:fly={{y: -500, duration: 500}}>
-        <Container>
+        <Container color={ConColor}>
             <slot></slot>
         </Container>
         <div class="error-wrapper">

@@ -1,12 +1,13 @@
 <script lang="ts">
     import { page } from '$app/stores';
     import {goto} from '$app/navigation';
-    import {Button} from "fluent-svelte";
+    // import {Button} from "fluent-svelte";
     import GeoJSON from "ol/format/GeoJSON";
     import Container from '$lib/Components/Container.svelte';
     import Line from "$lib/Components/Line.svelte";
     import { fly, slide, blur } from 'svelte/transition';
     import Btn from '$lib/Components/Button.svelte';
+	import Button from '$lib/Components/Button.svelte';
 
     const { user, project, org, projectData, projectComments, colors } = $page.data;
 
@@ -65,6 +66,52 @@
         URL.revokeObjectURL(fileUrl);
     }
 </script>
+<div class="wrapper" in:slide="{{delay: 500, duration: 500}}" out:blur="{{delay: 0, duration: 500}}">
+
+
+<Container color={colors.redDark} color2={colors.redMediumTransparent}>
+    <div class="top-panel">
+
+      <div class="user-info">
+        <div class="user">
+          <b style="color: var(--greenLight)">User:</b> 
+          <p>{user.email}</p>
+        </div>
+        
+        <div class="org" >
+          <b style="color: var(--yellowLight)">Organization:</b>
+          <p> {org.name}</p>
+        </div>
+        
+        
+        <div class="project">
+          <b style="color: var(--redLight)">Project:</b>
+          <p> {project.name}</p>
+        </div>
+        
+
+      </div>
+
+      <div class="title">
+        <h1> <b style="color: var(--redLight);">-</b>  Project Dashboard <b style="color: var(--redLight);">-</b> </h1>
+      </div>
+
+      <div class="back-div">
+        <div class="back-div">
+        <Button 
+          btnClick= {() => goto(`/org/${org.id}`)} 
+          btnTitle="Back" 
+          colorLight={colors.redLight} 
+          colorMedium={colors.redMedium} 
+          colorDark={colors.redDark}
+          width="100px"
+          >
+        </Button>
+      </div>
+      </div>
+
+    </div>
+  </Container>
 
 <div class="panels">
 
@@ -73,122 +120,15 @@
             <div class="info-text">
                 <div style="text-align: center">
                     <h1>{project.name}</h1>
-                    <p>{project.description}</p>
                 </div>
                 <Line color={colors.redLight}></Line>
-                <p> - Welcome to the Projects dashboard. </p>
-                <p> - Go to a project to start working on it</p>
-                <p> - Below is a list of active members in your organization</p>
-                <p> - You can add new members by clicking on the link to the right</p>
-            </div>
-        </Container>
-
-
-    </div>
-        <div class="panel">
-            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
-
-            <div class="mod-console">
-                <h3>Details</h3>
+                <p> Project description: </p>
+                <p>{project.description}</p>
+                <Line color={colors.redLight}></Line>
+                <p>Navigate to the workzone to perform QA</p>
+                
+                
                 <h3><Line color={colors.redLight}></Line></h3>
-                <p>Organization:</p><p>{org.name}</p>
-                <p>Project Type:</p><p>{project.type}</p>
-                <p>Project Created:</p><p>{new Date(project.created_at).toLocaleDateString()}</p>
-                <p>Workers Joined:</p><p>{project.members.length}</p>
-                <p>Status:</p><p>{status}</p>
-            </div>
-            </Container>
-        </div>
-        {#if features.length > 0}
-        <div class="panel">
-
-            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
-
-                <div class="mod-console">
-                    <h3>Features</h3>
-                    <h3><Line color={colors.redLight}></Line></h3>
-                    <p>Total:</p><p>{features.length}</p>
-                    <p>Checked:</p><p>{checkedFeatures} / {features.length}</p>
-                    <p>Approved:</p><p>{approvedFeatures}</p>
-                    <p>Failed:</p><p>{failedFeatures}</p>
-                    {#if (isAdmin || isMod)}
-                        <div class="grid-span" style="margin-top: 12px">
-                            <Button on:click={() => handleExport(false)}>Export Features</Button>
-                        </div>
-                    {/if}
-                </div>
-
-
-            </Container>
-
-        </div>
-        {/if}
-        {#if features.length > 0}
-        <div class="panel">
-
-            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
-
-
-                <div class="mod-console">
-                    <h3>Comments</h3>
-                    <h3><Line color={colors.redLight}></Line></h3>
-                    <p>Total:</p><p>{comments.length}</p>
-                    {#if (isAdmin || isMod) && comments.length > 0}
-                        <div class="grid-span" style="margin-top: 12px">
-                            <Button on:click={() => handleExport(true)}>Export Comments</Button>
-                        </div>
-                    {/if}
-                </div>
-            </Container>
-
-        </div>
-        {/if}
-
-        {#if isMod && status === Status.PENDING}
-        <div class="panel">
-
-            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
-            <div class="mod-console">
-            <h3>Start Project</h3>
-            <h3><Line color={colors.redLight}></Line></h3>
-            <p class="grid-span">Upload project data to start the project!(Disabled for now)</p>
-            <p class="grid-span">You can upload a .geojson or generate a demo project</p>
-            <h3><Line color={colors.redLight}></Line></h3>
-            <!-- <div class="button"><Button disabled>Upload</Button></div> -->
-            <!-- {#if !disableDemo} -->
-            <div class="grid-span">
-                <form method="post" action="?/startDemo">
-                    <div class="longbutton">
-                        <Btn
-                        btnTitle="Use Demo"
-                        colorLight={colors.redLight}
-                        colorMedium={colors.redMedium}
-                        colorDark={colors.redDark}
-                        btnType="submit"
-                        width="60%"
-                        ></Btn>
-                        <!-- <Button on:click={() => disableDemo = true}>
-                            Use Demo
-                        </Button> -->
-                    </div>
-                    <div class="slider-con">
-                        <label for="size">Size:</label>
-                        <input name="size" type="range" min="1" max="100" bind:value={demoSize} class="slider">
-                        <span>{demoSize}</span>
-                    </div>
-                    <input name="project_id" type="hidden" value={project.id}>
-                </form>
-            </div>
-
-            <!-- {/if} -->
-
-             </div>
-            </Container>
-            </div>
-        {/if}
-
-        <div class="btns-panel">
-            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
                 <div class="proj-btn" >
                     {#if project.members.includes(user.sub) && status === Status.STARTED}
                         <Btn
@@ -227,20 +167,134 @@
                             colorMedium={colors.redMedium}
                             colorDark={colors.redDark}
                             width="100%"
-                        />
+                        >
+                        </Btn>
                         <input name="project_id" type="hidden" value={project.id}>
                     </form>
                 {/if}
-          </Container>
-        </div>
 
+            </div>
+        </Container>
+
+
+    </div>
+        <div class="panel">
+            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
+
+            <div class="mod-console">
+                <h3>Details</h3>
+                <h3><Line color={colors.redLight}></Line></h3>
+                <p>Organization:</p><p>{org.name}</p>
+                <p>Project Type:</p><p>{project.type}</p>
+                <p>Project Created:</p><p>{new Date(project.created_at).toLocaleDateString()}</p>
+                <p>Workers Joined:</p><p>{project.members.length}</p>
+                <p>Status:</p><p>{status}</p>
+            </div>
+            </Container>
+        </div>
+        {#if features.length > 0}
+        <div class="panel">
+
+            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
+
+                <div class="mod-console">
+                    <h3>Features</h3>
+                    <h3><Line color={colors.redLight}></Line></h3>
+                    <p>Total:</p><p>{features.length}</p>
+                    <p>Checked:</p><p>{checkedFeatures} / {features.length}</p>
+                    <p>Approved:</p><p>{approvedFeatures}</p>
+                    <p>Failed:</p><p>{failedFeatures}</p>
+                    {#if (isAdmin || isMod)}
+                        <div class="grid-span">
+                            <!-- <Button on:click={() => handleExport(false)}>Export Features</Button> -->
+                            <Btn
+                                btnClick={() => handleExport(false)}
+                                btnTitle="Export Features"
+                                colorLight={colors.redLight}
+                                colorMedium={colors.redMedium}
+                                colorDark={colors.redDark}
+                                width="80%"
+                                >
+                            </Btn>
+                        </div>
+                    {/if}
+                </div>
+
+
+            </Container>
+
+        </div>
+        {/if}
+        {#if features.length > 0}
+        <div class="panel">
+
+            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
+                <div class="mod-console">
+                    <h3>Comments</h3>
+                    <h3><Line color={colors.redLight}></Line></h3>
+                    <p>Total:</p><p>{comments.length}</p>
+                    {#if (isAdmin || isMod) && comments.length > 0}
+                        <div class="grid-span">
+                            <!-- <Button on:click={() => handleExport(true)}>Export Comments</Button> -->
+                            <Btn
+                                btnClick={() => handleExport(true)}
+                                btnTitle="Export Comments"
+                                colorLight={colors.redLight}
+                                colorMedium={colors.redMedium}
+                                colorDark={colors.redDark}
+                                width="80%"
+                                >
+                            </Btn>
+                        </div>
+                    {/if}
+                </div>
+            </Container>
+
+        </div>
+        {/if}
+
+        {#if isMod && status === Status.PENDING}
+        <div class="panel">
+
+            <Container color={colors.redDark} color2={colors.redMediumTransparent}>
+            <div class="mod-console">
+            <h3>Start Project</h3>
+            <h3><Line color={colors.redLight}></Line></h3>
+            <p class="grid-span">Upload project data to start the project!(Disabled for now)</p>
+            <p class="grid-span">You can upload a .geojson or generate a demo project</p>
+            <h3><Line color={colors.redLight}></Line></h3>
+            <div class="grid-span">
+                <form method="post" action="?/startDemo">
+                    <div class="longbutton">
+                        <Btn
+                        btnTitle="Use Demo"
+                        colorLight={colors.redLight}
+                        colorMedium={colors.redMedium}
+                        colorDark={colors.redDark}
+                        btnType="submit"
+                        width="80%"
+                        ></Btn>
+                    </div>
+                    <div class="slider-con">
+                        <label for="size">Size:</label>
+                        <input name="size" type="range" min="1" max="100" bind:value={demoSize} class="slider">
+                        <span>{demoSize}</span>
+                    </div>
+                    <input name="project_id" type="hidden" value={project.id}>
+                </form>
+            </div>
+             </div>
+            </Container>
+            </div>
+        {/if}
   </div>
+</div>
 
 <style>
 
     .mod-console {
-        width: 250px;
-        height: fit-content;
+        /* width: 250px; */
+        /* height: 500px; */
         margin: 10px;
         /* padding: 16px; */
         border-radius: 8px;
@@ -270,8 +324,9 @@
         margin-top: 10px;
     }
     .panel {
-        /*flex: 1;*/
-        width: 310px;
+        flex: 1;
+        /* height: 800px; */
+        /* width: 310px; */
         padding-top: 10px;
     }
     .panels {
@@ -285,10 +340,48 @@
     }
     .form-btn {
         display: flex;
+        width: 100%;
     }
-    .btns-panel, .info-panel {
-        /*flex: 3;*/
+    .btns-panel{
+        flex: 1;
     }
+    .top-panel {
+    display: flex;
+    justify-content: space-around;
+    height: 30px;
+  }
+  .title {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+    font-size: 15px;
+
+    }
+  .back-div{
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: right;
+    font-size: 15px;
+    width: 50%;
+    padding: 5px;
+  }
+  .user-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: space-around;
+
+  }
+  .user-info p, .user-info b{
+    margin: 0;
+  }
+  .user, .org, .project {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
 </style>
 

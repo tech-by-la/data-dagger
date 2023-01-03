@@ -12,8 +12,8 @@
         <div class="info-text">
           <p> - These are the organizations you are a part of. </p>
           <p> - Go to an organization dashboard to see available projects</p>
-          <p> - To create a new click the link below to open a create new Organization form</p>
-          <p> - To delete a Organization (that you are an owner of) please contact Data Dagger Support</p>
+          <p> - To create a new organization click the link</p>
+          <p> - To delete an organization (that you are an owner of) please contact Data Dagger Support</p>
         </div>
       </Container>
 

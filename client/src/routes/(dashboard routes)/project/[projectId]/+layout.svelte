@@ -11,10 +11,10 @@
     const { user, project, org, colors} = $page.data
 </script>
 
-<div class="proj-page-wrapper" in:slide="{{delay: 500, duration: 500}}" out:blur="{{delay: 0, duration: 500}}">
+<div class="proj-page-wrapper">
 
 
-  <Container color={colors.redDark} color2={colors.redMediumTransparent}>
+  <!-- <Container color={colors.redDark} color2={colors.redMediumTransparent}>
     <div class="top-panel">
 
       <div class="user-info">
@@ -53,7 +53,7 @@
       </div>
 
     </div>
-  </Container>
+  </Container> -->
     <slot></slot>
 
   
