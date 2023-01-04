@@ -11,7 +11,7 @@ export const load: PageServerLoad = (async ({parent, params, locals}) => {
     await parent();
 
     const fetchNextFeature = async () => {
-        const nextFeature = await db.fidRepo.findOneAvailableAndLock(params.projectId, locals.user.sub);
+        const nextFeature = await db.fidRepo?.findOneAvailableAndLock(params.projectId, locals.user.sub);
         if (!nextFeature?.fid) {
             throw redirect(302, `/project/${params.projectId}`);
         }
@@ -73,7 +73,7 @@ export const actions: Actions = {
             }
         }
 
-        const project = await db.projectRepo.findEnabledById(project_id);
+        const project = await db.projectRepo?.findEnabledById(project_id);
         const isMember = project?.members?.includes(locals.user.sub);
         if (!project || !isMember) {
             return fail(StatusCode.FORBIDDEN, { message: StatusMessage.FORBIDDEN });
@@ -83,7 +83,7 @@ export const actions: Actions = {
         const data = await response.text();
         const updated = Number.parseInt(data.split('wfs:totalUpdated')[1].replace(/[^\w ]/g, ''));
         if (response.ok && !isNaN(updated) && updated === 1) {
-            await db.fidRepo.setChecked(feature_id);
+            await db.fidRepo?.setChecked(feature_id);
         }
 
         if (comments.length > 0) {
