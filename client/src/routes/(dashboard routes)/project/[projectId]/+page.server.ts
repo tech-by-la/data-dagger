@@ -2,7 +2,7 @@ import type {PageServerLoad} from "./$types";
 import {type Actions, error, fail} from "@sveltejs/kit";
 import type {Project} from "$lib/server/util/interfaces";
 
-import {GeoServerProps, OrgRoles, ProjectStatus, StatusCode, StatusMessage} from "$lib/server/util/enums";
+import {GeoServerProps, OrgRoles, ProjectStatus, StatusCode, StatusMessage, UserRoles} from "$lib/server/util/enums";
 import GeoServer from "$lib/server/geoserver/GeoServer";
 import db from "$lib/server/database/DatabaseGateway";
 import Demo from "$lib/server/geoserver/Demo";
@@ -33,7 +33,7 @@ export const load: PageServerLoad = async ({parent, params}) => {
         }
 
         // project data
-        const project = await db.projectRepo.findEnabledById(params.projectId);
+        const project = await db.projectRepo?.findEnabledById(params.projectId);
         if (!project) {
             throw error(StatusCode.NOT_FOUND, { message: StatusMessage.NOT_FOUND });
         }
@@ -48,7 +48,7 @@ export const load: PageServerLoad = async ({parent, params}) => {
             ? ProjectStatus.FINISHED
             : ProjectStatus.STARTED;
 
-        await db.projectRepo.update(project);
+        await db.projectRepo?.update(project);
 
         data.name = project.name.replaceAll(/[^\w ]/g, '').replaceAll(' ', '').toLowerCase();
         data.crs = { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::3857" } }; // TODO: get this with the WFS call if possible?
@@ -94,7 +94,7 @@ export const actions: Actions = {
         }
 
         // authorize
-        const project: Project | undefined = await db.projectRepo.findEnabledById(project_id);
+        const project: Project | undefined = await db.projectRepo?.findEnabledById(project_id);
         const org = await db.orgRepo.findOrgById(project?.organization_id || '');
         const member = org?.members.find(m => m.user_id === locals.user.sub);
         if (!project || !member) {
@@ -103,9 +103,9 @@ export const actions: Actions = {
 
         const isMember = project.members?.includes(locals.user.sub);
         if (isMember) {
-            await db.projectRepo.leave(project_id, locals.user.sub);
+            await db.projectRepo?.leave(project_id, locals.user.sub);
         } else {
-            await db.projectRepo.join(project_id, locals.user.sub);
+            await db.projectRepo?.join(project_id, locals.user.sub);
         }
     },
 
@@ -122,7 +122,7 @@ export const actions: Actions = {
         }
 
         // authorize user
-        const project = await db.projectRepo.findEnabledById(project_id);
+        const project = await db.projectRepo?.findEnabledById(project_id);
         const org = await db.orgRepo.findOrgById(project?.organization_id || '');
         const mod = org?.members.find(m =>
             m.user_id === locals.user.sub &&
@@ -156,11 +156,11 @@ export const actions: Actions = {
             .split("\"")
             .filter(f => f.includes(`${GeoServerProps.Layer}.`));
 
-        await db.fidRepo.insertMany(project_id, fids);
+        await db.fidRepo?.insertMany(project_id, fids);
     },
 
     // Dev action
-    delete: async ({request}) => {
+    delete: async ({request, locals}) => {
         const form = await request.formData();
         const project_id = form.get('project_id');
 
@@ -168,13 +168,20 @@ export const actions: Actions = {
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
 
-        const project = await db.projectRepo.findById(project_id);
+        const project = await db.projectRepo?.findById(project_id);
         if (!project) {
             return fail(StatusCode.NOT_FOUND, { message: StatusMessage.NOT_FOUND });
         }
 
+        const org = await db.orgRepo?.findOrgById(project.organization_id as string);
+        const isOwner = org?.members.find(m => m.org_role_id === OrgRoles.OWNER);
+        const isAdmin = locals.user.roles.includes(UserRoles.ADMIN) || locals.user.roles.includes(UserRoles.SUPER_ADMIN);
+        if (!isOwner && !isAdmin) {
+            return fail(StatusCode.FORBIDDEN, { message: StatusMessage.FORBIDDEN });
+        }
+
         await GeoServer.WFS.deleteProjectData(project_id);
-        await db.fidRepo.deleteByProject(project_id);
-        await db.projectRepo.update(project);
+        await db.fidRepo?.deleteByProject(project_id);
+        await db.projectRepo?.update(project);
     }
 }

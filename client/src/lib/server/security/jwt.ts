@@ -104,10 +104,15 @@ class JwtUtil implements IJwtUtil {
 
     public signIdToken(user: UserInfo | null) {
         return new Promise<string | null>((accept) => {
-            if (!user || !user.id || !user.email || !user.roles || !user.orgs) return accept(null);
+            if (
+                !user || !user.id || !user.email || !user.first_name ||
+                !user.last_name || !user.roles || !user.orgs
+            ) return accept(null);
 
             const payload: JwtUserPayload = {
                 email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
                 roles: user.roles.map(role => role.name),
                 orgs: user.orgs.map(org => { return {org_id: org.organization_id, role: org.org_role_id} }),
             }

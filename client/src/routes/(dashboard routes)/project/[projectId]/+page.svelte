@@ -27,10 +27,10 @@
         : Status.STARTED;
 
     let disableJoin   = false;
-    let disableDemo   = false;
     let disableDelete = false;
 
     const isMember = project.members.includes(user.sub);
+    const isOwner = org.members[0].org_role_id === 'OWNER';
     const isMod = org.members[0].org_role_id === 'OWNER' || org.members[0].org_role_id === 'MODERATOR';
     const isAdmin = user.roles.includes('SUPER_ADMIN') || user.roles.includes('ADMIN');
 
@@ -74,21 +74,21 @@
 
       <div class="user-info">
         <div class="user">
-          <b style="color: var(--greenLight)">User:</b> 
+          <b style="color: var(--greenLight)">User:</b>
           <p>{user.email}</p>
         </div>
-        
+
         <div class="org" >
           <b style="color: var(--yellowLight)">Organization:</b>
           <p> {org.name}</p>
         </div>
-        
-        
+
+
         <div class="project">
           <b style="color: var(--redLight)">Project:</b>
           <p> {project.name}</p>
         </div>
-        
+
 
       </div>
 
@@ -98,11 +98,11 @@
 
       <div class="back-div">
         <div class="back-div">
-        <Button 
-          btnClick= {() => goto(`/org/${org.id}`)} 
-          btnTitle="Back" 
-          colorLight={colors.redLight} 
-          colorMedium={colors.redMedium} 
+        <Button
+          btnClick= {() => goto(`/org/${org.id}`)}
+          btnTitle="Back"
+          colorLight={colors.redLight}
+          colorMedium={colors.redMedium}
           colorDark={colors.redDark}
           width="100px"
           >
@@ -126,8 +126,8 @@
                 <p>{project.description}</p>
                 <Line color={colors.redLight}></Line>
                 <p>Navigate to the workzone to perform QA</p>
-                
-                
+
+
                 <h3><Line color={colors.redLight}></Line></h3>
                 <div class="proj-btn" >
                     {#if project.members.includes(user.sub) && status === Status.STARTED}
@@ -157,7 +157,7 @@
                     <input name="project_id" type="hidden" value={project.id}>
                 </form>
 
-                {#if isAdmin && features.length > 0}
+                {#if (isAdmin || isOwner) && features.length > 0}
                     <form class="form-btn" method="post" action="?/delete">
                         <Btn
                             btnType="submit"

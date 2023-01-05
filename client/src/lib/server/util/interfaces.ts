@@ -70,6 +70,8 @@ export interface FeatureClone {
 
 export interface JwtUserPayload extends JwtPayload{
     email: string;
+    first_name?: string;
+    last_name?: string;
     roles: UserRole["name"][];
     orgs:  UserOrgs
 }

@@ -4,36 +4,23 @@
     import Prompt from "$lib/Components/Prompt.svelte";
     import InputForm from "$lib/Components/InputForm.svelte";
     import { page } from "$app/stores";
-    import type { Map } from "ol";
-    // import OSM from "ol/source/OSM";
-    // import proj4 from 'proj4';
-    // import {register} from 'ol/proj/proj4';
-    // import {get as getProjection, Projection} from 'ol/proj';
-    // import TileLayer from "ol/layer/Tile";
-	// import { onMount } from "svelte";
-    import MapCom from "$lib/Components/MapCom.svelte";
-	// import ImageLayer from "ol/layer/Image";
-    // import ImageWMS from 'ol/source/ImageWMS';
-	// import VectorSource from "ol/source/Vector";
-    // import GeoJSON from "ol/format/GeoJSON";
-	// import VectorLayer from "ol/layer/Vector";
-    // import {bbox as bboxStrategy} from 'ol/loadingstrategy';
-    // import TileWMS from 'ol/source/TileWMS';
+
+    // import type { Map } from "ol";
+    // import MapCom from "$lib/Components/MapCom.svelte";
+
     import MdClose from 'svelte-icons/md/MdClose.svelte';
-	import { fly, slide, blur } from "svelte/transition";
+	import { slide, blur } from "svelte/transition";
 	import { goto } from "$app/navigation";
 
     const { user } = $page.data
     const pageText = $page.data.text
 
-
     let pagePromptController = false;
     function toggleThePrompt() {
         pagePromptController ? pagePromptController=false : pagePromptController=true
     }
-    function hello(){console.log("Hello");} // placeholder function
 
-    let map: Map;
+    // let map: Map;
 
     // var serverPort = "localhost:8080";
     // var geoserverWorkspace = "qqc";
@@ -125,48 +112,44 @@
             <p>{pageText.howToText4}</p>
         </Container>
 
-        <Container>
-            <h1>{pageText.demoText1}</h1>
-            <p>{pageText.demoText2}</p>
-            <p>{pageText.demoText3}</p>
-        </Container>
-        <Container>
-            <div class="map-con">
+<!--        <Container>-->
+<!--            <h1>{pageText.demoText1}</h1>-->
+<!--            <p>{pageText.demoText2}</p>-->
+<!--            <p>{pageText.demoText3}</p>-->
+<!--        </Container>-->
+<!--        <Container>-->
+<!--            <div class="map-con">-->
 
-                <div class="map-left-panel">
-                    <Button btnClick ={hello} btnTitle="Layer 1"></Button>
-                    <Button btnClick ={hello} btnTitle="layer 2"></Button>
-                    <Button btnClick ={hello} btnTitle="layer 3"></Button>
-                    <Button btnClick ={hello} btnTitle="Next Point"></Button>
-                    <Button btnClick ={hello} btnTitle="Skip Point"></Button>
-                    <Button btnClick ={hello} btnTitle="Go Back"></Button>
-                </div>
-                 <div id="map-wraper">
-                    <MapCom bind:map = {map}/>
-                 </div>
-                 <div class="map-right-panel">
-                    <Button btnClick ={hello} btnTitle="Class 1"></Button>
-                    <Button btnClick ={hello} btnTitle="Class 2"></Button>
-                    <Button btnClick ={hello} btnTitle="Class 3"></Button>
-                    <Button btnClick ={hello} btnTitle="Class 4"></Button>
-                    <Button btnClick ={hello} btnTitle="Class 5"></Button>
-                    <Button btnClick ={hello} btnTitle="Class 6"></Button>
-                 </div>
-            </div>
-        </Container>
-
-
-
-
+<!--                <div class="map-left-panel">-->
+<!--                    <Button btnClick ={hello} btnTitle="Layer 1"></Button>-->
+<!--                    <Button btnClick ={hello} btnTitle="layer 2"></Button>-->
+<!--                    <Button btnClick ={hello} btnTitle="layer 3"></Button>-->
+<!--                    <Button btnClick ={hello} btnTitle="Next Point"></Button>-->
+<!--                    <Button btnClick ={hello} btnTitle="Skip Point"></Button>-->
+<!--                    <Button btnClick ={hello} btnTitle="Go Back"></Button>-->
+<!--                </div>-->
+<!--                 <div id="map-wraper">-->
+<!--                    <MapCom bind:map = {map}/>-->
+<!--                 </div>-->
+<!--                 <div class="map-right-panel">-->
+<!--                    <Button btnClick ={hello} btnTitle="Class 1"></Button>-->
+<!--                    <Button btnClick ={hello} btnTitle="Class 2"></Button>-->
+<!--                    <Button btnClick ={hello} btnTitle="Class 3"></Button>-->
+<!--                    <Button btnClick ={hello} btnTitle="Class 4"></Button>-->
+<!--                    <Button btnClick ={hello} btnTitle="Class 5"></Button>-->
+<!--                    <Button btnClick ={hello} btnTitle="Class 6"></Button>-->
+<!--                 </div>-->
+<!--            </div>-->
+<!--        </Container>-->
     </div>
 
     <div class="side-con">
         <Container>
             {#if user}
-            <h1>Hello {user.name}</h1>
-            <p>Navigate to the User Dashboard to get started</p>
+            <h1>Hello {user.first_name}</h1>
+            <p>Navigate to the User Dashboard to get started!</p>
             <div class="button-con">
-                <Button btnClick ={() => goto(`/user/${user.sub}`)} btnTitle="Get Started"></Button>
+                <Button btnClick ={() => goto(`/user/${user.sub}`)} btnTitle="Go to User Dashboard"></Button>
                 </div>
             {:else}
             <h1>Excited?</h1>
@@ -175,15 +158,11 @@
              <Button btnClick ={toggleThePrompt} btnTitle="Get Started"></Button>
              </div>
             {/if}
-            
+
         </Container>
     </div>
 
 </div>
-
-
-
-
 
 <style>
 
