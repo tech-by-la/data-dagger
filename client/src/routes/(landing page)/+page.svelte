@@ -4,10 +4,6 @@
     import Prompt from "$lib/Components/Prompt.svelte";
     import InputForm from "$lib/Components/InputForm.svelte";
     import { page } from "$app/stores";
-
-    // import type { Map } from "ol";
-    // import MapCom from "$lib/Components/MapCom.svelte";
-
     import MdClose from 'svelte-icons/md/MdClose.svelte';
 	import { slide, blur } from "svelte/transition";
 	import { goto } from "$app/navigation";
@@ -19,69 +15,6 @@
     function toggleThePrompt() {
         pagePromptController ? pagePromptController=false : pagePromptController=true
     }
-
-    // let map: Map;
-
-    // var serverPort = "localhost:8080";
-    // var geoserverWorkspace = "qqc";
-    // var geoserverWmsUrl = 'http://' + serverPort + '/geoserver/' + geoserverWorkspace + '/wms'
-    // var kmTilesLayerName = "qqc_km_tiles"
-
-
-
-    // var kmTileWmsSource = new TileWMS({
-    //     url: geoserverWmsUrl,
-    //     params: { 'LAYERS': geoserverWorkspace + ':' + kmTilesLayerName, 'TILED': true },
-    //     serverType: 'geoserver',
-    //     visible: false
-    // })
-
-    // var kmTileWmsLayer = new TileLayer({
-    //     title: "1 km Tiles",
-    //     source: kmTileWmsSource
-    // });
-
-    // let kmTileWfsSource = new VectorSource({
-    //     format: new GeoJSON(),
-    //     url: function (extent) {
-    //         return ( "http://localhost:9090/geoserver/datadagger/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=poly3&outputFormat=json"
-    //             // 'http://localhost:8080/geoserver/qqc/ows?service=WFS&' +
-    //             // 'version=2.0.0&request=GetFeature&typename=qqc:qqc_km_tiles&' +
-    //             // 'outputFormat=application/json&srsname=EPSG:25832&' +
-    //             // 'bbox=' +
-    //             // extent.join(',') +
-    //             // ',EPSG:25832' +
-    //             // "&id=" + 8000
-    //         );
-    //     },
-    //   strategy: bboxStrategy,
-    // });
-
-
-// let kmTileWfsLayer = new VectorLayer({
-//   source: kmTileWfsSource,
-//   style: {
-//     'stroke-width': 0.75,
-//     'stroke-color': 'white',
-//     'fill-color': 'rgba(100,100,100,0.25)',
-//   },
-// });
-
-//     const addTiles = () => {
-//         map.addLayer(kmTileWfsLayer)
-//         console.log("Hello");
-
-//     }
-//     const addTile2 = () => {
-//         map.addLayer(kmTileWmsLayer)
-//         console.log("Hello");
-
-    // }
-    // onMount(()=> {
-    //     map.addLayer(kmTileWfsLayer)
-    // }
-    //  )
-
 
 </script>
 
@@ -111,36 +44,6 @@
             <p>{pageText.howToText3}</p>
             <p>{pageText.howToText4}</p>
         </Container>
-
-<!--        <Container>-->
-<!--            <h1>{pageText.demoText1}</h1>-->
-<!--            <p>{pageText.demoText2}</p>-->
-<!--            <p>{pageText.demoText3}</p>-->
-<!--        </Container>-->
-<!--        <Container>-->
-<!--            <div class="map-con">-->
-
-<!--                <div class="map-left-panel">-->
-<!--                    <Button btnClick ={hello} btnTitle="Layer 1"></Button>-->
-<!--                    <Button btnClick ={hello} btnTitle="layer 2"></Button>-->
-<!--                    <Button btnClick ={hello} btnTitle="layer 3"></Button>-->
-<!--                    <Button btnClick ={hello} btnTitle="Next Point"></Button>-->
-<!--                    <Button btnClick ={hello} btnTitle="Skip Point"></Button>-->
-<!--                    <Button btnClick ={hello} btnTitle="Go Back"></Button>-->
-<!--                </div>-->
-<!--                 <div id="map-wraper">-->
-<!--                    <MapCom bind:map = {map}/>-->
-<!--                 </div>-->
-<!--                 <div class="map-right-panel">-->
-<!--                    <Button btnClick ={hello} btnTitle="Class 1"></Button>-->
-<!--                    <Button btnClick ={hello} btnTitle="Class 2"></Button>-->
-<!--                    <Button btnClick ={hello} btnTitle="Class 3"></Button>-->
-<!--                    <Button btnClick ={hello} btnTitle="Class 4"></Button>-->
-<!--                    <Button btnClick ={hello} btnTitle="Class 5"></Button>-->
-<!--                    <Button btnClick ={hello} btnTitle="Class 6"></Button>-->
-<!--                 </div>-->
-<!--            </div>-->
-<!--        </Container>-->
     </div>
 
     <div class="side-con">
