@@ -11,6 +11,7 @@ import InviteRepo from "./repos/InviteRepo.js";
 import ProjectsRepo from "$lib/server/database/repos/ProjectsRepo";
 import Logger from "$lib/server/util/Logger";
 import FidRepo from "$lib/server/database/repos/FidRepo";
+import LogRepo from "$lib/server/database/repos/LogRepo";
 
 export interface IDatabaseGateway {
     userRepo: UserRepo;
@@ -19,6 +20,7 @@ export interface IDatabaseGateway {
     inviteRepo: InviteRepo;
     projectRepo: ProjectsRepo | null;
     fidRepo: FidRepo | null;
+    logRepo: LogRepo | null;
 }
 
 class DatabaseGateway implements IDatabaseGateway {
@@ -31,12 +33,10 @@ class DatabaseGateway implements IDatabaseGateway {
     public readonly inviteRepo = new InviteRepo(this.db);
     public projectRepo: ProjectsRepo | null = null;
     public fidRepo: FidRepo | null = null;
+    public logRepo: LogRepo | null = null;
 
     constructor() {
         Logger.log('Initializing Databases');
-
-
-
     }
 
     /*
@@ -60,6 +60,7 @@ class DatabaseGateway implements IDatabaseGateway {
             this.projDb = result;
             this.projectRepo = new ProjectsRepo(this.projDb);
             this.fidRepo = new FidRepo(this.projDb);
+            this.logRepo = new LogRepo(this.projDb);
             Logger.log('Projects Database Initialized');
         });
 
@@ -122,7 +123,7 @@ class DatabaseGateway implements IDatabaseGateway {
             });
             Logger.log('Authentication Database Initialized');
         } catch (e) {
-            Logger.log('Could not initialize Authentication Database');
+            Logger.log('Could not initialize Databases');
         }
     }
 }

@@ -5,24 +5,14 @@ import GeoServer from "$lib/server/geoserver/GeoServer";
 import featureType from '$lib/server/geoserver/json/feature-type.json';
 import {fail} from "@sveltejs/kit";
 
-export const load: PageServerLoad = async ({parent}) => {
+export const load: PageServerLoad = async ({parent, locals}) => {
     await parent();
 
-    const getUsers = async () => {
-        return await db.userRepo.count();
-    }
-
-    const getOrganizations = async () => {
-        return await db.orgRepo.count();
-    }
-    const getProjects = async () => {
-        return await db.projectRepo.count();
-    }
-
     return {
-        allUsers: getUsers(),
-        allOrganizations: getOrganizations(),
-        allProjects: getProjects(),
+        allUsers: db.userRepo.count(),
+        allOrganizations: db.orgRepo.count(),
+        allProjects: db.projectRepo?.count(),
+        unreadLogs: db.logRepo?.countUnread(locals.user.sub),
     }
 }
 

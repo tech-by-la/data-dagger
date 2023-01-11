@@ -5,6 +5,7 @@ import type {Project} from "$lib/server/util/interfaces";
 import {fail, redirect} from "@sveltejs/kit";
 import {OrgRoles, ProjectStatus, ProjectType, StatusMessage} from "$lib/server/util/enums";
 import db from '$lib/server/database/DatabaseGateway';
+import Logger from "$lib/server/util/Logger";
 
 export const load: PageServerLoad = async ({parent}) => {
     await parent();
@@ -48,11 +49,13 @@ export const actions: Actions = {
             organization_id, name, description, status: ProjectStatus.PENDING, type, members: [],
         } as Project;
 
-        const project = await db.projectRepo.create(data);
+        const project = await db.projectRepo?.create(data);
 
         if (!project) {
             return fail(500, { message: StatusMessage.INTERNAL_SERVER_ERROR });
         }
+
+        Logger.success('User', locals.user.first_name, locals.user.last_name, 'started a new project with name and id', project.name, project.id, 'for organization with name and id', org.name, org.id);
 
         throw redirect(302, `/project/${project.id}`);
     }

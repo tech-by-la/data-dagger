@@ -7,6 +7,7 @@ import {fail} from "@sveltejs/kit";
 import db from '$lib/server/database/DatabaseGateway';
 import {OrgRoles, StatusMessage} from "$lib/server/util/enums";
 import {partitionEmails} from "$lib/server/util/helpers";
+import Logger from "$lib/server/util/Logger";
 
 export const load: PageServerLoad = async ({parent}) => {
     await parent();
@@ -72,6 +73,8 @@ export const actions: Actions = {
         if (canBeInvited.length > 0)  responseBody.invited       = canBeInvited;
         if (usersInOrg.length > 0)    responseBody.alreadyJoined = usersInOrg;
         if (tooEarly.length > 0)      responseBody.tooEarly      = tooEarly;
+
+        Logger.success('User', locals.user.first_name, locals.user.last_name, 'with email', locals.user.email, 'invited', responseBody.invited?.length || 0, 'new members to organization with name and id', org.name, org.id);
 
         return { response: responseBody }
     }

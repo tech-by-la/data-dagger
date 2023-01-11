@@ -55,8 +55,8 @@ export const actions: Actions = {
 		try {
 			registerSchema.parse(data);
 		} catch (err: any) {
-			console.log('-------------------Parse Form Error--------------------');
-			console.log(err);
+			// console.log('-------------------Parse Form Error--------------------');
+			// console.log(err);
 			return fail(400, { invalid: true, register: true, message: err.issues[0].message });
 		}
 
@@ -75,7 +75,7 @@ export const actions: Actions = {
 
 		// Email already in use
 		if (await db.userRepo.findUserByEmail(email)) {
-			Logger.log("Registration:", "Failed - Attempted to created account with email already in use");
+			Logger.warn("Registration:", "Failed - Attempted to created account with email ", email, " which is already in use!");
 			return fail(400, { conflict: true, message: "Email already in use" });
 		}
 
@@ -87,14 +87,14 @@ export const actions: Actions = {
 			return fail(400, { error: true, message: "An unknown error has occurred" });
 		}
 
-		Logger.log("Registration:", "Create new user with id", user.id);
+		Logger.success("New user", user.first_name, user.last_name, "with email", user.email, "successfully created a new account");
 
 		const idToken = await Jwt.signIdToken(user);
 		const refreshToken = await Jwt.signNewRefreshTokenFamily(user.id);
 
 		// User is banned/disabled
 		if (!idToken || !refreshToken) {
-			Logger.log("Registration:", "Error signing jwt tokens");
+			Logger.error("Registration:", "Error signing JWT tokens for user with email", user.email);
 			return fail(400, { error: true, message: "An unknown error has occurred" });
 		}
 

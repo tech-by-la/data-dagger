@@ -24,8 +24,8 @@ export const actions: Actions = {
 		try {
 			loginSchema.parse(data);
 		} catch (err: any) {
-			console.log('-------------------Parse Form Error--------------------');
-			console.log(err);
+			// console.log('-------------------Parse Form Error--------------------');
+			// console.log(err);
 			const error = err.issues[0];
 			return fail(400, { invalid: true, login: true, message: error.message || '' });
 		}
@@ -42,13 +42,13 @@ export const actions: Actions = {
 
 		// Email or password is incorrect
 		if (!user || !isCorrectPassword) {
-			Logger.log("Login:", "Email or password incorrect on login -", email);
+			Logger.warn("Login:", "Email or password incorrect on login - ", email);
 			return fail(400, { invalid: true, message: "wrong credentials" });
 		}
 
 		// User is banned/disabled
 		if (!user.enabled) {
-			Logger.log("Login:", "User account disabled on login -", email);
+			Logger.warn("Login:", "Attempted login from disabled account with email ", email);
 			return fail(400, { disabled: true, message: "Account has been disabled" });
 		}
 
@@ -57,12 +57,14 @@ export const actions: Actions = {
 
 		// User is banned/disabled
 		if (!idToken || !refreshToken) {
-			Logger.log("Login:", "Error signing jwt tokens");
+			Logger.error("Login:", "Error signing JWT tokens for user with email ", user.email);
 			return fail(400, { error: true, message: "An unknown error has occurred" });
 		}
 
 		cookies.set('idToken', idToken, { maxAge: 900, path: '/', httpOnly: true, secure: false });
 		cookies.set('refreshToken', refreshToken, { maxAge: 60 * 60 * 24 * 365, path: '/', httpOnly: true, secure: false });
+
+		Logger.success('User', user.first_name, user.last_name, 'with email', user.email, 'successfully logged in');
 
 		throw redirect(302, '/user/' +  user.id );
 	},

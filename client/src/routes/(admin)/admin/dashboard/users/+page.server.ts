@@ -37,18 +37,18 @@ export const actions: Actions = {
 
         // Not ADMIN? DENIED!
         if (!admin.roles.find((r: string) => r === UserRoles.SUPER_ADMIN || r === UserRoles.ADMIN)) {
-            Logger.log('AdminRouter:', "Unauthorized attempt to change user status");
+            Logger.error('AdminRouter:', "Unauthorized attempt to change user status!");
             return fail(StatusCode.UNAUTHORIZED, { message: StatusMessage.UNAUTHORIZED });
         }
 
         if ((enabled !== 'true' && enabled !== 'false') || !user_id || typeof user_id !== "string") {
-            Logger.log('AdminRouter:', "Bad Request enabling/disabling a user");
+            Logger.warn('AdminRouter:', "Bad Request enabling/disabling a user");
             return fail(StatusCode.BAD_REQUEST, { message: StatusMessage.BAD_REQUEST });
         }
 
         const user = await db.userRepo.findUserById(user_id);
         if (!user) {
-            Logger.log("AdminRouter", "Could not find a user to", enabled === "true" ? "enable" : "disable");
+            Logger.warn("AdminRouter", "Could not find a user with id", user_id, "to", enabled === "true" ? "enable" : "disable");
             return fail(StatusCode.NOT_FOUND, { message: StatusMessage.NOT_FOUND });
         }
 
@@ -58,7 +58,7 @@ export const actions: Actions = {
             user.roles.includes({ name: UserRoles.ADMIN }) ||
             user.roles.includes({ name: UserRoles.SUPER_ADMIN })
         ) {
-            Logger.log("AdminRouter:", "Error - An admin attempted to", enabled === "true" ? "enable" : "disable", "an admin");
+            Logger.error("AdminRouter:", "Error - An admin attempted to", enabled === "true" ? "enable" : "disable", "an admin");
             return fail(StatusCode.FORBIDDEN, { message: StatusMessage.FORBIDDEN })
         }
 
@@ -68,6 +68,7 @@ export const actions: Actions = {
             Logger.error("AdminRouter:", "Internal error - could not update user when querying database");
             return fail(StatusCode.INTERNAL_SERVER_ERROR, { message: StatusMessage.INTERNAL_SERVER_ERROR });
         }
+        Logger.admin(locals.user.first_name, locals.user.last_name, enabled === 'true' ? 'enabled' : 'disabled', 'user with email', user.email);
     },
 
     setRole: async ({request, locals}) => {
@@ -89,7 +90,6 @@ export const actions: Actions = {
             !user_id || typeof user_id !== "string" ||
             !role || (role !== UserRoles.USER && role !== UserRoles.ADMIN && role !== UserRoles.SUPER_ADMIN)
         ) {
-            Logger.log('AdminRouter:', "Bad Request enabling/disabling a user");
             return fail(400, { message: StatusMessage.BAD_REQUEST });
         }
 
@@ -105,8 +105,10 @@ export const actions: Actions = {
 
         if (remove && user.roles.find(r => r.name === role)) {
             await db.userRepo.removeUserRole(user_id, role).catch();
+            Logger.admin(locals.user.first_name, locals.user.last_name, "removed user role", role, "from user with email", user.email);
         } else if (!user.roles.find(r => r.name === role)) {
             await db.userRepo.assignUserRole(user_id, role).catch();
+            Logger.admin(locals.user.first_name, locals.user.last_name, "granted user role", role, "to user with email", user.email);
         }
     }
 }

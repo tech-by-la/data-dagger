@@ -3,6 +3,7 @@ import { redirect, type Actions } from '@sveltejs/kit';
 import {Cookies} from "$lib/server/util/enums";
 import db from '$lib/server/database/DatabaseGateway';
 import Jwt from "$lib/server/security/jwt";
+import Logger from "$lib/server/util/Logger";
 
 export const load: PageServerLoad = async () => {
 	throw redirect(302, '/');
@@ -23,6 +24,7 @@ export const actions: Actions = {
 
 		cookies.delete(Cookies.ID_TOKEN, { path: '/', httpOnly: true, secure: false });
 		cookies.delete(Cookies.REFRESH_TOKEN, { path: '/', httpOnly: true, secure: false });
+
 		throw redirect(302, '/');
 	}
 };

@@ -115,3 +115,11 @@ export enum FeatureStatus {
     ok    = 'ok',
     fail  = 'fail',
 }
+
+export enum LogType {
+    normal  = 'normal',
+    warning = 'warning',
+    error   = 'error',
+    admin   = 'admin',
+    success = 'success',
+}

@@ -56,7 +56,7 @@ class JwtUtil implements IJwtUtil {
         fs.readFile("src/lib/server/security/keystore/private-jwt.pem",(err, data) => {
             if (err) {
                 this.privateJwtKey = Buffer.from([]);
-                console.warn(Warnings.MISSING_PRIVATE_JWT_KEY);
+                Logger.error(Warnings.MISSING_PRIVATE_JWT_KEY);
             } else {
                 this.privateJwtKey = data
             }
@@ -65,7 +65,7 @@ class JwtUtil implements IJwtUtil {
         fs.readFile("src/lib/server/security/keystore/public-jwt.pem", (err, data) => {
             if (err) {
                 this.publicJwtKey = Buffer.from([]);
-                console.warn(Warnings.MISSING_PUBLIC_JWT_KEY);
+                Logger.error(Warnings.MISSING_PUBLIC_JWT_KEY);
             } else {
                 this.publicJwtKey = data;
             }
@@ -74,7 +74,7 @@ class JwtUtil implements IJwtUtil {
         fs.readFile("src/lib/server/security/keystore/private-ref.pem",(err, data) => {
             if (err) {
                 this.privateRefKey = Buffer.from([]);
-                console.warn(Warnings.MISSING_PRIVATE_REF_KEY);
+                Logger.error(Warnings.MISSING_PRIVATE_REF_KEY);
             } else {
                 this.privateRefKey = data;
             }
@@ -83,7 +83,7 @@ class JwtUtil implements IJwtUtil {
         fs.readFile("src/lib/server/security/keystore/public-ref.pem", (err, data) => {
             if (err) {
                 this.publicRefKey = Buffer.from([]);
-                console.warn(Warnings.MISSING_PUBLIC_REF_KEY);
+                Logger.error(Warnings.MISSING_PUBLIC_REF_KEY);
             } else {
                 this.publicRefKey = data;
             }
@@ -173,7 +173,7 @@ class JwtUtil implements IJwtUtil {
         return new Promise<JwtPayload | null>((accept) => {
             jwt.verify(refreshToken, this.publicRefKey, this.refreshTokenVerifyOptions, async (error, decoded) => {
                 if (error) {
-                    Logger.log("RefreshToken:", "VerifyError -", error)
+                    Logger.error("RefreshToken:", "VerifyError -", error)
                     accept(null);
                 }
                 else {
@@ -191,18 +191,13 @@ class JwtUtil implements IJwtUtil {
                         return;
                     }
                     const expired = new Date(Number.parseInt(tokenObj.expires.toString())).getTime() < Date.now();
-                    if (
-                        !user || !user.enabled ||
-                        !tokenObj || !tokenObj.valid || expired
-                    ) {
-                        Logger.log("RefreshToken", "Failed!");
-                        Logger.log("RefreshToken", "Expired -", expired.valueOf());
-                        Logger.log("RefreshToken", "Decoded Token Sub -", sub);
-                        Logger.log("RefreshToken", "User Enabled -", user?.enabled);
-                        Logger.log("RefreshToken", "Token Valid -", tokenObj.valid);
+                    if (!user || !user.enabled || !tokenObj || expired) {
                         accept(null);
+                    } else if (!tokenObj.valid) {
+                        Logger.warn("RefreshToken Warning", `A RefreshToken was used more than once for user with email ${user.email}`);
+                        accept(null)
                     } else {
-                        Logger.log("RefreshToken", "Successfully renewed refresh token");
+                        Logger.log("RefreshToken:", `Successfully renewed refresh token for user with email ${user.email}`);
                         accept(decoded as JwtPayload);
                     }
                 }

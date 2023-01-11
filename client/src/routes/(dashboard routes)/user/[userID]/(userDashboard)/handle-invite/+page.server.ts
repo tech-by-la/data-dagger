@@ -2,6 +2,7 @@ import type {PageServerLoad} from "./$types";
 import {type Actions, fail, redirect} from "@sveltejs/kit";
 import {StatusCode, StatusMessage} from "$lib/server/util/enums";
 import db from '$lib/server/database/DatabaseGateway';
+import Logger from "$lib/server/util/Logger";
 
 export const load: PageServerLoad = () => {
     throw redirect(302, `../`);
@@ -24,6 +25,8 @@ export const actions: Actions = {
 
         db.orgRepo.upsertOrgUser(org_id, locals.user.sub).catch();
         db.inviteRepo.deleteInviteByOrg_idAndEmail(org_id, locals.user.email).catch();
+
+        Logger.success('User', locals.user.first_name, locals.user.last_name, 'with email', locals.user.email, 'successfully joined an organization with id', org_id);
     },
 
     decline: async ({request, locals}) => {
@@ -40,5 +43,6 @@ export const actions: Actions = {
         }
 
         db.inviteRepo.deleteInviteByOrg_idAndEmail(org_id, locals.user.email).catch();
+        Logger.success('User', locals.user.first_name, locals.user.last_name, 'with email', locals.user.email, 'successfully declined an invitation to join organization with id', org_id);
     }
 }

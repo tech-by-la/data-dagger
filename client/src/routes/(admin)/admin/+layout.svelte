@@ -1,8 +1,7 @@
 <script lang="ts">
-    import type { LayoutData } from "./$types.js";
-    import AdminSideMenu from "$lib/Components/AdminSideMenu.svelte";
+    import { page } from '$app/stores';
 
-    export let data: LayoutData;
+    const { date } = $page;
 </script>
 
 <style>

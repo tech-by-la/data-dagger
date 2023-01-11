@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { z } from 'zod';
 import db from '$lib/server/database/DatabaseGateway';
 import {StatusMessage} from "$lib/server/util/enums";
+import Logger from "$lib/server/util/Logger";
 
 export const load: PageServerLoad = async ({parent}) => {
 	await parent();
@@ -30,8 +31,8 @@ export const actions: Actions = {
 		try {
 			const result = createOrgSchema.parse(data);
 		} catch (err) {
-			console.log('-------------------Parse Form Error--------------------');
-			console.log(err);
+			// console.log('-------------------Parse Form Error--------------------');
+			// console.log(err);
 			return fail(400, { invalid: true });
 		}
 
@@ -50,9 +51,11 @@ export const actions: Actions = {
 		const org = await db.orgRepo.createOrg(locals.user.sub, name, contact_email, contact_phone);
 
 		if (!org) {
+			Logger.error("An error occurred creating new organization with name, email, phone", name, contact_email, contact_phone);
 			return fail(500, { message: StatusMessage.INTERNAL_SERVER_ERROR });
 		}
 
+		Logger.success('User', locals.user.first_name, locals.user.last_name, 'with email', locals.user.email, 'successfully created a new organization with name', name);
 		throw redirect(302, '/org/' + org.id);
 	},
 

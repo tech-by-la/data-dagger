@@ -4,6 +4,7 @@ import type {Actions} from "@sveltejs/kit";
 import db from '$lib/server/database/DatabaseGateway';
 import {fail} from "@sveltejs/kit";
 import {OrgRoles, StatusMessage} from "$lib/server/util/enums";
+import Logger from "$lib/server/util/Logger";
 
 export const load: PageServerLoad = async ({params, parent}) => {
     await parent();
@@ -48,5 +49,7 @@ export const actions: Actions = {
         }
 
         await db.inviteRepo.deleteManyInvitesByOrg_idAndEmail(org.id, emails);
+
+        Logger.success('User', locals.user.first_name, locals.user.last_name, 'with email', locals.user.email, 'uninvited', emails.length, 'people from joining organization with name and id', org.name, org.id);
     }
 }

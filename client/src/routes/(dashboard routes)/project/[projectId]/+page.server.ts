@@ -107,6 +107,8 @@ export const actions: Actions = {
         } else {
             await db.projectRepo?.join(project_id, locals.user.sub);
         }
+
+        Logger.success('User', locals.user.first_name, locals.user.last_name, 'with email', locals.user.email, 'successfully', isMember ? 'left' : 'joined', 'project with name', project.name, 'and id', project.id);
     },
 
     startDemo: async ({request, locals}) => {
@@ -157,9 +159,10 @@ export const actions: Actions = {
             .filter(f => f.includes(`${GeoServerProps.Layer}.`));
 
         await db.fidRepo?.insertMany(project_id, fids);
+
+        Logger.success('Project demo started with', features.length, 'features by for project', project.name, 'with id', project_id, 'by user', locals.user.first_name, locals.user.last_name, 'with email', locals.user.email);
     },
 
-    // Dev action
     delete: async ({request, locals}) => {
         const form = await request.formData();
         const project_id = form.get('project_id');
@@ -174,7 +177,7 @@ export const actions: Actions = {
         }
 
         const org = await db.orgRepo?.findOrgById(project.organization_id as string);
-        const isOwner = org?.members.find(m => m.org_role_id === OrgRoles.OWNER);
+        const isOwner = org?.members.find(m => m.org_role_id === OrgRoles.OWNER && m.user_id === locals.user.sub);
         const isAdmin = locals.user.roles.includes(UserRoles.ADMIN) || locals.user.roles.includes(UserRoles.SUPER_ADMIN);
         if (!isOwner && !isAdmin) {
             return fail(StatusCode.FORBIDDEN, { message: StatusMessage.FORBIDDEN });
@@ -183,5 +186,7 @@ export const actions: Actions = {
         await GeoServer.WFS.deleteProjectData(project_id);
         await db.fidRepo?.deleteByProject(project_id);
         await db.projectRepo?.update(project);
+
+        Logger.success('Project data deleted for project', project.name, 'with id', project_id, 'by user', locals.user.first_name, locals.user.last_name, 'with email', locals.user.email);
     }
 }

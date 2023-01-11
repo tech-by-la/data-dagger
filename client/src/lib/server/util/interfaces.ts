@@ -1,6 +1,6 @@
 import type {User, UserRole, OrgUser, EOrgRole} from "@prisma/client";
 import type {JwtPayload} from "jsonwebtoken";
-import type {ProjectStatus, ProjectType} from "$lib/server/util/enums";
+import type {ProjectStatus, ProjectType, LogType} from "$lib/server/util/enums";
 
 // ===== Types ===== //
 
@@ -64,6 +64,13 @@ export interface FeatureClone {
     project_id:  string;
     accessed_at: Date;
     accessed_by: string;
+}
+
+export interface Log {
+    date: Date;
+    log: string;
+    type: LogType;
+    read_by?: string[];
 }
 
 // ===== JWT Payloads ===== //

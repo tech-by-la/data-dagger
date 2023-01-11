@@ -47,7 +47,8 @@
             ? projectComments.timeStamp = timestamp.toISOString()
             : projectData.timeStamp = timestamp.toISOString();
 
-        // const data = new GeoJSON().readFeatures(exportComments ? projectComments : projectData);
+        fetch(`/api/features/log-export?project=${project.id}&comments=${exportComments}`);
+
         const data = exportComments ? projectComments : projectData;
 
         const blob: Blob = new Blob([JSON.stringify(data)], { type: "application/json" });
