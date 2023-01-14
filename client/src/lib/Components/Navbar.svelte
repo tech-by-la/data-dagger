@@ -31,7 +31,7 @@
     <div class="logo-name-container">
         <a href="/"><img class="logo" src={logo} alt="goose-logo" width="60px"></a>
         <div class="title-name">
-          <h1>Data Dagger 27</h1>
+          <h1>Data Dagger</h1>
         </div>
     </div>
 
